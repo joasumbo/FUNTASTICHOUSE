@@ -139,33 +139,69 @@
 @push('scripts')
 <script>
 var calState = { exp: '{{ $experiences->first()->slug ?? 'imersiva' }}', year: new Date().getFullYear(), month: new Date().getMonth() };
-var occupied = @json($experiences->mapWithKeys(fn($e) => [$e->slug => $e->blockedDates->pluck('date')->map(fn($d) => $d instanceof \Carbon\Carbon ? $d->toDateString() : $d)->toArray()]));
-var prices   = @json($experiences->mapWithKeys(fn($e) => [$e->slug => ['base' => (float)$e->base_price, 'wknd' => (float)$e->weekend_price]]));
+var fhCache = {};
+var apiBase = '{{ url('/api/availability') }}';
 var months_pt = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
 
-function renderCal() {
-    var y=calState.year, m=calState.month, exp=calState.exp, p=prices[exp]||{base:0,wknd:0};
-    document.getElementById('fh-cal-label').textContent = months_pt[m]+' '+y;
-    var first = new Date(y,m,1).getDay();
-    first = first===0 ? 6 : first-1;
-    var days = new Date(y,m+1,0).getDate();
-    var html='';
-    for(var i=0;i<first;i++) html+='<div class="fh-cal-day empty"></div>';
-    for(var d=1;d<=days;d++){
-        var ds=y+'-'+String(m+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');
-        var dow=new Date(y,m,d).getDay();
-        var wknd=(dow===0||dow===6);
-        var occ=(occupied[exp]||[]).indexOf(ds)!==-1;
-        var cls='fh-cal-day'+(occ?' occ':'')+(wknd&&!occ?' wknd':'');
-        var price=wknd?p.wknd:p.base;
-        var priceHtml=occ?'':'<span class="dp">'+price+'€</span>';
-        html+='<div class="'+cls+'">'+d+priceHtml+'</div>';
-    }
-    document.getElementById('fh-cal-grid').innerHTML=html;
+function fetchAvailability(slug, callback) {
+    if (fhCache[slug]) { callback(fhCache[slug]); return; }
+    fetch(apiBase + '/' + slug)
+        .then(function(r) { return r.json(); })
+        .then(function(data) { fhCache[slug] = data; callback(data); })
+        .catch(function() { callback({ blocked_dates: [], prices: { base: 0, weekend: 0 } }); });
 }
-function fhChangeMonth(d){ calState.month+=d; if(calState.month>11){calState.month=0;calState.year++;} if(calState.month<0){calState.month=11;calState.year--;} renderCal(); }
-function fhSwitchExp(exp,btn){ calState.exp=exp; document.querySelectorAll('.fh-cal-tab').forEach(function(t){t.classList.remove('active');}); btn.classList.add('active'); var sel=document.getElementById('exp-select'); if(sel) sel.value=exp; renderCal(); }
-function toggleChildAges(v){ var el=document.getElementById('children-ages'); if(el) el.classList.toggle('show',parseInt(v)>0); }
-document.addEventListener('DOMContentLoaded', renderCal);
+
+function renderCal(data) {
+    var y = calState.year, m = calState.month;
+    var occupied = (data && data.blocked_dates) ? data.blocked_dates : [];
+    var p = (data && data.prices) ? data.prices : { base: 0, weekend: 0 };
+    document.getElementById('fh-cal-label').textContent = months_pt[m] + ' ' + y;
+    var first = new Date(y, m, 1).getDay();
+    first = first === 0 ? 6 : first - 1;
+    var days = new Date(y, m + 1, 0).getDate();
+    var html = '';
+    for (var i = 0; i < first; i++) html += '<div class="fh-cal-day empty"></div>';
+    for (var d = 1; d <= days; d++) {
+        var ds = y + '-' + String(m + 1).padStart(2, '0') + '-' + String(d).padStart(2, '0');
+        var dow = new Date(y, m, d).getDay();
+        var wknd = (dow === 0 || dow === 6);
+        var occ = occupied.indexOf(ds) !== -1;
+        var cls = 'fh-cal-day' + (occ ? ' occ' : '') + (wknd && !occ ? ' wknd' : '');
+        var price = wknd ? p.weekend : p.base;
+        var priceHtml = occ ? '' : '<span class="dp">' + price + '€</span>';
+        html += '<div class="' + cls + '">' + d + priceHtml + '</div>';
+    }
+    document.getElementById('fh-cal-grid').innerHTML = html;
+}
+
+function fhRenderWithFetch() {
+    document.getElementById('fh-cal-label').textContent = 'A carregar...';
+    document.getElementById('fh-cal-grid').innerHTML = '';
+    fetchAvailability(calState.exp, renderCal);
+}
+
+function fhChangeMonth(d) {
+    calState.month += d;
+    if (calState.month > 11) { calState.month = 0; calState.year++; }
+    if (calState.month < 0) { calState.month = 11; calState.year--; }
+    if (fhCache[calState.exp]) { renderCal(fhCache[calState.exp]); }
+    else { fhRenderWithFetch(); }
+}
+
+function fhSwitchExp(exp, btn) {
+    calState.exp = exp;
+    document.querySelectorAll('.fh-cal-tab').forEach(function(t) { t.classList.remove('active'); });
+    btn.classList.add('active');
+    var sel = document.getElementById('exp-select');
+    if (sel) sel.value = exp;
+    fhRenderWithFetch();
+}
+
+function toggleChildAges(v) {
+    var el = document.getElementById('children-ages');
+    if (el) el.classList.toggle('show', parseInt(v) > 0);
+}
+
+document.addEventListener('DOMContentLoaded', fhRenderWithFetch);
 </script>
 @endpush

@@ -129,7 +129,11 @@
                             <img class="img-fluid d-block" src="{{ asset('images/rooms/room-' . ($loop->index + 1) . '.jpg') }}" alt="{{ app()->getLocale() === 'pt' ? $exp->name_pt : $exp->name_en }}">
                         </div>
                         <div class="room-discount position-absolute top-0 start-0 text-2 fw-500 text-light rounded-pill border border-light border-opacity-50">
-                            @if($exp->slug === 'imersiva')<span class="me-1">🌟</span> Casa Principal@else<span class="me-1">🫧</span> Casa Spa@endif
+                            @if($exp->slug === 'imersiva')
+                            <span class="me-1">🌟</span> Casa Principal
+                            @else
+                            <span class="me-1">🫧</span> Casa Spa
+                            @endif
                         </div>
                         <div class="room-details d-flex align-items-center justify-content-between w-100 bottom-0 start-0">
                             <div>
