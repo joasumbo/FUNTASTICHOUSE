@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1.0, shrink-to-fit=no">
+    <link href="images/favicon.png" rel="icon">
+    <title>Reservas — Funtastic House</title>
+    <meta name="description" content="Funtastic House — Alojamento temático perto de Sintra, Ericeira e Mafra.">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/font-awesome/css/all.min.css">
+    <link rel="stylesheet" href="css/animate.min.css">
+    <link rel="stylesheet" href="css/swiper-bundle.min.css">
+    <link rel="stylesheet" href="css/glightbox.min.css">
+    <link rel="stylesheet" href="css/daterangepicker.min.css">
+    <link rel="stylesheet" href="css/stylesheet.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+    /* ── Funtastic House Overrides ── */
+    :root {
+        --bs-themecolor: #c99f5b;
+        --bs-themehovercolor: #b5873c;
+    }
+    .heading-font-family { font-family: 'Cormorant Garamond', Georgia, serif !important; }
+    /* Navbar logo text */
+    .fh-logo { font-family:'Cormorant Garamond',serif; font-size:26px; font-weight:700; color:#fff; letter-spacing:0.04em; text-decoration:none; line-height:1; }
+    .fh-logo span { color:var(--bs-themecolor); }
+    /* Language switcher */
+    .lang-switcher a { font-size:12px; font-weight:600; letter-spacing:.06em; color:rgba(255,255,255,.6); text-decoration:none; padding:0 6px; transition:color .2s; }
+    .lang-switcher a.active, .lang-switcher a:hover { color:var(--bs-themecolor); }
+    .lang-switcher span { color:rgba(255,255,255,.3); }
+    /* Calendar */
+    .fh-cal-tabs { display:flex; gap:0; border:1px solid rgba(201,159,91,.3); border-radius:50px; overflow:hidden; margin-bottom:20px; }
+    .fh-cal-tab { flex:1; padding:8px 16px; text-align:center; font-size:13px; font-weight:600; cursor:pointer; transition:all .2s; background:transparent; color:rgba(255,255,255,.5); border:none; letter-spacing:.04em; }
+    .fh-cal-tab.active { background:var(--bs-themecolor); color:#000; }
+    .fh-cal { background:rgba(255,255,255,.05); border:1px solid rgba(201,159,91,.2); border-radius:16px; padding:24px; }
+    .fh-cal-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
+    .fh-cal-month { font-family:'Cormorant Garamond',serif; font-size:20px; color:#fff; font-weight:600; }
+    .fh-cal-nav { background:transparent; border:1px solid rgba(201,159,91,.3); border-radius:50%; width:32px; height:32px; cursor:pointer; color:var(--bs-themecolor); font-size:16px; transition:all .2s; }
+    .fh-cal-nav:hover { background:var(--bs-themecolor); color:#000; border-color:var(--bs-themecolor); }
+    .fh-cal-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:2px; }
+    .fh-cal-dow { text-align:center; font-size:10px; font-weight:600; color:rgba(255,255,255,.4); padding:6px 2px; letter-spacing:.06em; }
+    .fh-cal-day { text-align:center; padding:5px 2px; border-radius:6px; font-size:12px; cursor:pointer; transition:background .2s; color:rgba(255,255,255,.8); }
+    .fh-cal-day:hover:not(.occ):not(.empty) { background:rgba(201,159,91,.2); }
+    .fh-cal-day.wknd { color:var(--bs-themecolor); font-weight:600; }
+    .fh-cal-day.occ { color:rgba(255,255,255,.2); text-decoration:line-through; cursor:default; }
+    .fh-cal-day.empty { cursor:default; }
+    .fh-cal-day .dp { display:block; font-size:9px; color:var(--bs-themecolor); font-weight:700; margin-top:1px; }
+    .fh-cal-day.occ .dp { display:none; }
+    .fh-cal-legend { display:flex; gap:16px; margin-top:14px; padding-top:14px; border-top:1px solid rgba(255,255,255,.08); }
+    .fh-cal-legend-item { display:flex; align-items:center; gap:6px; font-size:11px; color:rgba(255,255,255,.4); }
+    .fh-dot { width:8px; height:8px; border-radius:50%; }
+    /* POI cards */
+    .poi-card { background:var(--bs-body-bg); border:1px solid var(--bs-border-color); border-radius:12px; padding:20px; border-left:3px solid var(--bs-themecolor); transition:all .2s; }
+    .poi-card:hover { box-shadow:0 4px 20px rgba(0,0,0,.08); transform:translateX(4px); }
+    /* Exp cards */
+    .exp-badge-imersiva { background:var(--bs-themecolor); color:#000; }
+    .exp-badge-spa { background:#2C5F6E; color:#fff; }
+    /* Tematic grid overlay */
+    .tema-overlay { position:absolute; bottom:0; left:0; right:0; background:linear-gradient(to top, rgba(0,0,0,.85) 0%, transparent 100%); padding:20px 16px 14px; border-radius:0 0 16px 16px; }
+    /* Children ages */
+    .children-ages { display:none; }
+    .children-ages.show { display:block; }
+    /* Form dark */
+    .form-dark .form-control, .form-dark .form-select {
+        background:rgba(255,255,255,.05) !important;
+        border-color:rgba(255,255,255,.15) !important;
+        color:#fff !important;
+    }
+    .form-dark .form-control::placeholder { color:rgba(255,255,255,.3) !important; }
+    .form-dark label { color:rgba(255,255,255,.7); font-size:13px; font-weight:500; }
+    .form-dark select option { background:#0a0a0c; }
+    
+    </style>
+</head>
+<body>
+    <!-- Preloader -->
+    <div class="preloader"><div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div></div>
+
+    <div id="main-wrapper">
+        <!-- Header -->
+        <header id="header" class="sticky-top-slide">
+            <nav class="primary-menu navbar navbar-expand-lg bg-transparent border-bottom-0 text-3 fw-600 mt-3">
+                <div class="container">
+                    <a class="logo fh-logo" href="index.html">Funtastic <span>House</span></a>
+                    <div id="header-nav" class="collapse navbar-collapse justify-content-center">
+                        <ul class="navbar-nav">
+                            <li class="nav-item"><a class="nav-link " href="index.html">Início</a></li>
+                            <li class="nav-item"><a class="nav-link " href="porque-nos.html">Porquê Nós?</a></li>
+                            <li class="nav-item"><a class="nav-link " href="galeria.html">Galeria</a></li>
+                            <li class="nav-item"><a class="nav-link " href="o-que-fazer.html">O Que Fazer</a></li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle " href="#">Experiências</a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="experiencia-imersiva.html">Experiência Imersiva</a></li>
+                                    <li><a class="dropdown-item" href="experiencia-spa.html">Experiência Spa</a></li>
+                                </ul>
+                            </li>
+                            <li class="nav-item"><a class="nav-link active" href="reservas.html">Reservas</a></li>
+                            <li class="nav-item"><a class="nav-link " href="contactos.html">Contactos</a></li>
+                        </ul>
+                    </div>
+                    <div class="d-flex align-items-center gap-3 ms-auto">
+                        <div class="lang-switcher d-none d-lg-flex align-items-center">
+                            <a href="#" class="active">PT</a><span>|</span><a href="#">EN</a>
+                        </div>
+                        <a href="reservas.html" class="btn btn-new btn-primary text-capitalize rounded-pill text-nowrap">
+                            <span class="btn-text"><span>Reservar</span></span>
+                            <span class="btn-icon"><i class="fa-solid fa-arrow-right"></i></span>
+                        </a>
+                    </div>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#header-nav"><span></span><span></span><span></span></button>
+                </div>
+            </nav>
+        </header>
+        <!-- Header End -->
+
+        <div id="content" role="main">
+
+        <!-- Page Header -->
+        <section class="page-header page-header-text-light py-0 mb-0">
+            <div class="hero-wrap" style="height:280px;">
+                <div class="hero-mask opacity-8 bg-black"></div>
+                <div class="hero-bg" style="background-image:url('images/slider/slide-2.jpg');"></div>
+                <div class="hero-content d-flex align-items-end pb-5 h-100">
+                    <div class="container">
+                        <h1 class="heading-font-family text-white fw-700 mb-1">Reservas</h1>
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb text-3">
+                                <li class="breadcrumb-item"><a href="index.html" class="link-primary">Início</a></li>
+                                <li class="breadcrumb-item active">Reservas</li>
+                            </ol>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Page Header end -->
+
+        <section class="section bg-dark">
+            <div class="container">
+                <div class="mx-auto text-center mb-5">
+                    <p class="wow fadeInUp"><span class="text-3 text-uppercase fw-600 rounded-pill border border-white border-opacity-25 px-3 py-1 text-white-50">Disponibilidade & Reservas</span></p>
+                    <h2 class="heading-font-family text-13 fw-600 lh-sm text-white wow fadeInUp" data-wow-delay=".2s">Verifica disponibilidade<br>e <span class="text-primary">faz o teu pedido</span></h2>
+                </div>
+                <div class="row g-4">
+                    <!-- Calendário -->
+                    <div class="col-lg-6 wow fadeInLeft">
+                        <div class="fh-cal">
+                            <div class="fh-cal-tabs">
+                                <button class="fh-cal-tab active" onclick="fhSwitchExp('imersiva',this)">🌟 Experiência Imersiva</button>
+                                <button class="fh-cal-tab" onclick="fhSwitchExp('spa',this)">🫧 Experiência Spa</button>
+                            </div>
+                            <div class="fh-cal-header">
+                                <button class="fh-cal-nav" onclick="fhChangeMonth(-1)">&#8249;</button>
+                                <span class="fh-cal-month" id="fh-cal-label">Carregando...</span>
+                                <button class="fh-cal-nav" onclick="fhChangeMonth(1)">&#8250;</button>
+                            </div>
+                            <div class="fh-cal-grid">
+                                <div class="fh-cal-dow">Seg</div><div class="fh-cal-dow">Ter</div><div class="fh-cal-dow">Qua</div>
+                                <div class="fh-cal-dow">Qui</div><div class="fh-cal-dow">Sex</div><div class="fh-cal-dow">Sáb</div><div class="fh-cal-dow">Dom</div>
+                            </div>
+                            <div class="fh-cal-grid" id="fh-cal-grid"></div>
+                            <div class="fh-cal-legend">
+                                <div class="fh-cal-legend-item"><div class="fh-dot" style="background:rgba(201,159,91,.3);border:1px solid var(--bs-themecolor);"></div>Disponível</div>
+                                <div class="fh-cal-legend-item"><div class="fh-dot" style="background:rgba(255,255,255,.1);"></div>Ocupado</div>
+                                <div class="fh-cal-legend-item"><div class="fh-dot" style="background:rgba(201,159,91,.15);border:1px solid rgba(201,159,91,.4);"></div>Fim de semana (+)</div>
+                            </div>
+                            <p class="text-3 mt-3 mb-0" style="color:rgba(255,255,255,.35);">
+                                <i class="fa-solid fa-circle-info me-1" style="color:var(--bs-themecolor);"></i>
+                                Preços ilustrativos. Valores finais confirmados após pedido.
+                            </p>
+                        </div>
+                    </div>
+                    <!-- Formulário -->
+                    <div class="col-lg-6 wow fadeInRight">
+                        <div class="p-4 rounded-4" style="background:rgba(255,255,255,.04);border:1px solid rgba(201,159,91,.15);">
+                            <h4 class="heading-font-family text-7 fw-600 text-white mb-1">Pedido de Reserva</h4>
+                            <p class="text-3 mb-4" style="color:rgba(255,255,255,.4);">Preenche o formulário e entraremos em contacto para confirmar. Sem pagamento online.</p>
+                            <div class="row g-3 form-dark">
+                                <div class="col-12">
+                                    <label class="form-label">Nome Completo *</label>
+                                    <input type="text" class="form-control rounded-pill" placeholder="O teu nome completo">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Telefone *</label>
+                                    <input type="tel" class="form-control rounded-pill" placeholder="+351 9XX XXX XXX">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Email *</label>
+                                    <input type="email" class="form-control rounded-pill" placeholder="o.teu@email.com">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Check-in *</label>
+                                    <input id="reservaCheckIn" type="text" class="form-control rounded-pill" placeholder="DD/MM/AAAA">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Check-out *</label>
+                                    <input id="reservaCheckOut" type="text" class="form-control rounded-pill" placeholder="DD/MM/AAAA">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Adultos *</label>
+                                    <select class="form-select rounded-pill">
+                                        <option>1 Adulto</option><option selected>2 Adultos</option><option>3 Adultos</option><option>4+ Adultos</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Crianças</label>
+                                    <select class="form-select rounded-pill" id="num-children" onchange="toggleChildAges(this.value)">
+                                        <option value="0">0 Crianças</option><option value="1">1 Criança</option><option value="2">2 Crianças</option><option value="3">3 Crianças</option>
+                                    </select>
+                                </div>
+                                <div class="col-12 children-ages" id="children-ages">
+                                    <label class="form-label">Idades das Crianças</label>
+                                    <input type="text" class="form-control rounded-pill" placeholder="Ex: 5, 8, 12 anos">
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label">Experiência Pretendida *</label>
+                                    <select class="form-select rounded-pill" id="exp-select">
+                                        <option value="">Selecionar...</option>
+                                        <option value="imersiva">Experiência Imersiva 🌟</option>
+                                        <option value="spa">Experiência Spa 🫧</option>
+                                        <option value="">Sem Preferência</option>
+                                    </select>
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label">Mensagem / Pedidos Especiais</label>
+                                    <textarea class="form-control rounded-4" rows="3" placeholder="Algum pedido especial?"></textarea>
+                                </div>
+                                <div class="col-12">
+                                    <button class="btn btn-primary w-100 rounded-pill py-3 text-4 fw-600">
+                                        <i class="fa-regular fa-paper-plane me-2"></i>Enviar Pedido de Reserva
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        </div>
+        <!-- Content end -->
+
+        <!-- Footer -->
+        <footer id="footer" class="footer-dark">
+            <div class="hero-wrap section pb-0">
+                <div class="hero-mask opacity-9 bg-black"></div>
+                <div class="hero-bg hero-bg-scroll" style="background-image:url('images/footer-bg.jpg');"></div>
+                <div class="hero-content">
+                    <div class="container">
+                        <div class="row gy-4">
+                            <div class="col-sm-7 col-md-6 col-lg-4">
+                                <div class="mb-4">
+                                    <a href="index.html" class="fh-logo" style="font-size:28px;">Funtastic <span>House</span></a>
+                                </div>
+                                <p class="text-3">Uma casa diferente de todas as outras. Cada divisão é uma experiência única, perto de Sintra, Ericeira e Mafra.</p>
+                                <ul class="social-icons social-icons-light mt-4">
+                                    <li><a href="#" title="Instagram"><i class="fa-brands fa-instagram"></i></a></li>
+                                    <li><a href="#" title="Facebook"><i class="fa-brands fa-facebook-f"></i></a></li>
+                                    <li><a href="#" title="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a></li>
+                                </ul>
+                            </div>
+                            <div class="col-sm-4 col-md-4 col-lg-2 ms-auto">
+                                <h5 class="heading-font-family fw-600 mb-3">Navegação</h5>
+                                <ul class="nav flex-column fw-500 text-3">
+                                    <li class="nav-item"><a class="nav-link" href="index.html">Início</a></li>
+                                    <li class="nav-item"><a class="nav-link" href="porque-nos.html">Porquê Nós?</a></li>
+                                    <li class="nav-item"><a class="nav-link" href="galeria.html">Galeria</a></li>
+                                    <li class="nav-item"><a class="nav-link" href="o-que-fazer.html">O Que Fazer</a></li>
+                                    <li class="nav-item"><a class="nav-link" href="reservas.html">Reservas</a></li>
+                                    <li class="nav-item"><a class="nav-link" href="contactos.html">Contactos</a></li>
+                                </ul>
+                            </div>
+                            <div class="col-sm-4 col-md-3 col-lg-2">
+                                <h5 class="heading-font-family fw-600 mb-3">Experiências</h5>
+                                <ul class="nav flex-column fw-500 text-3">
+                                    <li class="nav-item"><a class="nav-link" href="experiencia-imersiva.html">Exp. Imersiva</a></li>
+                                    <li class="nav-item"><a class="nav-link" href="experiencia-spa.html">Exp. Spa</a></li>
+                                    <li class="nav-item"><a class="nav-link" href="#">Política de Privacidade</a></li>
+                                    <li class="nav-item"><a class="nav-link" href="#">Termos & Condições</a></li>
+                                </ul>
+                            </div>
+                            <div class="col-12 col-lg-3">
+                                <h5 class="heading-font-family fw-600 mb-3">Contacto</h5>
+                                <a href="tel:+351900000000" class="d-flex align-items-center gap-3 mb-3 link-primary link-underline-opacity-0 link-underline-opacity-100-hover">
+                                    <span class="text-5"><i class="fa-solid fa-phone-volume"></i></span>
+                                    <div class="text-4 fw-700">+351 9XX XXX XXX</div>
+                                </a>
+                                <a href="mailto:hello@funtastichouse.pt" class="d-flex align-items-center gap-3 mb-3 link-light link-underline-opacity-0 link-underline-opacity-100-hover">
+                                    <span class="text-5"><i class="fa-solid fa-envelope"></i></span>
+                                    <div class="text-3">hello@funtastichouse.pt</div>
+                                </a>
+                                <a href="https://wa.me/351900000000" target="_blank" class="d-flex align-items-center gap-3 link-light link-underline-opacity-0 link-underline-opacity-100-hover">
+                                    <span class="text-5"><i class="fa-brands fa-whatsapp"></i></span>
+                                    <div class="text-3">WhatsApp direto</div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="footer-copyright">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-12">
+                                    <p class="text-3 text-center mb-1">© 2025 <a class="fw-500 link-primary link-underline-opacity-0 link-underline-opacity-100-hover" href="#">Funtastic House</a>. Todos os direitos reservados.</p>
+                                    <p class="text-2 text-center mb-0 opacity-4">Website desenvolvido por <a class="link-primary link-underline-opacity-0" href="https://workmind.pt">Workmind</a></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </footer>
+        <!-- Footer end -->
+    </div>
+
+    <a id="back-to-top" href="javascript:void(0)"><i class="fa-solid fa-arrow-up"></i></a>
+
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.bundle.min.js"></script>
+    <script src="js/wow.min.js"></script>
+    <script src="js/lenis.min.js"></script>
+    <script src="js/swiper-bundle.min.js"></script>
+    <script src="js/glightbox.min.js"></script>
+    <script src="js/jarallax.min.js"></script>
+    <script src="js/moment.min.js"></script>
+    <script src="js/daterangepicker.min.js"></script>
+    <script src="js/daterangepicker-custom.js"></script>
+    <script src="js/main.js"></script>
+    
+<script>
+var calState = { exp:'imersiva', year: new Date().getFullYear(), month: new Date().getMonth() };
+var occupied = {
+    imersiva: ['2025-07-08','2025-07-09','2025-07-10','2025-07-11','2025-07-12','2025-07-13','2025-07-21','2025-07-22','2025-08-01','2025-08-02','2025-08-03','2025-08-15','2025-08-16'],
+    spa:      ['2025-07-14','2025-07-15','2025-07-16','2025-07-17','2025-07-28','2025-07-29','2025-07-30','2025-08-08','2025-08-09','2025-08-10','2025-08-11']
+};
+var prices = { imersiva:{ base:120, wknd:145 }, spa:{ base:90, wknd:110 } };
+var months_pt = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+function renderCal() {
+    var y=calState.year, m=calState.month, exp=calState.exp, p=prices[exp];
+    document.getElementById('fh-cal-label').textContent = months_pt[m]+' '+y;
+    var first = new Date(y,m,1).getDay();
+    first = first===0 ? 6 : first-1;
+    var days = new Date(y,m+1,0).getDate();
+    var html='';
+    for(var i=0;i<first;i++) html+='<div class="fh-cal-day empty"></div>';
+    for(var d=1;d<=days;d++){
+        var ds=y+'-'+String(m+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');
+        var dow=new Date(y,m,d).getDay();
+        var wknd=(dow===0||dow===6);
+        var occ=(occupied[exp]||[]).indexOf(ds)!==-1;
+        var cls='fh-cal-day'+(occ?' occ':'')+(wknd&&!occ?' wknd':'');
+        var price=wknd?p.wknd:p.base;
+        var priceHtml=occ?'':'<span class="dp">'+price+'€</span>';
+        html+='<div class="'+cls+'">'+d+priceHtml+'</div>';
+    }
+    document.getElementById('fh-cal-grid').innerHTML=html;
+}
+function fhChangeMonth(d){ calState.month+=d; if(calState.month>11){calState.month=0;calState.year++;} if(calState.month<0){calState.month=11;calState.year--;} renderCal(); }
+function fhSwitchExp(exp,btn){ calState.exp=exp; document.querySelectorAll('.fh-cal-tab').forEach(function(t){t.classList.remove('active');}); btn.classList.add('active'); var sel=document.getElementById('exp-select'); if(sel) sel.value=exp; renderCal(); }
+function toggleChildAges(v){ var el=document.getElementById('children-ages'); if(el) el.classList.toggle('show',parseInt(v)>0); }
+document.addEventListener('DOMContentLoaded', renderCal);
+</script>
+
+</body>
+</html>

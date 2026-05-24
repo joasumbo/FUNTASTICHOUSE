@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1.0, shrink-to-fit=no">
+    <link href="images/favicon.png" rel="icon">
+    <title>Início — Funtastic House</title>
+    <meta name="description" content="Funtastic House — Alojamento temático perto de Sintra, Ericeira e Mafra.">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/font-awesome/css/all.min.css">
+    <link rel="stylesheet" href="css/animate.min.css">
+    <link rel="stylesheet" href="css/swiper-bundle.min.css">
+    <link rel="stylesheet" href="css/glightbox.min.css">
+    <link rel="stylesheet" href="css/daterangepicker.min.css">
+    <link rel="stylesheet" href="css/stylesheet.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+    /* ── Funtastic House Overrides ── */
+    :root {
+        --bs-themecolor: #c99f5b;
+        --bs-themehovercolor: #b5873c;
+    }
+    .heading-font-family { font-family: 'Cormorant Garamond', Georgia, serif !important; }
+    /* Navbar logo text */
+    .fh-logo { font-family:'Cormorant Garamond',serif; font-size:26px; font-weight:700; color:#fff; letter-spacing:0.04em; text-decoration:none; line-height:1; }
+    .fh-logo span { color:var(--bs-themecolor); }
+    /* Language switcher */
+    .lang-switcher a { font-size:12px; font-weight:600; letter-spacing:.06em; color:rgba(255,255,255,.6); text-decoration:none; padding:0 6px; transition:color .2s; }
+    .lang-switcher a.active, .lang-switcher a:hover { color:var(--bs-themecolor); }
+    .lang-switcher span { color:rgba(255,255,255,.3); }
+    /* Calendar */
+    .fh-cal-tabs { display:flex; gap:0; border:1px solid rgba(201,159,91,.3); border-radius:50px; overflow:hidden; margin-bottom:20px; }
+    .fh-cal-tab { flex:1; padding:8px 16px; text-align:center; font-size:13px; font-weight:600; cursor:pointer; transition:all .2s; background:transparent; color:rgba(255,255,255,.5); border:none; letter-spacing:.04em; }
+    .fh-cal-tab.active { background:var(--bs-themecolor); color:#000; }
+    .fh-cal { background:rgba(255,255,255,.05); border:1px solid rgba(201,159,91,.2); border-radius:16px; padding:24px; }
+    .fh-cal-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
+    .fh-cal-month { font-family:'Cormorant Garamond',serif; font-size:20px; color:#fff; font-weight:600; }
+    .fh-cal-nav { background:transparent; border:1px solid rgba(201,159,91,.3); border-radius:50%; width:32px; height:32px; cursor:pointer; color:var(--bs-themecolor); font-size:16px; transition:all .2s; }
+    .fh-cal-nav:hover { background:var(--bs-themecolor); color:#000; border-color:var(--bs-themecolor); }
+    .fh-cal-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:2px; }
+    .fh-cal-dow { text-align:center; font-size:10px; font-weight:600; color:rgba(255,255,255,.4); padding:6px 2px; letter-spacing:.06em; }
+    .fh-cal-day { text-align:center; padding:5px 2px; border-radius:6px; font-size:12px; cursor:pointer; transition:background .2s; color:rgba(255,255,255,.8); }
+    .fh-cal-day:hover:not(.occ):not(.empty) { background:rgba(201,159,91,.2); }
+    .fh-cal-day.wknd { color:var(--bs-themecolor); font-weight:600; }
+    .fh-cal-day.occ { color:rgba(255,255,255,.2); text-decoration:line-through; cursor:default; }
+    .fh-cal-day.empty { cursor:default; }
+    .fh-cal-day .dp { display:block; font-size:9px; color:var(--bs-themecolor); font-weight:700; margin-top:1px; }
+    .fh-cal-day.occ .dp { display:none; }
+    .fh-cal-legend { display:flex; gap:16px; margin-top:14px; padding-top:14px; border-top:1px solid rgba(255,255,255,.08); }
+    .fh-cal-legend-item { display:flex; align-items:center; gap:6px; font-size:11px; color:rgba(255,255,255,.4); }
+    .fh-dot { width:8px; height:8px; border-radius:50%; }
+    /* POI cards */
+    .poi-card { background:var(--bs-body-bg); border:1px solid var(--bs-border-color); border-radius:12px; padding:20px; border-left:3px solid var(--bs-themecolor); transition:all .2s; }
+    .poi-card:hover { box-shadow:0 4px 20px rgba(0,0,0,.08); transform:translateX(4px); }
+    /* Exp cards */
+    .exp-badge-imersiva { background:var(--bs-themecolor); color:#000; }
+    .exp-badge-spa { background:#2C5F6E; color:#fff; }
+    /* Tematic grid overlay */
+    .tema-overlay { position:absolute; bottom:0; left:0; right:0; background:linear-gradient(to top, rgba(0,0,0,.85) 0%, transparent 100%); padding:20px 16px 14px; border-radius:0 0 16px 16px; }
+    /* Children ages */
+    .children-ages { display:none; }
+    .children-ages.show { display:block; }
+    /* Form dark */
+    .form-dark .form-control, .form-dark .form-select {
+        background:rgba(255,255,255,.05) !important;
+        border-color:rgba(255,255,255,.15) !important;
+        color:#fff !important;
+    }
+    .form-dark .form-control::placeholder { color:rgba(255,255,255,.3) !important; }
+    .form-dark label { color:rgba(255,255,255,.7); font-size:13px; font-weight:500; }
+    .form-dark select option { background:#0a0a0c; }
+    
+    </style>
+</head>
+<body>
+    <!-- Preloader -->
+    <div class="preloader"><div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div></div>
+
+    <div id="main-wrapper">
+        <!-- Header -->
+        <header id="header" class="sticky-top-slide">
+            <nav class="primary-menu navbar navbar-expand-lg bg-transparent border-bottom-0 text-3 fw-600 mt-3">
+                <div class="container">
+                    <a class="logo fh-logo" href="index.html">Funtastic <span>House</span></a>
+                    <div id="header-nav" class="collapse navbar-collapse justify-content-center">
+                        <ul class="navbar-nav">
+                            <li class="nav-item"><a class="nav-link active" href="index.html">Início</a></li>
+                            <li class="nav-item"><a class="nav-link " href="porque-nos.html">Porquê Nós?</a></li>
+                            <li class="nav-item"><a class="nav-link " href="galeria.html">Galeria</a></li>
+                            <li class="nav-item"><a class="nav-link " href="o-que-fazer.html">O Que Fazer</a></li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle " href="#">Experiências</a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="experiencia-imersiva.html">Experiência Imersiva</a></li>
+                                    <li><a class="dropdown-item" href="experiencia-spa.html">Experiência Spa</a></li>
+                                </ul>
+                            </li>
+                            <li class="nav-item"><a class="nav-link " href="reservas.html">Reservas</a></li>
+                            <li class="nav-item"><a class="nav-link " href="contactos.html">Contactos</a></li>
+                        </ul>
+                    </div>
+                    <div class="d-flex align-items-center gap-3 ms-auto">
+                        <div class="lang-switcher d-none d-lg-flex align-items-center">
+                            <a href="#" class="active">PT</a><span>|</span><a href="#">EN</a>
+                        </div>
+                        <a href="reservas.html" class="btn btn-new btn-primary text-capitalize rounded-pill text-nowrap">
+                            <span class="btn-text"><span>Reservar</span></span>
+                            <span class="btn-icon"><i class="fa-solid fa-arrow-right"></i></span>
+                        </a>
+                    </div>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#header-nav"><span></span><span></span><span></span></button>
+                </div>
+            </nav>
+        </header>
+        <!-- Header End -->
+
+        <div id="content" role="main">
+
+
+        <!-- Hero -->
+        <section class="hero-wrap">
+            <div class="hero-mask bg-dark opacity-6"></div>
+            <div class="hero-bg" style="background-image:url('images/slider/slide-1.jpg');"></div>
+            <div class="hero-content section pb-0 d-flex flex-column min-vh-100">
+                <div class="container my-auto py-5 text-center">
+                    <p class="text-3 text-light text-uppercase fw-600 ls-2 wow fadeInUp">
+                        <span class="rounded-pill border border-white border-opacity-50 px-3 py-1">Sintra · Ericeira · Mafra</span>
+                    </p>
+                    <h1 class="heading-font-family text-19 fw-700 text-white wow fadeInUp" data-wow-delay=".2s">
+                        Uma casa.<br><span class="text-primary">Um mundo de surpresas.</span>
+                    </h1>
+                    <p class="text-5 text-light text-opacity-75 mx-auto mt-3 mb-5 wow fadeInUp" data-wow-delay=".3s" style="max-width:560px;">
+                        Cada divisão é uma experiência diferente — do teto estrelado ao fundo do mar. Vem descobrir o que te espera.
+                    </p>
+                    <div class="d-flex justify-content-center gap-3 wow fadeInUp" data-wow-delay=".4s">
+                        <a class="btn btn-new btn-primary rounded-pill" href="experiencia-imersiva.html">
+                            <span class="btn-text"><span>Ver Experiências</span></span>
+                            <span class="btn-icon"><i class="fa-solid fa-arrow-right"></i></span>
+                        </a>
+                        <a class="btn btn-new btn-outline-light rounded-pill" href="porque-nos.html">
+                            <span class="btn-text"><span>Saber Mais</span></span>
+                            <span class="btn-icon"><i class="fa-solid fa-arrow-right"></i></span>
+                        </a>
+                    </div>
+                    <!-- Quick booking strip -->
+                    <div class="intro-booking-form bg-black bg-opacity-75 rounded-pill p-4 p-lg-3 mt-5 wow fadeInUp" data-wow-delay=".5s">
+                        <div class="row gy-3 gx-lg-0 input-group">
+                            <div class="col-md-6 col-lg">
+                                <select class="form-select rounded-pill h-100">
+                                    <option value="">Experiência</option>
+                                    <option>Experiência Imersiva 🌟</option>
+                                    <option>Experiência Spa 🫧</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 col-lg">
+                                <div class="position-relative">
+                                    <input id="heroCheckIn" type="text" class="form-control rounded-pill" placeholder="Check-in">
+                                    <span class="icon-inside"><i class="fa-regular fa-calendar-alt"></i></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg">
+                                <div class="position-relative">
+                                    <input id="heroCheckOut" type="text" class="form-control rounded-pill" placeholder="Check-out">
+                                    <span class="icon-inside"><i class="fa-regular fa-calendar-alt"></i></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg">
+                                <select class="form-select rounded-pill h-100">
+                                    <option value="">Adultos</option>
+                                    <option>1 Adulto</option><option>2 Adultos</option><option>3 Adultos</option><option>4 Adultos</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 col-lg col-xl-auto d-grid">
+                                <a href="reservas.html" class="btn btn-primary text-nowrap rounded-pill">Verificar</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Hero end -->
+
+        <!-- Sobre nós / intro -->
+        <section class="section">
+            <div class="container">
+                <div class="row g-5 align-items-center">
+                    <div class="col-lg-6 wow fadeInLeft">
+                        <p><span class="text-3 text-uppercase fw-600 rounded-pill border border-dark border-opacity-10 px-3 py-1">Sobre a Funtastic House</span></p>
+                        <h2 class="heading-font-family text-13 fw-600 lh-sm mb-4">Uma casa <span class="text-primary">diferente</span> de todas as outras</h2>
+                        <p class="text-5 text-body-secondary">Imagina entrar numa casa onde cada divisão conta uma história diferente — onde os puxadores dos armários são insetos, o lavatório tem forma de concha e um quarto distribui doces escondidos atrás de uma cortina.</p>
+                        <p class="text-body-secondary mb-4">A Funtastic House é isso mesmo: uma experiência de alojamento única, pensada ao pormenor para surpreender a cada canto. Perto de Sintra, Ericeira e Mafra, com tudo o que precisas para uma estadia inesquecível.</p>
+                        <div class="d-inline-flex align-items-center gap-4">
+                            <a class="btn btn-new btn-primary rounded-pill" href="porque-nos.html">
+                                <span class="btn-text"><span>Saber Mais</span></span>
+                                <span class="btn-icon"><i class="fa-solid fa-arrow-right"></i></span>
+                            </a>
+                            <div class="d-flex align-items-center gap-3 ms-sm-2">
+                                <div class="text-body-tertiary text-7 opacity-7 d-inline-flex"><i class="fa-solid fa-phone-volume"></i></div>
+                                <div class="vr my-1 opacity-1"></div>
+                                <div class="text-start">
+                                    <div class="text-2 fw-600 text-body-tertiary mb-1">Reservas e info:</div>
+                                    <h3 class="text-4 fw-700 mb-0">+351 9XX XXX XXX</h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 text-center wow fadeInRight">
+                        <div class="position-relative d-inline-flex">
+                            <img class="img-fluid rounded-5" src="images/about.jpg" alt="Funtastic House">
+                            <div class="position-absolute top-0 end-0">
+                                <div class="circle-text bg-white border border-2 border-primary mt-5 me-5 wow bounceIn" data-wow-delay="0.5s">
+                                    <svg viewBox="0 0 500 500"><defs><path id="circlePath" d="M50,250c0-110.5,89.5-200,200-200s200,89.5,200,200s-89.5,200-200,200S50,360.5,50,250"></path></defs><text class="text-uppercase fw-700 ls-4"><textPath xlink:href="#circlePath">Casa Temática ✦ Experiência Única ✦</textPath></text></svg>
+                                    <div class="circle-icon text-bg-primary translate-middle"><i class="fa-solid fa-star"></i></div>
+                                </div>
+                            </div>
+                            <div class="position-absolute bottom-0 start-50 translate-middle-x w-100">
+                                <div class="text-light text-start bg-dark bg-opacity-50 rounded-5 m-5 p-4 wow fadeInUp">Perto de Sintra, Ericeira e Mafra — natureza, palácios e praias ao alcance da mão.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Experiências (2 cards) -->
+        <section class="section bg-light-1">
+            <div class="container">
+                <div class="mx-auto text-center mb-5">
+                    <p class="wow fadeInUp"><span class="text-3 text-uppercase fw-600 rounded-pill border border-dark border-opacity-10 px-3 py-1">As Nossas Experiências</span></p>
+                    <h2 class="heading-font-family text-13 fw-600 lh-sm wow fadeInUp" data-wow-delay=".2s">Escolhe a tua <span class="text-primary">experiência</span></h2>
+                </div>
+                <div class="room-items-wrap wow fadeInUp">
+                    <div class="row justify-content-center g-4">
+                        <div class="col-md-6">
+                            <div class="room-item rounded-5">
+                                <a class="stretched-link" href="experiencia-imersiva.html"></a>
+                                <div class="room-item-img rounded-5"><img class="img-fluid d-block" src="images/rooms/room-1.jpg" alt="Experiência Imersiva"></div>
+                                <div class="room-discount position-absolute top-0 start-0 text-2 fw-500 text-light rounded-pill border border-light border-opacity-50">
+                                    <span class="me-1">🌟</span> Casa Principal
+                                </div>
+                                <div class="room-details d-flex align-items-center justify-content-between w-100 bottom-0 start-0">
+                                    <div>
+                                        <p class="text-3 fw-500 text-uppercase text-light mb-0">desde 120€ / noite</p>
+                                        <h3 class="text-white text-7 fw-600 mb-0">Experiência Imersiva</h3>
+                                    </div>
+                                    <span class="details-link-icon"><i class="fa-solid fa-arrow-right"></i></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="room-item rounded-5">
+                                <a class="stretched-link" href="experiencia-spa.html"></a>
+                                <div class="room-item-img rounded-5"><img class="img-fluid d-block" src="images/rooms/room-2.jpg" alt="Experiência Spa"></div>
+                                <div class="room-discount position-absolute top-0 start-0 text-2 fw-500 text-light rounded-pill border border-light border-opacity-50">
+                                    <span class="me-1">🫧</span> Casa Spa
+                                </div>
+                                <div class="room-details d-flex align-items-center justify-content-between w-100 bottom-0 start-0">
+                                    <div>
+                                        <p class="text-3 fw-500 text-uppercase text-light mb-0">desde 90€ / noite</p>
+                                        <h3 class="text-white text-7 fw-600 mb-0">Experiência Spa</h3>
+                                    </div>
+                                    <span class="details-link-icon"><i class="fa-solid fa-arrow-right"></i></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="position-relative text-center z-1 mt-5 wow fadeInUp">
+                    <a class="btn btn-new btn-primary rounded-pill" href="reservas.html">
+                        <span class="btn-text"><span>Verificar Disponibilidade</span></span>
+                        <span class="btn-icon"><i class="fa-solid fa-arrow-right"></i></span>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Divisões temáticas (amenities) -->
+        <section class="section">
+            <div class="container">
+                <div class="mx-auto text-center mb-5">
+                    <p class="wow fadeInUp"><span class="text-3 text-uppercase fw-600 rounded-pill border border-dark border-opacity-10 px-3 py-1">Experiência Imersiva</span></p>
+                    <h2 class="heading-font-family text-13 fw-600 lh-sm wow fadeInUp" data-wow-delay=".2s">Cada divisão,<br>uma <span class="text-primary">história</span></h2>
+                </div>
+                <div class="row g-4 text-center wow fadeInUp">
+                    <div class="col-6 col-md-4 col-lg-2">
+                        <div class="p-3 rounded-4 border border-opacity-10 h-100">
+                            <div class="text-primary text-8 mb-2">🌸</div>
+                            <p class="text-4 fw-600 mb-1">Cozinha Jardim</p>
+                            <p class="text-3 text-body-secondary mb-0">Louça com flores, insetos nos puxadores</p>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-4 col-lg-2">
+                        <div class="p-3 rounded-4 border border-opacity-10 h-100">
+                            <div class="text-primary text-8 mb-2">⭐</div>
+                            <p class="text-4 fw-600 mb-1">Quarto Estrelas</p>
+                            <p class="text-3 text-body-secondary mb-0">Teto estrelado Bluetooth personalizável</p>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-4 col-lg-2">
+                        <div class="p-3 rounded-4 border border-opacity-10 h-100">
+                            <div class="text-primary text-8 mb-2">🌈</div>
+                            <p class="text-4 fw-600 mb-1">Quarto Arco-Íris</p>
+                            <p class="text-3 text-body-secondary mb-0">Cabeceira arco-íris, frases positivas e doces surpresa</p>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-4 col-lg-2">
+                        <div class="p-3 rounded-4 border border-opacity-10 h-100">
+                            <div class="text-primary text-8 mb-2">🐚</div>
+                            <p class="text-4 fw-600 mb-1">Casa de Banho</p>
+                            <p class="text-3 text-body-secondary mb-0">Aquarela fundo do mar, lavatório em concha iridescente</p>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-4 col-lg-2">
+                        <div class="p-3 rounded-4 border border-opacity-10 h-100">
+                            <div class="text-primary text-8 mb-2">🌿</div>
+                            <p class="text-4 fw-600 mb-1">Jardim & Piscina</p>
+                            <p class="text-3 text-body-secondary mb-0">Jardim amplo e churrasqueira</p>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-4 col-lg-2">
+                        <div class="p-3 rounded-4 border border-opacity-10 h-100">
+                            <div class="text-primary text-8 mb-2">🫧</div>
+                            <p class="text-4 fw-600 mb-1">Jacuzzi Privado</p>
+                            <p class="text-3 text-body-secondary mb-0">Pátio exclusivo — Exp. Spa</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center mt-5 wow fadeInUp">
+                    <a class="btn btn-new btn-primary rounded-pill" href="experiencia-imersiva.html">
+                        <span class="btn-text"><span>Ver Experiência Imersiva</span></span>
+                        <span class="btn-icon"><i class="fa-solid fa-arrow-right"></i></span>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA / Experience BG -->
+        <section class="hero-wrap section">
+            <div class="hero-mask opacity-7 bg-dark"></div>
+            <div class="hero-bg jarallax" style="background-image:url('images/experience-bg.jpg');"></div>
+            <div class="hero-content">
+                <div class="container text-center">
+                    <h2 class="heading-font-family text-13 fw-700 text-white wow fadeInUp mb-4">Pronto para uma<br><span class="text-primary">experiência inesquecível?</span></h2>
+                    <a class="btn btn-new btn-primary rounded-pill btn-lg wow fadeInUp" data-wow-delay=".2s" href="reservas.html">
+                        <span class="btn-text"><span>Reservar Agora</span></span>
+                        <span class="btn-icon"><i class="fa-solid fa-arrow-right"></i></span>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Testimonials preview -->
+        <section class="section">
+            <div class="container">
+                <div class="mx-auto text-center mb-5">
+                    <p class="wow fadeInUp"><span class="text-3 text-uppercase fw-600 rounded-pill border border-dark border-opacity-10 px-3 py-1">O Que Dizem</span></p>
+                    <h2 class="heading-font-family text-13 fw-600 lh-sm wow fadeInUp" data-wow-delay=".2s">Os nossos <span class="text-primary">hóspedes</span></h2>
+                </div>
+                <div class="swiper testimonialSwiper wow fadeInUp">
+                    <div class="swiper-wrapper">
+                        <div class="swiper-slide">
+                            <div class="testimonial-item text-center p-4">
+                                <div class="text-primary mb-3"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
+                                <p class="text-5 fst-italic mb-4">"Nunca ficámos em nenhum lugar assim. O teto estrelado no quarto é simplesmente mágico — os nossos filhos não queriam sair. E o quadro dos doces? Uma surpresa que vão falar durante anos!"</p>
+                                <img class="rounded-circle mb-2" src="images/testimonial/testimonial-1.jpg" width="60" height="60" alt="">
+                                <h5 class="heading-font-family text-5 fw-600 mb-0">Ana & Ricardo S.</h5>
+                                <p class="text-3 text-body-secondary">Família de Lisboa</p>
+                            </div>
+                        </div>
+                        <div class="swiper-slide">
+                            <div class="testimonial-item text-center p-4">
+                                <div class="text-primary mb-3"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
+                                <p class="text-5 fst-italic mb-4">"A Experiência Spa foi perfeita para o nosso aniversário. Jacuzzi privado, silêncio e uma casa cuidada ao pormenor. Acordar ali e saber que Sintra fica a 10 minutos é um luxo enorme."</p>
+                                <img class="rounded-circle mb-2" src="images/testimonial/testimonial-2.jpg" width="60" height="60" alt="">
+                                <h5 class="heading-font-family text-5 fw-600 mb-0">Marta & João P.</h5>
+                                <p class="text-3 text-body-secondary">Casal do Porto</p>
+                            </div>
+                        </div>
+                        <div class="swiper-slide">
+                            <div class="testimonial-item text-center p-4">
+                                <div class="text-primary mb-3"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
+                                <p class="text-5 fst-italic mb-4">"A casa de banho com o lavatório em concha é uma obra de arte. Cada divisão é uma surpresa nova. O som dos passarinhos ao entrar é um detalhe que não esquece. Única em Portugal."</p>
+                                <img class="rounded-circle mb-2" src="images/testimonial/testimonial-3.jpg" width="60" height="60" alt="">
+                                <h5 class="heading-font-family text-5 fw-600 mb-0">Sophie M.</h5>
+                                <p class="text-3 text-body-secondary">Viajante francesa</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="swiper-pagination mt-4"></div>
+                </div>
+            </div>
+        </section>
+
+        </div>
+        <!-- Content end -->
+
+        <!-- Footer -->
+        <footer id="footer" class="footer-dark">
+            <div class="hero-wrap section pb-0">
+                <div class="hero-mask opacity-9 bg-black"></div>
+                <div class="hero-bg hero-bg-scroll" style="background-image:url('images/footer-bg.jpg');"></div>
+                <div class="hero-content">
+                    <div class="container">
+                        <div class="row gy-4">
+                            <div class="col-sm-7 col-md-6 col-lg-4">
+                                <div class="mb-4">
+                                    <a href="index.html" class="fh-logo" style="font-size:28px;">Funtastic <span>House</span></a>
+                                </div>
+                                <p class="text-3">Uma casa diferente de todas as outras. Cada divisão é uma experiência única, perto de Sintra, Ericeira e Mafra.</p>
+                                <ul class="social-icons social-icons-light mt-4">
+                                    <li><a href="#" title="Instagram"><i class="fa-brands fa-instagram"></i></a></li>
+                                    <li><a href="#" title="Facebook"><i class="fa-brands fa-facebook-f"></i></a></li>
+                                    <li><a href="#" title="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a></li>
+                                </ul>
+                            </div>
+                            <div class="col-sm-4 col-md-4 col-lg-2 ms-auto">
+                                <h5 class="heading-font-family fw-600 mb-3">Navegação</h5>
+                                <ul class="nav flex-column fw-500 text-3">
+                                    <li class="nav-item"><a class="nav-link" href="index.html">Início</a></li>
+                                    <li class="nav-item"><a class="nav-link" href="porque-nos.html">Porquê Nós?</a></li>
+                                    <li class="nav-item"><a class="nav-link" href="galeria.html">Galeria</a></li>
+                                    <li class="nav-item"><a class="nav-link" href="o-que-fazer.html">O Que Fazer</a></li>
+                                    <li class="nav-item"><a class="nav-link" href="reservas.html">Reservas</a></li>
+                                    <li class="nav-item"><a class="nav-link" href="contactos.html">Contactos</a></li>
+                                </ul>
+                            </div>
+                            <div class="col-sm-4 col-md-3 col-lg-2">
+                                <h5 class="heading-font-family fw-600 mb-3">Experiências</h5>
+                                <ul class="nav flex-column fw-500 text-3">
+                                    <li class="nav-item"><a class="nav-link" href="experiencia-imersiva.html">Exp. Imersiva</a></li>
+                                    <li class="nav-item"><a class="nav-link" href="experiencia-spa.html">Exp. Spa</a></li>
+                                    <li class="nav-item"><a class="nav-link" href="#">Política de Privacidade</a></li>
+                                    <li class="nav-item"><a class="nav-link" href="#">Termos & Condições</a></li>
+                                </ul>
+                            </div>
+                            <div class="col-12 col-lg-3">
+                                <h5 class="heading-font-family fw-600 mb-3">Contacto</h5>
+                                <a href="tel:+351900000000" class="d-flex align-items-center gap-3 mb-3 link-primary link-underline-opacity-0 link-underline-opacity-100-hover">
+                                    <span class="text-5"><i class="fa-solid fa-phone-volume"></i></span>
+                                    <div class="text-4 fw-700">+351 9XX XXX XXX</div>
+                                </a>
+                                <a href="mailto:hello@funtastichouse.pt" class="d-flex align-items-center gap-3 mb-3 link-light link-underline-opacity-0 link-underline-opacity-100-hover">
+                                    <span class="text-5"><i class="fa-solid fa-envelope"></i></span>
+                                    <div class="text-3">hello@funtastichouse.pt</div>
+                                </a>
+                                <a href="https://wa.me/351900000000" target="_blank" class="d-flex align-items-center gap-3 link-light link-underline-opacity-0 link-underline-opacity-100-hover">
+                                    <span class="text-5"><i class="fa-brands fa-whatsapp"></i></span>
+                                    <div class="text-3">WhatsApp direto</div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="footer-copyright">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-12">
+                                    <p class="text-3 text-center mb-1">© 2025 <a class="fw-500 link-primary link-underline-opacity-0 link-underline-opacity-100-hover" href="#">Funtastic House</a>. Todos os direitos reservados.</p>
+                                    <p class="text-2 text-center mb-0 opacity-4">Website desenvolvido por <a class="link-primary link-underline-opacity-0" href="https://workmind.pt">Workmind</a></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </footer>
+        <!-- Footer end -->
+    </div>
+
+    <a id="back-to-top" href="javascript:void(0)"><i class="fa-solid fa-arrow-up"></i></a>
+
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.bundle.min.js"></script>
+    <script src="js/wow.min.js"></script>
+    <script src="js/lenis.min.js"></script>
+    <script src="js/swiper-bundle.min.js"></script>
+    <script src="js/glightbox.min.js"></script>
+    <script src="js/jarallax.min.js"></script>
+    <script src="js/moment.min.js"></script>
+    <script src="js/daterangepicker.min.js"></script>
+    <script src="js/daterangepicker-custom.js"></script>
+    <script src="js/main.js"></script>
+    
+</body>
+</html>
