@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\Admin\AuthController as AdminAuthController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
+use App\Http\Controllers\Admin\PerfilController as AdminPerfilController;
+use App\Http\Controllers\Admin\ReservaController as AdminReservaController;
 use App\Http\Controllers\ContactosController;
 use App\Http\Controllers\ExperienciaController;
 use App\Http\Controllers\GaleriaController;
@@ -51,6 +53,14 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::middleware(['auth', 'admin'])->group(function () {
         Route::get('/',          fn () => redirect()->route('admin.dashboard'));
         Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
+
+        // Perfil
+        Route::get('/perfil',              [AdminPerfilController::class, 'index'])->name('perfil');
+        Route::post('/perfil',             [AdminPerfilController::class, 'update'])->name('perfil.update');
+        Route::post('/perfil/password',    [AdminPerfilController::class, 'updatePassword'])->name('perfil.password');
+
+        // Reserva detail
+        Route::get('/reservas/{reservation}', [AdminReservaController::class, 'show'])->name('reservas.show');
 
         // Stub routes for future tasks (nav links won't 500)
         Route::get('/reservas',    fn () => abort(404))->name('reservas');

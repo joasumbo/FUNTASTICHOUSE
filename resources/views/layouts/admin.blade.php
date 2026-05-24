@@ -133,9 +133,15 @@
                     class="flex items-center gap-2.5 bg-white rounded-full pl-1 pr-3 py-1 transition hover:shadow-md"
                     style="box-shadow:0 1px 3px rgba(0,0,0,0.06)"
                 >
-                    <div class="w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold text-white flex-shrink-0" style="background:#c99f5b">
-                        {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
-                    </div>
+                    @if(auth()->user()->photo)
+                        <img src="{{ \Illuminate\Support\Facades\Storage::url(auth()->user()->photo) }}"
+                             alt="Foto"
+                             class="w-9 h-9 rounded-full object-cover flex-shrink-0">
+                    @else
+                        <div class="w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold text-white flex-shrink-0" style="background:#c99f5b">
+                            {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
+                        </div>
+                    @endif
                     <div class="hidden sm:flex flex-col items-start leading-tight">
                         <span class="text-sm font-semibold text-gray-900">{{ auth()->user()->name }}</span>
                         <span class="text-[11px] text-gray-400">Super Admin</span>
@@ -158,6 +164,12 @@
                         <p class="text-sm font-semibold text-gray-900">{{ auth()->user()->name }}</p>
                         <p class="text-xs text-gray-400">{{ auth()->user()->email }}</p>
                     </div>
+                    <a href="{{ route('admin.perfil') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-gray-50 transition text-sm text-gray-700">
+                        <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                        </svg>
+                        Meu perfil
+                    </a>
                     <a href="{{ url('/') }}" target="_blank" class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-gray-50 transition text-sm text-gray-700">
                         <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
