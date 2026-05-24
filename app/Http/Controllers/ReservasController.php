@@ -34,15 +34,28 @@ class ReservasController extends Controller
             'children_ages'   => 'nullable|string|max:100',
             'experience_slug' => 'required|exists:experiences,slug',
             'message'         => 'nullable|string|max:2000',
+        ], [
+            'name.required'            => 'O nome completo é obrigatório.',
+            'email.required'           => 'O email é obrigatório.',
+            'email.email'              => 'Introduz um endereço de email válido.',
+            'phone.required'           => 'O número de telefone é obrigatório.',
+            'check_in.required'        => 'A data de check-in é obrigatória.',
+            'check_in.date_format'     => 'A data de check-in deve estar no formato DD/MM/AAAA.',
+            'check_out.required'       => 'A data de check-out é obrigatória.',
+            'check_out.date_format'    => 'A data de check-out deve estar no formato DD/MM/AAAA.',
+            'adults.required'          => 'O número de adultos é obrigatório.',
+            'adults.min'               => 'Deve haver pelo menos 1 adulto.',
+            'experience_slug.required' => 'Por favor seleciona uma experiência.',
+            'experience_slug.exists'   => 'A experiência selecionada não é válida.',
         ]);
 
         $checkIn  = Carbon::createFromFormat('d/m/Y', $validated['check_in'])->startOfDay();
         $checkOut = Carbon::createFromFormat('d/m/Y', $validated['check_out'])->startOfDay();
 
         if (!$checkOut->isAfter($checkIn)) {
-            return back()
-                ->withErrors(['check_out' => 'O check-out deve ser posterior ao check-in.'])
-                ->withInput();
+            throw \Illuminate\Validation\ValidationException::withMessages([
+                'check_out' => 'O check-out deve ser posterior ao check-in.',
+            ]);
         }
 
         $experience = Experience::where('slug', $validated['experience_slug'])->firstOrFail();
@@ -73,6 +86,16 @@ class ReservasController extends Controller
             Mail::to($ownerEmail)->send(new ReservationNotification($reservation, $experience));
         } catch (\Throwable $e) {
             Log::error('Reservation emails failed: ' . $e->getMessage());
+        }
+
+        if ($request->wantsJson()) {
+            return response()->json([
+                'success'    => true,
+                'name'       => $reservation->name,
+                'experience' => $experience->name_pt,
+                'check_in'   => $validated['check_in'],
+                'check_out'  => $validated['check_out'],
+            ]);
         }
 
         return redirect()->route('reservas.sucesso')->with([
