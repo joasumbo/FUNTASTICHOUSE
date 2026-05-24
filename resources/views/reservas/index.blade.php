@@ -67,67 +67,84 @@
             <div class="col-lg-6 wow fadeInRight">
                 <div class="p-4 rounded-4" style="background:rgba(255,255,255,.04);border:1px solid rgba(201,159,91,.15);">
                     <h4 class="heading-font-family text-7 fw-600 text-white mb-1">Pedido de Reserva</h4>
-                    <p class="text-3 mb-4" style="color:rgba(255,255,255,.4);">Preenche o formulário e entraremos em contacto para confirmar. Sem pagamento online.</p>
+                    <p class="text-3 mb-3" style="color:rgba(255,255,255,.4);">Preenche o formulário e entraremos em contacto para confirmar. Sem pagamento online.</p>
+
+                    @if($errors->any())
+                    <div class="alert alert-danger rounded-4 text-3 mb-3 py-2">
+                        <ul class="mb-0 ps-3">
+                            @foreach($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                    @endif
+
+                    <form action="{{ route('reservas.store') }}" method="POST">
+                    @csrf
                     <div class="row g-3 form-dark">
                         <div class="col-12">
                             <label class="form-label">Nome Completo *</label>
-                            <input type="text" class="form-control rounded-pill" placeholder="O teu nome completo">
+                            <input type="text" name="name" value="{{ old('name') }}" class="form-control rounded-pill @error('name') is-invalid @enderror" placeholder="O teu nome completo">
                         </div>
                         <div class="col-md-6">
                             <label class="form-label">Telefone *</label>
-                            <input type="tel" class="form-control rounded-pill" placeholder="+351 9XX XXX XXX">
+                            <input type="tel" name="phone" value="{{ old('phone') }}" class="form-control rounded-pill @error('phone') is-invalid @enderror" placeholder="+351 9XX XXX XXX">
                         </div>
                         <div class="col-md-6">
                             <label class="form-label">Email *</label>
-                            <input type="email" class="form-control rounded-pill" placeholder="o.teu@email.com">
+                            <input type="email" name="email" value="{{ old('email') }}" class="form-control rounded-pill @error('email') is-invalid @enderror" placeholder="o.teu@email.com">
                         </div>
                         <div class="col-md-6">
                             <label class="form-label">Check-in *</label>
-                            <input id="reservaCheckIn" type="text" class="form-control rounded-pill" placeholder="DD/MM/AAAA">
+                            <input id="reservaCheckIn" type="text" name="check_in" value="{{ old('check_in') }}" class="form-control rounded-pill @error('check_in') is-invalid @enderror" placeholder="DD/MM/AAAA" autocomplete="off">
                         </div>
                         <div class="col-md-6">
                             <label class="form-label">Check-out *</label>
-                            <input id="reservaCheckOut" type="text" class="form-control rounded-pill" placeholder="DD/MM/AAAA">
+                            <input id="reservaCheckOut" type="text" name="check_out" value="{{ old('check_out') }}" class="form-control rounded-pill @error('check_out') is-invalid @enderror" placeholder="DD/MM/AAAA" autocomplete="off">
                         </div>
                         <div class="col-md-6">
                             <label class="form-label">Adultos *</label>
-                            <select class="form-select rounded-pill">
-                                <option>1 Adulto</option><option selected>2 Adultos</option><option>3 Adultos</option><option>4+ Adultos</option>
+                            <select name="adults" class="form-select rounded-pill @error('adults') is-invalid @enderror">
+                                @foreach([1,2,3,4,5,6] as $n)
+                                <option value="{{ $n }}" {{ old('adults', 2) == $n ? 'selected' : '' }}>{{ $n }} {{ $n === 1 ? 'Adulto' : 'Adultos' }}</option>
+                                @endforeach
                             </select>
                         </div>
                         <div class="col-md-6">
                             <label class="form-label">Crianças</label>
-                            <select class="form-select rounded-pill" id="num-children" onchange="toggleChildAges(this.value)">
-                                <option value="0">0 Crianças</option><option value="1">1 Criança</option><option value="2">2 Crianças</option><option value="3">3 Crianças</option>
+                            <select name="children" class="form-select rounded-pill" id="num-children" onchange="toggleChildAges(this.value)">
+                                @foreach([0,1,2,3] as $n)
+                                <option value="{{ $n }}" {{ old('children', 0) == $n ? 'selected' : '' }}>{{ $n }} {{ $n === 1 ? 'Criança' : 'Crianças' }}</option>
+                                @endforeach
                             </select>
                         </div>
-                        <div class="col-12 children-ages" id="children-ages">
+                        <div class="col-12 children-ages {{ old('children', 0) > 0 ? 'show' : '' }}" id="children-ages">
                             <label class="form-label">Idades das Crianças</label>
-                            <input type="text" class="form-control rounded-pill" placeholder="Ex: 5, 8, 12 anos">
+                            <input type="text" name="children_ages" value="{{ old('children_ages') }}" class="form-control rounded-pill" placeholder="Ex: 5, 8, 12 anos">
                         </div>
                         <div class="col-12">
                             <label class="form-label">Experiência Pretendida *</label>
-                            <select class="form-select rounded-pill" id="exp-select">
+                            <select name="experience_slug" class="form-select rounded-pill @error('experience_slug') is-invalid @enderror" id="exp-select">
                                 <option value="">Selecionar...</option>
                                 @foreach($experiences as $exp)
-                                <option value="{{ $exp->slug }}">
+                                <option value="{{ $exp->slug }}" {{ old('experience_slug') === $exp->slug ? 'selected' : '' }}>
                                     {{ app()->getLocale() === 'pt' ? $exp->name_pt : $exp->name_en }}
                                     {{ $exp->slug === 'imersiva' ? '🌟' : '🫧' }}
                                 </option>
                                 @endforeach
-                                <option value="">Sem Preferência</option>
                             </select>
                         </div>
                         <div class="col-12">
                             <label class="form-label">Mensagem / Pedidos Especiais</label>
-                            <textarea class="form-control rounded-4" rows="3" placeholder="Algum pedido especial?"></textarea>
+                            <textarea name="message" class="form-control rounded-4" rows="3" placeholder="Algum pedido especial?">{{ old('message') }}</textarea>
                         </div>
                         <div class="col-12">
-                            <button class="btn btn-primary w-100 rounded-pill py-3 text-4 fw-600">
+                            <button type="submit" class="btn btn-primary w-100 rounded-pill py-3 text-4 fw-600">
                                 <i class="fa-regular fa-paper-plane me-2"></i>Enviar Pedido de Reserva
                             </button>
                         </div>
                     </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -151,6 +168,13 @@ function fetchAvailability(slug, callback) {
         .catch(function() { callback({ blocked_dates: [], prices: { base: 0, weekend: 0 } }); });
 }
 
+var fhSel = { in: null, out: null };
+
+function fmtDatePt(ds) {
+    var p = ds.split('-');
+    return p[2] + '/' + p[1] + '/' + p[0];
+}
+
 function renderCal(data) {
     var y = calState.year, m = calState.month;
     var occupied = (data && data.blocked_dates) ? data.blocked_dates : [];
@@ -166,12 +190,28 @@ function renderCal(data) {
         var dow = new Date(y, m, d).getDay();
         var wknd = (dow === 0 || dow === 6);
         var occ = occupied.indexOf(ds) !== -1;
-        var cls = 'fh-cal-day' + (occ ? ' occ' : '') + (wknd && !occ ? ' wknd' : '');
+        var selIn  = fhSel.in  === ds ? ' sel-in'  : '';
+        var selOut = fhSel.out === ds ? ' sel-out' : '';
+        var inRange = (fhSel.in && fhSel.out && ds > fhSel.in && ds < fhSel.out) ? ' in-range' : '';
+        var cls = 'fh-cal-day' + (occ ? ' occ' : '') + (wknd && !occ ? ' wknd' : '') + selIn + selOut + inRange;
         var price = wknd ? p.weekend : p.base;
         var priceHtml = occ ? '' : '<span class="dp">' + price + '€</span>';
-        html += '<div class="' + cls + '">' + d + priceHtml + '</div>';
+        var click = occ ? '' : ' onclick="fhPickDate(\'' + ds + '\')"';
+        html += '<div class="' + cls + '"' + click + '>' + d + priceHtml + '</div>';
     }
     document.getElementById('fh-cal-grid').innerHTML = html;
+}
+
+function fhPickDate(ds) {
+    if (!fhSel.in || (fhSel.in && fhSel.out)) {
+        fhSel.in = ds; fhSel.out = null;
+        document.getElementById('reservaCheckIn').value  = fmtDatePt(ds);
+        document.getElementById('reservaCheckOut').value = '';
+    } else {
+        if (ds <= fhSel.in) { fhSel.in = ds; document.getElementById('reservaCheckIn').value = fmtDatePt(ds); }
+        else { fhSel.out = ds; document.getElementById('reservaCheckOut').value = fmtDatePt(ds); }
+    }
+    if (fhCache[calState.exp]) renderCal(fhCache[calState.exp]);
 }
 
 function fhRenderWithFetch() {

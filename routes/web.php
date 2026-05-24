@@ -23,6 +23,8 @@ Route::get('/galeria',            [GaleriaController::class,    'index'])->name(
 Route::get('/o-que-fazer',        [OQueFazerController::class,  'index'])->name('o-que-fazer');
 Route::get('/experiencia/{slug}', [ExperienciaController::class,'show']) ->name('experiencia.show');
 Route::get('/reservas',           [ReservasController::class,   'index'])->name('reservas');
+Route::post('/reservas',          [ReservasController::class,   'store'])->name('reservas.store');
+Route::get('/reservas/sucesso',   [ReservasController::class,   'sucesso'])->name('reservas.sucesso');
 Route::get('/contactos',          [ContactosController::class,  'index'])->name('contactos');
 
 // Locale switcher
