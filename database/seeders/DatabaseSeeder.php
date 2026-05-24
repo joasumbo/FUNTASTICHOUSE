@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
             BlockedDateSeeder::class,
             TestimonialSeeder::class,
             SettingSeeder::class,
+            AdminUserSeeder::class,
         ]);
     }
 }

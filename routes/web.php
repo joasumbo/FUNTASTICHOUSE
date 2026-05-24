@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Admin\AuthController as AdminAuthController;
+use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\ContactosController;
 use App\Http\Controllers\ExperienciaController;
 use App\Http\Controllers\GaleriaController;
@@ -38,7 +40,32 @@ Route::get('/lang/{locale}', function (string $locale) {
 
 /*
 |--------------------------------------------------------------------------
-| Admin / Auth
+| Admin Panel
+|--------------------------------------------------------------------------
+*/
+Route::prefix('admin')->name('admin.')->group(function () {
+    Route::get('/login',  [AdminAuthController::class, 'showLogin'])->name('login');
+    Route::post('/login', [AdminAuthController::class, 'login'])->name('login.post');
+    Route::post('/logout',[AdminAuthController::class, 'logout'])->name('logout');
+
+    Route::middleware(['auth', 'admin'])->group(function () {
+        Route::get('/',          fn () => redirect()->route('admin.dashboard'));
+        Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
+
+        // Stub routes for future tasks (nav links won't 500)
+        Route::get('/reservas',    fn () => abort(404))->name('reservas');
+        Route::get('/calendario',  fn () => abort(404))->name('calendario');
+        Route::get('/precario',    fn () => abort(404))->name('precario');
+        Route::get('/galeria',     fn () => abort(404))->name('galeria');
+        Route::get('/pois',        fn () => abort(404))->name('pois');
+        Route::get('/testemunhos', fn () => abort(404))->name('testemunhos');
+        Route::get('/configuracoes',fn () => abort(404))->name('configuracoes');
+    });
+});
+
+/*
+|--------------------------------------------------------------------------
+| Breeze Auth (legacy, kept for profile management)
 |--------------------------------------------------------------------------
 */
 Route::get('/dashboard', fn () => view('dashboard'))
