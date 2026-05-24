@@ -1,9 +1,64 @@
-/* ----------------------------------------------------------------
-	Custom CSS
+/* ── Funtastic House — Global Overrides ── */
+:root {
+    --bs-themecolor: #c99f5b;
+    --bs-themehovercolor: #b5873c;
+}
 
-	Add all your Custom Styled CSS here for New Styles or
-	Overwriting Default Theme Styles for Better Hanlding Updates
------------------------------------------------------------------*/
+.heading-font-family { font-family: 'Cormorant Garamond', Georgia, serif !important; }
 
+/* Logo */
+.fh-logo { font-family:'Cormorant Garamond',serif; font-size:26px; font-weight:700; color:#fff; letter-spacing:0.04em; text-decoration:none; line-height:1; }
+.fh-logo span { color:var(--bs-themecolor); }
 
+/* Language switcher */
+.lang-switcher a { font-size:12px; font-weight:600; letter-spacing:.06em; color:rgba(255,255,255,.6); text-decoration:none; padding:0 6px; transition:color .2s; }
+.lang-switcher a.active, .lang-switcher a:hover { color:var(--bs-themecolor); }
+.lang-switcher span { color:rgba(255,255,255,.3); }
 
+/* Calendar */
+.fh-cal-tabs { display:flex; gap:0; border:1px solid rgba(201,159,91,.3); border-radius:50px; overflow:hidden; margin-bottom:20px; }
+.fh-cal-tab { flex:1; padding:8px 16px; text-align:center; font-size:13px; font-weight:600; cursor:pointer; transition:all .2s; background:transparent; color:rgba(255,255,255,.5); border:none; letter-spacing:.04em; }
+.fh-cal-tab.active { background:var(--bs-themecolor); color:#000; }
+.fh-cal { background:rgba(255,255,255,.05); border:1px solid rgba(201,159,91,.2); border-radius:16px; padding:24px; }
+.fh-cal-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
+.fh-cal-month { font-family:'Cormorant Garamond',serif; font-size:20px; color:#fff; font-weight:600; }
+.fh-cal-nav { background:transparent; border:1px solid rgba(201,159,91,.3); border-radius:50%; width:32px; height:32px; cursor:pointer; color:var(--bs-themecolor); font-size:16px; transition:all .2s; }
+.fh-cal-nav:hover { background:var(--bs-themecolor); color:#000; border-color:var(--bs-themecolor); }
+.fh-cal-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:2px; }
+.fh-cal-dow { text-align:center; font-size:10px; font-weight:600; color:rgba(255,255,255,.4); padding:6px 2px; letter-spacing:.06em; }
+.fh-cal-day { text-align:center; padding:5px 2px; border-radius:6px; font-size:12px; cursor:pointer; transition:background .2s; color:rgba(255,255,255,.8); }
+.fh-cal-day:hover:not(.occ):not(.empty) { background:rgba(201,159,91,.2); }
+.fh-cal-day.wknd { color:var(--bs-themecolor); font-weight:600; }
+.fh-cal-day.occ { color:rgba(255,255,255,.2); text-decoration:line-through; cursor:default; }
+.fh-cal-day.empty { cursor:default; }
+.fh-cal-day .dp { display:block; font-size:9px; color:var(--bs-themecolor); font-weight:700; margin-top:1px; }
+.fh-cal-day.occ .dp { display:none; }
+.fh-cal-legend { display:flex; gap:16px; margin-top:14px; padding-top:14px; border-top:1px solid rgba(255,255,255,.08); }
+.fh-cal-legend-item { display:flex; align-items:center; gap:6px; font-size:11px; color:rgba(255,255,255,.4); }
+.fh-dot { width:8px; height:8px; border-radius:50%; }
+
+/* POI cards */
+.poi-card { background:var(--bs-body-bg); border:1px solid var(--bs-border-color); border-radius:12px; padding:20px; border-left:3px solid var(--bs-themecolor); transition:all .2s; }
+.poi-card:hover { box-shadow:0 4px 20px rgba(0,0,0,.08); transform:translateX(4px); }
+
+/* Experience badges */
+.exp-badge-imersiva { background:var(--bs-themecolor); color:#000; }
+.exp-badge-spa { background:#2C5F6E; color:#fff; }
+
+/* Thematic room overlay */
+.tema-overlay { position:absolute; bottom:0; left:0; right:0; background:linear-gradient(to top, rgba(0,0,0,.85) 0%, transparent 100%); padding:20px 16px 14px; border-radius:0 0 16px 16px; }
+
+/* Children ages toggle */
+.children-ages { display:none; }
+.children-ages.show { display:block; }
+
+/* Dark reservation form */
+.form-dark .form-control,
+.form-dark .form-select {
+    background:rgba(255,255,255,.05) !important;
+    border-color:rgba(255,255,255,.15) !important;
+    color:#fff !important;
+}
+.form-dark .form-control::placeholder { color:rgba(255,255,255,.3) !important; }
+.form-dark label { color:rgba(255,255,255,.7); font-size:13px; font-weight:500; }
+.form-dark select option { background:#0a0a0c; }
