@@ -48,16 +48,34 @@
                 </svg>
             </button>
 
-            <div class="flex items-center gap-4">
-                <div class="text-center">
+            <div class="flex flex-col items-center gap-0.5">
+                <div class="flex items-center gap-3">
                     <h2 class="text-2xl font-bold text-gray-900 capitalize leading-tight"
                         x-text="monthName + ' ' + year"></h2>
+                    <button
+                        @click="goToday()"
+                        class="text-xs font-semibold px-3 py-1.5 rounded-xl border border-gray-200 text-gray-500 hover:border-[#c99f5b] hover:text-[#c99f5b] transition-all duration-150">
+                        Hoje
+                    </button>
                 </div>
-                <button
-                    @click="goToday()"
-                    class="text-xs font-semibold px-3 py-1.5 rounded-xl border border-gray-200 text-gray-500 hover:border-[#c99f5b] hover:text-[#c99f5b] transition-all duration-150">
-                    Hoje
-                </button>
+                <div x-show="!loading" class="flex items-center gap-2 text-[11px] text-gray-400 h-4">
+                    <template x-if="monthResCount > 0">
+                        <span>
+                            <span class="font-semibold text-gray-500" x-text="monthResCount"></span>
+                            <span x-text="' reserva' + (monthResCount !== 1 ? 's' : '')"></span>
+                        </span>
+                    </template>
+                    <template x-if="blocked.filter(d => d.startsWith(year+'-'+String(month).padStart(2,'0'))).length > 0">
+                        <span class="flex items-center gap-1">
+                            <span class="text-gray-300" x-show="monthResCount > 0">·</span>
+                            <span class="font-semibold text-gray-500" x-text="blocked.filter(d => d.startsWith(year+'-'+String(month).padStart(2,'0'))).length"></span>
+                            dia(s) bloqueado(s)
+                        </span>
+                    </template>
+                    <template x-if="monthResCount === 0 && blocked.filter(d => d.startsWith(year+'-'+String(month).padStart(2,'0'))).length === 0">
+                        <span class="text-gray-300">Mês livre</span>
+                    </template>
+                </div>
             </div>
 
             <button
@@ -149,11 +167,11 @@
                                     </template>
                                 </div>
 
-                                {{-- Reservation guest name --}}
-                                <template x-if="!isBlocked(cell) && getRes(cell)">
+                                {{-- Reservation: name only on first visible day of the period --}}
+                                <template x-if="!isBlocked(cell) && getRes(cell) && isResStart(cell)">
                                     <div class="mt-1 flex-1 overflow-hidden">
                                         <p
-                                            :class="getRes(cell).status === 'confirmed' ? 'text-green-600' : 'text-amber-600'"
+                                            :class="getRes(cell).status === 'confirmed' ? 'text-green-700' : 'text-amber-700'"
                                             class="text-[10px] font-semibold leading-tight truncate"
                                             x-text="getRes(cell).name.split(' ')[0]">
                                         </p>
@@ -162,6 +180,13 @@
                                             class="text-[9px] leading-tight"
                                             x-text="'#' + getRes(cell).id">
                                         </p>
+                                    </div>
+                                </template>
+
+                                {{-- Continuation day: subtle bar at bottom --}}
+                                <template x-if="!isBlocked(cell) && getRes(cell) && !isResStart(cell)">
+                                    <div class="absolute bottom-0 left-0 right-0 h-0.5 opacity-40 rounded-full"
+                                         :class="getRes(cell).status === 'confirmed' ? 'bg-green-500' : 'bg-amber-500'">
                                     </div>
                                 </template>
 
@@ -555,6 +580,23 @@ function calendarApp() {
     isBlocked(cell) { return this.blocked.includes(cell.date); },
 
     getRes(cell) { return this.reservations[cell.date] || null; },
+
+    /* True if this is the first visible day of this reservation in the month */
+    isResStart(cell) {
+      const res = this.getRes(cell);
+      if (!res) return false;
+      const prev = new Date(cell.date + 'T00:00:00');
+      prev.setDate(prev.getDate() - 1);
+      const pd = `${prev.getFullYear()}-${String(prev.getMonth()+1).padStart(2,'0')}-${String(prev.getDate()).padStart(2,'0')}`;
+      const prevRes = this.reservations[pd];
+      return !prevRes || prevRes.id !== res.id;
+    },
+
+    /* Count distinct reservations in current month view */
+    get monthResCount() {
+      const ids = new Set(Object.values(this.reservations).map(r => r.id));
+      return ids.size;
+    },
 
     formatDate(ds) {
       return new Date(ds + 'T00:00:00').toLocaleDateString('pt-PT', {
