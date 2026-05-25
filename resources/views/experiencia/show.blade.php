@@ -77,17 +77,41 @@
                 </div>
             </div>
 
-            {{-- Images --}}
+            {{-- Imagens com lightbox --}}
             <div class="col-lg-6 wow {{ $isImersiva ? 'fadeInRight' : 'fadeInLeft' }}">
                 <div class="row g-3">
                     @if($isImersiva)
-                    <div class="col-12"><img class="img-fluid rounded-4" src="{{ asset('images/rooms/room-1.jpg') }}" alt="{{ $name }}" style="height:300px;object-fit:cover;width:100%;"></div>
-                    <div class="col-6"><img class="img-fluid rounded-4" src="{{ asset('images/rooms/room-2.jpg') }}" alt="" style="height:180px;object-fit:cover;width:100%;"></div>
-                    <div class="col-6"><img class="img-fluid rounded-4" src="{{ asset('images/rooms/room-3.jpg') }}" alt="" style="height:180px;object-fit:cover;width:100%;"></div>
+                    <div class="col-12">
+                        <a href="{{ asset('images/rooms/room-1.jpg') }}" class="glightbox d-block rounded-4 overflow-hidden" data-gallery="exp-gallery">
+                            <img class="img-fluid w-100" src="{{ asset('images/rooms/room-1.jpg') }}" alt="{{ $name }}" style="height:300px;object-fit:cover;">
+                        </a>
+                    </div>
+                    <div class="col-6">
+                        <a href="{{ asset('images/rooms/room-2.jpg') }}" class="glightbox d-block rounded-4 overflow-hidden" data-gallery="exp-gallery">
+                            <img class="img-fluid w-100" src="{{ asset('images/rooms/room-2.jpg') }}" alt="" style="height:180px;object-fit:cover;">
+                        </a>
+                    </div>
+                    <div class="col-6">
+                        <a href="{{ asset('images/rooms/room-3.jpg') }}" class="glightbox d-block rounded-4 overflow-hidden" data-gallery="exp-gallery">
+                            <img class="img-fluid w-100" src="{{ asset('images/rooms/room-3.jpg') }}" alt="" style="height:180px;object-fit:cover;">
+                        </a>
+                    </div>
                     @else
-                    <div class="col-12"><img class="img-fluid rounded-4" src="{{ asset('images/spa/spa-hero.jpg') }}" alt="{{ $name }}" style="height:300px;object-fit:cover;width:100%;"></div>
-                    <div class="col-6"><img class="img-fluid rounded-4" src="{{ asset('images/spa/spa.jpg') }}" alt="" style="height:180px;object-fit:cover;width:100%;"></div>
-                    <div class="col-6"><img class="img-fluid rounded-4" src="{{ asset('images/spa/spa-about.jpg') }}" alt="" style="height:180px;object-fit:cover;width:100%;"></div>
+                    <div class="col-12">
+                        <a href="{{ asset('images/spa/spa-hero.jpg') }}" class="glightbox d-block rounded-4 overflow-hidden" data-gallery="exp-gallery">
+                            <img class="img-fluid w-100" src="{{ asset('images/spa/spa-hero.jpg') }}" alt="{{ $name }}" style="height:300px;object-fit:cover;">
+                        </a>
+                    </div>
+                    <div class="col-6">
+                        <a href="{{ asset('images/spa/spa.jpg') }}" class="glightbox d-block rounded-4 overflow-hidden" data-gallery="exp-gallery">
+                            <img class="img-fluid w-100" src="{{ asset('images/spa/spa.jpg') }}" alt="" style="height:180px;object-fit:cover;">
+                        </a>
+                    </div>
+                    <div class="col-6">
+                        <a href="{{ asset('images/spa/spa-about.jpg') }}" class="glightbox d-block rounded-4 overflow-hidden" data-gallery="exp-gallery">
+                            <img class="img-fluid w-100" src="{{ asset('images/spa/spa-about.jpg') }}" alt="" style="height:180px;object-fit:cover;">
+                        </a>
+                    </div>
                     @endif
                 </div>
             </div>

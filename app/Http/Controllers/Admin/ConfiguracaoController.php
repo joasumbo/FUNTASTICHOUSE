@@ -20,29 +20,29 @@ class ConfiguracaoController extends Controller
         $request->validate([
             'site_name'     => 'required|string|max:100',
             'logo'          => 'nullable|image|mimes:jpg,jpeg,png,svg,webp|max:2048',
-            'favicon'       => 'nullable|file|max:512',
-            'admin_favicon' => 'nullable|file|max:512',
+            'favicon'       => 'nullable|file|mimes:ico,png,jpg,jpeg,webp|max:512',
+            'admin_favicon' => 'nullable|file|mimes:ico,png,jpg,jpeg,webp|max:512',
         ]);
 
         Setting::set('site_name', $request->site_name);
 
         if ($request->hasFile('logo')) {
             $file = $request->file('logo');
-            $ext  = $file->getClientOriginalExtension();
+            $ext  = $file->extension();
             $file->move(public_path('images'), 'logo.' . $ext);
             Setting::set('logo', 'images/logo.' . $ext);
         }
 
         if ($request->hasFile('favicon')) {
             $file = $request->file('favicon');
-            $ext  = $file->getClientOriginalExtension();
+            $ext  = $file->extension();
             $file->move(public_path(), 'favicon.' . $ext);
             Setting::set('favicon', 'favicon.' . $ext);
         }
 
         if ($request->hasFile('admin_favicon')) {
             $file = $request->file('admin_favicon');
-            $ext  = $file->getClientOriginalExtension();
+            $ext  = $file->extension();
             $file->move(public_path('images'), 'admin-favicon.' . $ext);
             Setting::set('admin_favicon', 'images/admin-favicon.' . $ext);
         }
@@ -97,7 +97,7 @@ class ConfiguracaoController extends Controller
 
         if ($request->hasFile('og_image')) {
             $file = $request->file('og_image');
-            $ext  = $file->getClientOriginalExtension();
+            $ext  = $file->extension();
             $file->move(public_path('images'), 'og-image.' . $ext);
             Setting::set('og_image', 'images/og-image.' . $ext);
         }

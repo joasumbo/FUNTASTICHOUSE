@@ -27,7 +27,7 @@ class ReservasController extends Controller
             'name'            => 'required|string|max:255',
             'email'           => 'required|email|max:255',
             'phone_prefix'    => 'nullable|string|max:10',
-            'phone'           => 'required|string|max:50',
+            'phone'           => ['required', 'string', 'max:50', 'regex:/^[\d\s\+\-\(\)\.]{4,}$/'],
             'check_in'        => 'required|date_format:d/m/Y',
             'check_out'       => 'required|date_format:d/m/Y',
             'adults'          => 'required|integer|min:1|max:20',
@@ -103,7 +103,7 @@ class ReservasController extends Controller
 
         return redirect()->route('reservas.sucesso')->with([
             'booking_name' => $reservation->name,
-            'booking_exp'  => $experience->name_pt,
+            'booking_exp'  => $experience?->name_pt ?? (app()->getLocale() === 'pt' ? 'Sem preferência' : 'No preference'),
             'booking_in'   => $validated['check_in'],
             'booking_out'  => $validated['check_out'],
         ]);

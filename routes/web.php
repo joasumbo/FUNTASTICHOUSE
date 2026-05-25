@@ -38,7 +38,7 @@ Route::get('/galeria',            [GaleriaController::class,    'index'])->name(
 Route::get('/o-que-fazer',        [OQueFazerController::class,  'index'])->name('o-que-fazer');
 Route::get('/experiencia/{slug}', [ExperienciaController::class,'show']) ->name('experiencia.show');
 Route::get('/reservas',           [ReservasController::class,   'index'])->name('reservas');
-Route::post('/reservas',          [ReservasController::class,   'store'])->name('reservas.store');
+Route::post('/reservas',          [ReservasController::class,   'store'])->middleware('throttle:10,1')->name('reservas.store');
 Route::get('/reservas/sucesso',   [ReservasController::class,   'sucesso'])->name('reservas.sucesso');
 Route::get('/contactos',          [ContactosController::class,  'index'])->name('contactos');
 Route::get('/politica-privacidade', fn () => app(PaginaController::class)->show('politica-privacidade'))->name('paginas.politica');
@@ -60,7 +60,7 @@ Route::get('/lang/{locale}', function (string $locale) {
 */
 Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('/login',  [AdminAuthController::class, 'showLogin'])->name('login');
-    Route::post('/login', [AdminAuthController::class, 'login'])->name('login.post');
+    Route::post('/login', [AdminAuthController::class, 'login'])->middleware('throttle:5,1')->name('login.post');
     Route::post('/logout',[AdminAuthController::class, 'logout'])->name('logout');
 
     Route::middleware(['admin'])->group(function () {

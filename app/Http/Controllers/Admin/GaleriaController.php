@@ -53,9 +53,8 @@ class GaleriaController extends Controller
         $count    = 0;
 
         foreach ($request->file('images') as $file) {
-            $ext      = strtolower($file->getClientOriginalExtension());
-            $base     = Str::slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME));
-            $filename = time() . '_' . $base . '_' . uniqid() . '.' . $ext;
+            $ext      = strtolower($file->extension());
+            $filename = Str::uuid() . '.' . $ext;
             $file->move($dir, $filename);
 
             GalleryImage::create([
