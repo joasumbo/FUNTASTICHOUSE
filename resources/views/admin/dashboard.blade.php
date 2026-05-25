@@ -49,7 +49,7 @@
     <div class="grid grid-cols-12 gap-5 items-stretch">
 
         {{-- KPI CARDS 2×2 --}}
-        <div id="tour-dash-stats" class="col-span-12 lg:col-span-4 grid grid-cols-2 gap-4">
+        <div class="col-span-12 lg:col-span-4 grid grid-cols-2 gap-4">
 
             {{-- Total Reservas --}}
             <div class="bg-white rounded-3xl p-4 hover:shadow-md transition" style="box-shadow:0 1px 3px rgba(0,0,0,0.06)">

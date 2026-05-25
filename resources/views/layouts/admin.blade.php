@@ -6,9 +6,7 @@
     <title>@yield('title', 'Admin') — Funtastic House</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/driver.js@1/dist/driver.css"/>
-    <script src="https://cdn.jsdelivr.net/npm/driver.js@1/dist/driver.js.iife.js"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     @php $adminFavicon = \App\Models\Setting::get('admin_favicon'); @endphp
@@ -107,14 +105,6 @@
             </nav>
 
             <div class="flex-1"></div>
-
-            {{-- Tour button --}}
-            <button
-                id="tour-btn"
-                title="Iniciar tour"
-                class="w-11 h-11 rounded-full bg-white flex items-center justify-center transition hover:shadow-md text-gray-500 hover:text-[#c99f5b] font-bold text-sm"
-                style="box-shadow:0 1px 3px rgba(0,0,0,0.06)"
-            >?</button>
 
             {{-- Notification bell --}}
             <div class="relative">
@@ -407,156 +397,5 @@
 </div>
 
 @stack('scripts')
-
-<script>
-(function () {
-    if (!window.driver || !window.driver.js) return;
-
-    var driverFn = window.driver.js.driver;
-
-    var steps = [
-        {
-            popover: {
-                title: '👋 Bem-vindo ao Painel',
-                description: 'Vamos fazer uma visita rápida pelas principais funcionalidades do painel de administração da Funtastic House.'
-            }
-        },
-        {
-            element: '#tour-logo',
-            popover: {
-                title: 'Logo / Início',
-                description: 'Clique aqui para voltar ao Dashboard em qualquer momento.',
-                side: 'bottom', align: 'start'
-            }
-        },
-        {
-            element: '#tour-menu-btn',
-            popover: {
-                title: 'Menu Principal',
-                description: 'Abre o menu lateral completo com acesso a todas as secções: Reservas, Calendário, Preçário, Regras, Galeria, Pontos de Interesse, Testemunhos, Páginas e Configurações.',
-                side: 'bottom'
-            }
-        },
-        {
-            element: '#tour-pill-nav',
-            popover: {
-                title: 'Navegação Rápida',
-                description: 'Acesso direto às secções mais utilizadas: Dashboard, Reservas, Calendário e Preçário.',
-                side: 'bottom'
-            }
-        },
-        {
-            element: '#tour-notif',
-            popover: {
-                title: 'Notificações',
-                description: 'Alerta em tempo real de reservas pendentes. O número vermelho indica quantas reservas aguardam a sua aprovação ou recusa.',
-                side: 'bottom'
-            }
-        },
-        {
-            element: '#tour-user',
-            popover: {
-                title: 'Perfil & Sessão',
-                description: 'Aceda ao seu perfil para atualizar dados e palavra-passe, visite o site público ou termine a sessão.',
-                side: 'bottom', align: 'end'
-            }
-        },
-        {
-            element: '#tour-btn',
-            popover: {
-                title: 'Repetir Tour',
-                description: 'Clique neste botão (?) sempre que precisar de rever o tour.',
-                side: 'bottom'
-            }
-        }
-    ];
-
-    @if(request()->routeIs('admin.dashboard'))
-    if (document.getElementById('tour-dash-stats')) {
-        steps.push({
-            element: '#tour-dash-stats',
-            popover: {
-                title: 'Estatísticas',
-                description: 'Resumo de reservas por estado: pendentes, confirmadas, recusadas e total de receita estimada.',
-                side: 'bottom'
-            }
-        });
-    }
-    @endif
-
-    @if(request()->routeIs('admin.reservas') && !request()->routeIs('admin.reservas.show'))
-    if (document.getElementById('tour-reservas-table')) {
-        steps.push({
-            element: '#tour-reservas-table',
-            popover: {
-                title: 'Lista de Reservas',
-                description: 'Todas as reservas com filtros por estado. Clique numa reserva para ver os detalhes e alterar o estado para Confirmada ou Recusada.',
-                side: 'top'
-            }
-        });
-    }
-    @endif
-
-    @if(request()->routeIs('admin.calendario'))
-    if (document.getElementById('tour-calendario')) {
-        steps.push({
-            element: '#tour-calendario',
-            popover: {
-                title: 'Calendário de Bloqueios',
-                description: 'Clique em datas para as bloquear (ex: manutenção) ou desbloquear. As datas com reservas confirmadas aparecem automaticamente em laranja.',
-                side: 'top'
-            }
-        });
-    }
-    @endif
-
-    @if(request()->routeIs('admin.precario'))
-    if (document.getElementById('tour-precario')) {
-        steps.push({
-            element: '#tour-precario',
-            popover: {
-                title: 'Preçário',
-                description: 'Defina o preço por noite para cada experiência e configure regras de preço dinâmico por época ou número de noites.',
-                side: 'top'
-            }
-        });
-    }
-    @endif
-
-    @if(request()->routeIs('admin.configuracoes'))
-    if (document.getElementById('tour-configuracoes')) {
-        steps.push({
-            element: '#tour-configuracoes',
-            popover: {
-                title: 'Configurações',
-                description: 'Personalize o nome do alojamento, contactos, redes sociais, meta SEO e imagem OG partilhada em redes sociais.',
-                side: 'top'
-            }
-        });
-    }
-    @endif
-
-    var fhTour = driverFn({
-        showProgress: true,
-        progressText: '{{CURRENT}} de {{TOTAL}}',
-        nextBtnText: 'Próximo →',
-        prevBtnText: '← Anterior',
-        doneBtnText: 'Concluir',
-        steps: steps,
-        onDestroyStarted: function () {
-            fhTour.destroy();
-            localStorage.setItem('fh_admin_tour_v1', '1');
-        }
-    });
-
-    document.getElementById('tour-btn').addEventListener('click', function () {
-        fhTour.drive();
-    });
-
-    if (!localStorage.getItem('fh_admin_tour_v1')) {
-        setTimeout(function () { fhTour.drive(); }, 900);
-    }
-}());
-</script>
 </body>
 </html>
