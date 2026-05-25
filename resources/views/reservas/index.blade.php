@@ -29,6 +29,12 @@ $fhI18n = [
 $dow = app()->getLocale() === 'pt'
     ? ['Seg','Ter','Qua','Qui','Sex','Sáb','Dom']
     : ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+$prefill = [
+    'experience' => request('experience'),
+    'checkin'    => request('checkin'),
+    'checkout'   => request('checkout'),
+    'adults'     => max(1, min(6, (int) request('adults', 0))),
+];
 @endphp
 
 @push('styles')
@@ -343,6 +349,7 @@ var calState  = { exp: '{{ $experiences->first()->slug ?? 'imersiva' }}', year: 
 var fhCache   = {};
 var apiBase   = '{{ url('/api/availability') }}';
 var fhSel     = { in: null, out: null };
+var fhPrefill = @json($prefill);
 var months_pt = fhI18n.months.split(',');
 var months_sh = fhI18n.months_sh.split(',');
 
@@ -678,6 +685,27 @@ document.addEventListener('DOMContentLoaded', function () {
             btn.innerHTML = btnOrig;
         });
     });
+
+    /* URL prefill from hero booking bar */
+    if (fhPrefill.experience || fhPrefill.checkin) {
+        if (fhPrefill.experience) {
+            calState.exp = fhPrefill.experience;
+            window.tsExp.setValue(fhPrefill.experience, true);
+        }
+        if (fhPrefill.checkin) {
+            var toYMD = function (s) { var p = s.split('/'); return p[2] + '-' + p[1] + '-' + p[0]; };
+            fhSel.in = toYMD(fhPrefill.checkin);
+            document.getElementById('fh-checkin-val').value = fhPrefill.checkin;
+            if (fhPrefill.checkout) {
+                fhSel.out = toYMD(fhPrefill.checkout);
+                document.getElementById('fh-checkout-val').value = fhPrefill.checkout;
+            }
+        }
+        if (fhPrefill.adults > 0) {
+            var diff = fhPrefill.adults - steppers.adults.val;
+            if (diff !== 0) fhStep('adults', diff);
+        }
+    }
 
     fhRenderWithFetch();
 });

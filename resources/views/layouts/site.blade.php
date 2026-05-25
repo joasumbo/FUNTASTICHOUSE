@@ -21,5 +21,6 @@
 
     @include('partials._scripts')
     @stack('scripts')
+    @include('partials._cookie_consent')
 </body>
 </html>

@@ -40,8 +40,8 @@
                         <ul class="nav flex-column fw-500 text-3">
                             <li class="nav-item"><a class="nav-link" href="{{ route('experiencia.show', 'imersiva') }}">{{ __('nav.exp_imersiva') }}</a></li>
                             <li class="nav-item"><a class="nav-link" href="{{ route('experiencia.show', 'spa') }}">{{ __('nav.exp_spa') }}</a></li>
-                            <li class="nav-item"><a class="nav-link" href="#">{{ __('footer.privacy') }}</a></li>
-                            <li class="nav-item"><a class="nav-link" href="#">{{ __('footer.terms') }}</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{{ route('paginas.politica') }}">{{ __('footer.privacy') }}</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{{ route('paginas.termos') }}">{{ __('footer.terms') }}</a></li>
                         </ul>
                     </div>
 

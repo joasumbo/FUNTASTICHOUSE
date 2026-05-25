@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder
             TestimonialSeeder::class,
             SettingSeeder::class,
             AdminUserSeeder::class,
+            PageSeeder::class,
         ]);
     }
 }

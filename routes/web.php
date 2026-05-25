@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\PaginaController as AdminPaginaController;
 use App\Http\Controllers\Admin\AuthController as AdminAuthController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\PerfilController as AdminPerfilController;
@@ -11,6 +12,7 @@ use App\Http\Controllers\Admin\ConfiguracaoController as AdminConfiguracaoContro
 use App\Http\Controllers\Admin\PrecarioController as AdminPrecarioController;
 use App\Http\Controllers\Admin\RegraController as AdminRegraController;
 use App\Http\Controllers\Admin\ReservaController as AdminReservaController;
+use App\Http\Controllers\PaginaController;
 use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\ContactosController;
 use App\Http\Controllers\ExperienciaController;
@@ -38,6 +40,8 @@ Route::get('/reservas',           [ReservasController::class,   'index'])->name(
 Route::post('/reservas',          [ReservasController::class,   'store'])->name('reservas.store');
 Route::get('/reservas/sucesso',   [ReservasController::class,   'sucesso'])->name('reservas.sucesso');
 Route::get('/contactos',          [ContactosController::class,  'index'])->name('contactos');
+Route::get('/politica-privacidade', fn () => app(PaginaController::class)->show('politica-privacidade'))->name('paginas.politica');
+Route::get('/termos-condicoes',     fn () => app(PaginaController::class)->show('termos-condicoes'))->name('paginas.termos');
 
 // Locale switcher
 Route::get('/lang/{locale}', function (string $locale) {
@@ -111,6 +115,10 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::patch('/testemunhos/{testimonial}/toggle',  [AdminTestemunhoController::class, 'toggle'])->name('testemunhos.toggle');
         Route::patch('/testemunhos/{testimonial}',         [AdminTestemunhoController::class, 'update'])->name('testemunhos.update');
         Route::delete('/testemunhos/{testimonial}',        [AdminTestemunhoController::class, 'destroy'])->name('testemunhos.destroy');
+        // Páginas (PP, Termos)
+        Route::get('/paginas',              [AdminPaginaController::class, 'index'])->name('paginas');
+        Route::get('/paginas/{page}/edit',  [AdminPaginaController::class, 'edit'])->name('paginas.edit');
+        Route::patch('/paginas/{page}',     [AdminPaginaController::class, 'update'])->name('paginas.update');
         // Configurações
         Route::get('/configuracoes',                   [AdminConfiguracaoController::class, 'index'])->name('configuracoes');
         Route::post('/configuracoes/geral',             [AdminConfiguracaoController::class, 'updateGeral'])->name('configuracoes.geral');

@@ -34,7 +34,7 @@
             <div class="intro-booking-form bg-black bg-opacity-75 rounded-pill p-4 p-lg-3 mt-5 wow fadeInUp" data-wow-delay=".5s">
                 <div class="row gy-3 gx-lg-0 input-group">
                     <div class="col-md-6 col-lg">
-                        <select class="form-select rounded-pill h-100">
+                        <select id="heroExperience" class="form-select rounded-pill h-100">
                             <option value="">{{ __('home.f_experience') }}</option>
                             @foreach($experiences as $exp)
                                 <option value="{{ $exp->slug }}">{{ app()->getLocale() === 'pt' ? $exp->name_pt : $exp->name_en }}</option>
@@ -43,27 +43,58 @@
                     </div>
                     <div class="col-md-6 col-lg">
                         <div class="position-relative">
-                            <input id="heroCheckIn" type="text" class="form-control rounded-pill" placeholder="{{ __('home.f_checkin') }}">
+                            <input id="heroCheckIn" type="text" class="form-control rounded-pill" placeholder="{{ __('home.f_checkin') }}" autocomplete="off" readonly>
                             <span class="icon-inside"><i class="fa-regular fa-calendar-alt"></i></span>
                         </div>
                     </div>
                     <div class="col-md-6 col-lg">
                         <div class="position-relative">
-                            <input id="heroCheckOut" type="text" class="form-control rounded-pill" placeholder="{{ __('home.f_checkout') }}">
+                            <input id="heroCheckOut" type="text" class="form-control rounded-pill" placeholder="{{ __('home.f_checkout') }}" autocomplete="off" readonly>
                             <span class="icon-inside"><i class="fa-regular fa-calendar-alt"></i></span>
                         </div>
                     </div>
                     <div class="col-md-6 col-lg">
-                        <select class="form-select rounded-pill h-100">
+                        <select id="heroAdults" class="form-select rounded-pill h-100">
                             <option value="">{{ __('home.f_adults') }}</option>
-                            <option>{{ __('home.f_adults_1') }}</option>
-                            <option>{{ __('home.f_adults_2') }}</option>
-                            <option>{{ __('home.f_adults_3') }}</option>
-                            <option>{{ __('home.f_adults_4') }}</option>
+                            <option value="1">{{ __('home.f_adults_1') }}</option>
+                            <option value="2" selected>{{ __('home.f_adults_2') }}</option>
+                            <option value="3">{{ __('home.f_adults_3') }}</option>
+                            <option value="4">{{ __('home.f_adults_4') }}</option>
                         </select>
                     </div>
                     <div class="col-md-6 col-lg col-xl-auto d-grid">
-                        <a href="{{ route('reservas') }}" class="btn btn-primary text-nowrap rounded-pill">{{ __('home.f_check') }}</a>
+                        <button id="heroCheck" type="button" class="btn btn-primary text-nowrap rounded-pill">{{ __('home.f_check') }}</button>
+                    </div>
+                </div>
+            </div>
+
+            {{-- Availability loader --}}
+            <div id="fh-avail-loader" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.92);align-items:center;justify-content:center;flex-direction:column;gap:1.5rem;">
+                <div class="spinner-border text-primary" style="width:3.5rem;height:3.5rem;" role="status"></div>
+                <p class="text-white fw-600 mb-0" style="font-size:1.15rem;">
+                    {{ app()->getLocale() === 'pt' ? 'Verificando disponibilidade…' : 'Checking availability…' }}
+                </p>
+            </div>
+
+            {{-- Unavailable modal --}}
+            <div class="modal fade" id="fhUnavailModal" tabindex="-1">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content rounded-4 border-0">
+                        <div class="modal-body text-center p-5">
+                            <div class="mb-3" style="font-size:2.5rem;color:#c99f5b;"><i class="fa-solid fa-calendar-xmark"></i></div>
+                            <h5 class="heading-font-family fw-700 mb-2">
+                                {{ app()->getLocale() === 'pt' ? 'Datas não disponíveis' : 'Dates unavailable' }}
+                            </h5>
+                            <p id="fh-unavail-msg" class="text-body-secondary mb-4"></p>
+                            <div class="d-flex gap-3 justify-content-center flex-wrap">
+                                <button class="btn btn-outline-dark rounded-pill px-4" data-bs-dismiss="modal">
+                                    {{ app()->getLocale() === 'pt' ? 'Fechar' : 'Close' }}
+                                </button>
+                                <a id="fh-unavail-suggest" href="#" class="btn btn-primary rounded-pill px-4" style="display:none;">
+                                    {{ app()->getLocale() === 'pt' ? 'Ver sugestão de datas' : 'View suggested dates' }}
+                                </a>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -269,3 +300,135 @@
 </section>
 
 @endsection
+
+@push('scripts')
+<script>
+(function () {
+    var heroExp    = document.getElementById('heroExperience');
+    var heroIn     = document.getElementById('heroCheckIn');
+    var heroOut    = document.getElementById('heroCheckOut');
+    var heroAdults = document.getElementById('heroAdults');
+    var heroBtn    = document.getElementById('heroCheck');
+    var loader     = document.getElementById('fh-avail-loader');
+    var locale     = '{{ app()->getLocale() }}';
+    var blockedMap = {};
+
+    var drpLocale = {
+        pt: { format: 'DD/MM/YYYY', applyLabel: 'OK', cancelLabel: 'Cancelar',
+              daysOfWeek: ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'],
+              monthNames: ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'],
+              firstDay: 1 },
+        en: { format: 'DD/MM/YYYY', applyLabel: 'OK', cancelLabel: 'Cancel',
+              daysOfWeek: ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],
+              monthNames: ['January','February','March','April','May','June','July','August','September','October','November','December'],
+              firstDay: 1 }
+    };
+
+    function initPickers(blocked) {
+        var blk = blocked || [];
+        var inv = function (d) {
+            return d.isBefore(moment(), 'day') || blk.indexOf(d.format('YYYY-MM-DD')) !== -1;
+        };
+        $(heroIn).daterangepicker({
+            singleDatePicker: true, autoApply: true,
+            minDate: moment().add(1, 'day'),
+            locale: drpLocale[locale] || drpLocale.pt,
+            isInvalidDate: inv
+        });
+        $(heroOut).daterangepicker({
+            singleDatePicker: true, autoApply: true,
+            minDate: moment().add(2, 'days'),
+            locale: drpLocale[locale] || drpLocale.pt,
+            isInvalidDate: inv
+        });
+    }
+
+    initPickers([]);
+
+    $(heroExp).on('change', function () {
+        var slug = this.value;
+        if (!slug) return;
+        if (blockedMap[slug]) { initPickers(blockedMap[slug]); return; }
+        $.get('/api/availability/' + slug, function (d) {
+            blockedMap[slug] = d.blocked_dates || [];
+            initPickers(blockedMap[slug]);
+        });
+    });
+
+    $(heroBtn).on('click', function () {
+        var slug    = heroExp.value;
+        var checkin = heroIn.value;
+        var checkout= heroOut.value;
+        var adults  = heroAdults.value;
+        var valid   = true;
+
+        [heroExp, heroIn, heroOut, heroAdults].forEach(function (el) { el.classList.remove('is-invalid'); });
+
+        if (!slug)    { heroExp.classList.add('is-invalid');    valid = false; }
+        if (!checkin) { heroIn.classList.add('is-invalid');     valid = false; }
+        if (!checkout){ heroOut.classList.add('is-invalid');    valid = false; }
+        if (!adults)  { heroAdults.classList.add('is-invalid'); valid = false; }
+        if (!valid) return;
+
+        var ci = moment(checkin,  'DD/MM/YYYY');
+        var co = moment(checkout, 'DD/MM/YYYY');
+        if (!co.isAfter(ci)) { heroOut.classList.add('is-invalid'); return; }
+
+        loader.style.display = 'flex';
+
+        $.get('/api/availability/' + slug, function (data) {
+            var blk = data.blocked_dates || [];
+            var cur = ci.clone();
+            var ok  = true;
+            while (cur.isBefore(co)) {
+                if (blk.indexOf(cur.format('YYYY-MM-DD')) !== -1) { ok = false; break; }
+                cur.add(1, 'day');
+            }
+            if (ok) {
+                window.location = '/reservas?experience=' + encodeURIComponent(slug)
+                    + '&checkin='  + encodeURIComponent(checkin)
+                    + '&checkout=' + encodeURIComponent(checkout)
+                    + '&adults='   + encodeURIComponent(adults);
+            } else {
+                loader.style.display = 'none';
+                var nights = co.diff(ci, 'days');
+                var sug    = findWindow(blk, nights);
+                showModal(sug, nights, slug, adults);
+            }
+        }).fail(function () { loader.style.display = 'none'; });
+    });
+
+    function findWindow(blk, nights) {
+        var d = moment().add(1, 'day');
+        for (var i = 0; i < 120; i++) {
+            var win = true;
+            for (var j = 0; j < nights; j++) {
+                if (blk.indexOf(d.clone().add(j, 'days').format('YYYY-MM-DD')) !== -1) { win = false; break; }
+            }
+            if (win) return d.format('DD/MM/YYYY');
+            d.add(1, 'day');
+        }
+        return null;
+    }
+
+    function showModal(suggestion, nights, slug, adults) {
+        var msgEl  = document.getElementById('fh-unavail-msg');
+        var sugBtn = document.getElementById('fh-unavail-suggest');
+        msgEl.textContent = locale === 'pt'
+            ? 'As datas selecionadas não estão disponíveis para esta experiência.'
+            : 'The selected dates are not available for this experience.';
+        if (suggestion) {
+            var co2 = moment(suggestion, 'DD/MM/YYYY').add(nights, 'days').format('DD/MM/YYYY');
+            sugBtn.href = '/reservas?experience=' + encodeURIComponent(slug)
+                + '&checkin='  + encodeURIComponent(suggestion)
+                + '&checkout=' + encodeURIComponent(co2)
+                + '&adults='   + encodeURIComponent(adults);
+            sugBtn.style.display = '';
+        } else {
+            sugBtn.style.display = 'none';
+        }
+        new bootstrap.Modal(document.getElementById('fhUnavailModal')).show();
+    }
+}());
+</script>
+@endpush
