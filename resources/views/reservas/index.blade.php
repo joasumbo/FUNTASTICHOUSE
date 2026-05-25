@@ -1,6 +1,34 @@
 @extends('layouts.site')
 
-@section('title', 'Reservas — Funtastic House')
+@section('title', __('reservas.page_title'))
+
+@php
+$fhI18n = [
+    'months'      => __('reservas.js_months'),
+    'months_sh'   => __('reservas.js_months_sh'),
+    'adult_s'     => __('reservas.js_adult_s'),
+    'adult_p'     => __('reservas.js_adult_p'),
+    'child_s'     => __('reservas.js_child_s'),
+    'child_p'     => __('reservas.js_child_p'),
+    'night_s'     => __('reservas.js_night_s'),
+    'night_p'     => __('reservas.js_night_p'),
+    'free'        => __('reservas.js_free'),
+    'weekend'     => __('reservas.js_weekend'),
+    'loading'     => __('reservas.js_loading'),
+    'hint_ci'     => __('reservas.js_hint_ci'),
+    'hint_co'     => __('reservas.js_hint_co'),
+    'hint_done_s' => __('reservas.js_hint_done_s'),
+    'hint_done_p' => __('reservas.js_hint_done_p'),
+    'sending'     => __('reservas.js_sending'),
+    'err_generic' => __('reservas.js_err_generic'),
+    'err_network' => __('reservas.js_err_network'),
+    'select_co'   => __('reservas.js_select_co'),
+    'select_dates'=> __('reservas.js_select_dates'),
+];
+$dow = app()->getLocale() === 'pt'
+    ? ['Seg','Ter','Qua','Qui','Sex','Sáb','Dom']
+    : ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+@endphp
 
 @push('styles')
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/css/tom-select.bootstrap5.min.css">
@@ -91,10 +119,10 @@
 <div id="fh-error-modal" style="display:none;" role="dialog" aria-modal="true">
     <div class="fh-modal-box">
         <div class="fh-modal-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
-        <p class="fh-modal-title">Corrige os seguintes campos</p>
-        <p class="fh-modal-sub">Preenche todos os campos obrigatórios antes de enviar.</p>
+        <p class="fh-modal-title">{{ __('reservas.modal_title') }}</p>
+        <p class="fh-modal-sub">{{ __('reservas.modal_sub') }}</p>
         <ul id="fh-modal-list" class="fh-modal-list"></ul>
-        <button class="btn btn-primary rounded-pill px-5 py-2" onclick="fhCloseModal()">Percebido</button>
+        <button class="btn btn-primary rounded-pill px-5 py-2" onclick="fhCloseModal()">{{ __('reservas.modal_ok') }}</button>
     </div>
 </div>
 
@@ -105,11 +133,11 @@
         <div class="hero-bg" style="background-image:url('{{ asset('images/slider/slide-2.jpg') }}');"></div>
         <div class="hero-content d-flex align-items-end pb-5 h-100">
             <div class="container">
-                <h1 class="heading-font-family text-white fw-700 mb-1">Reservas</h1>
+                <h1 class="heading-font-family text-white fw-700 mb-1">{{ __('reservas.heading') }}</h1>
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb text-3">
-                        <li class="breadcrumb-item"><a href="{{ route('home') }}" class="link-primary">Início</a></li>
-                        <li class="breadcrumb-item active">Reservas</li>
+                        <li class="breadcrumb-item"><a href="{{ route('home') }}" class="link-primary">{{ __('nav.home') }}</a></li>
+                        <li class="breadcrumb-item active">{{ __('reservas.breadcrumb') }}</li>
                     </ol>
                 </nav>
             </div>
@@ -120,8 +148,8 @@
 <section class="section bg-dark">
     <div class="container">
         <div class="mx-auto text-center mb-5">
-            <p class="wow fadeInUp"><span class="text-3 text-uppercase fw-600 rounded-pill border border-white border-opacity-25 px-3 py-1 text-white-50">Disponibilidade & Reservas</span></p>
-            <h2 class="heading-font-family text-13 fw-600 lh-sm text-white wow fadeInUp" data-wow-delay=".2s">Verifica disponibilidade<br>e <span class="text-primary">faz o teu pedido</span></h2>
+            <p class="wow fadeInUp"><span class="text-3 text-uppercase fw-600 rounded-pill border border-white border-opacity-25 px-3 py-1 text-white-50">{{ __('reservas.badge') }}</span></p>
+            <h2 class="heading-font-family text-13 fw-600 lh-sm text-white wow fadeInUp" data-wow-delay=".2s">{!! __('reservas.title') !!}</h2>
         </div>
         <div class="row g-4">
 
@@ -139,23 +167,24 @@
                     </div>
                     <div class="fh-cal-header">
                         <button class="fh-cal-nav" onclick="fhChangeMonth(-1)">&#8249;</button>
-                        <span class="fh-cal-month" id="fh-cal-label">A carregar...</span>
+                        <span class="fh-cal-month" id="fh-cal-label">{{ __('reservas.js_loading') }}</span>
                         <button class="fh-cal-nav" onclick="fhChangeMonth(1)">&#8250;</button>
                     </div>
                     <div class="fh-cal-grid">
-                        <div class="fh-cal-dow">Seg</div><div class="fh-cal-dow">Ter</div><div class="fh-cal-dow">Qua</div>
-                        <div class="fh-cal-dow">Qui</div><div class="fh-cal-dow">Sex</div><div class="fh-cal-dow">Sáb</div><div class="fh-cal-dow">Dom</div>
+                        @foreach($dow as $d)
+                        <div class="fh-cal-dow">{{ $d }}</div>
+                        @endforeach
                     </div>
                     <div class="fh-cal-grid" id="fh-cal-grid"></div>
-                    <p class="fh-cal-hint" id="fh-cal-hint">Clica numa data para selecionar o check-in</p>
+                    <p class="fh-cal-hint" id="fh-cal-hint">{{ __('reservas.js_hint_ci') }}</p>
                     <div class="fh-cal-legend mt-2">
-                        <div class="fh-cal-legend-item"><div class="fh-dot" style="background:rgba(201,159,91,.3);border:1px solid var(--bs-themecolor);"></div>Disponível</div>
-                        <div class="fh-cal-legend-item"><div class="fh-dot" style="background:rgba(255,255,255,.1);"></div>Ocupado</div>
-                        <div class="fh-cal-legend-item"><div class="fh-dot" style="background:rgba(201,159,91,.15);border:1px solid rgba(201,159,91,.4);"></div>Fim de semana (+)</div>
+                        <div class="fh-cal-legend-item"><div class="fh-dot" style="background:rgba(201,159,91,.3);border:1px solid var(--bs-themecolor);"></div>{{ __('reservas.legend_available') }}</div>
+                        <div class="fh-cal-legend-item"><div class="fh-dot" style="background:rgba(255,255,255,.1);"></div>{{ __('reservas.legend_occupied') }}</div>
+                        <div class="fh-cal-legend-item"><div class="fh-dot" style="background:rgba(201,159,91,.15);border:1px solid rgba(201,159,91,.4);"></div>{{ __('reservas.legend_weekend') }}</div>
                     </div>
                     <p class="text-3 mt-3 mb-0" style="color:rgba(255,255,255,.35);">
                         <i class="fa-solid fa-circle-info me-1" style="color:var(--bs-themecolor);"></i>
-                        Preços por noite. Valores finais confirmados após pedido.
+                        {{ __('reservas.prices_note') }}
                     </p>
                 </div>
             </div>
@@ -165,8 +194,8 @@
                 <div class="p-4 rounded-4" style="background:rgba(255,255,255,.04);border:1px solid rgba(201,159,91,.15);">
 
                     <div id="reserva-form-wrap">
-                        <h4 class="heading-font-family text-7 fw-600 text-white mb-1">Pedido de Reserva</h4>
-                        <p class="text-3 mb-4" style="color:rgba(255,255,255,.4);">Seleciona as datas no calendário e preenche o formulário.</p>
+                        <h4 class="heading-font-family text-7 fw-600 text-white mb-1">{{ __('reservas.form_title') }}</h4>
+                        <p class="text-3 mb-4" style="color:rgba(255,255,255,.4);">{{ __('reservas.form_sub') }}</p>
 
                         <form id="reserva-form" action="{{ route('reservas.store') }}" method="POST">
                         @csrf
@@ -177,64 +206,64 @@
 
                             {{-- Date bar --}}
                             <div class="col-12">
-                                <label class="form-label">Datas *</label>
+                                <label class="form-label">{{ __('reservas.lbl_dates') }}</label>
                                 <div class="fh-date-bar" id="fh-date-bar">
                                     <i class="fh-date-bar-icon fa-regular fa-calendar"></i>
-                                    <span id="fh-date-bar-text" class="fh-date-bar-text">Seleciona as datas no calendário</span>
+                                    <span id="fh-date-bar-text" class="fh-date-bar-text">{{ __('reservas.js_select_dates') }}</span>
                                     <span id="fh-date-bar-nights" class="fh-date-bar-nights" style="display:none;"></span>
-                                    <button type="button" id="fh-date-bar-clear" onclick="fhClearDates()" style="display:none;" class="fh-date-bar-clear" title="Limpar datas"><i class="fa-solid fa-xmark"></i></button>
+                                    <button type="button" id="fh-date-bar-clear" onclick="fhClearDates()" style="display:none;" class="fh-date-bar-clear" title="{{ __('reservas.date_clear_title') }}"><i class="fa-solid fa-xmark"></i></button>
                                 </div>
                             </div>
 
                             {{-- Nome --}}
                             <div class="col-12">
-                                <label class="form-label">Nome Completo *</label>
-                                <input type="text" name="name" class="form-control rounded-pill" placeholder="O teu nome completo">
+                                <label class="form-label">{{ __('reservas.lbl_name') }}</label>
+                                <input type="text" name="name" class="form-control rounded-pill" placeholder="{{ __('reservas.ph_name') }}">
                             </div>
 
                             {{-- Telefone / Email --}}
                             <div class="col-md-6">
-                                <label class="form-label">Telefone *</label>
-                                <input type="tel" name="phone" class="form-control rounded-pill" placeholder="+351 9XX XXX XXX">
+                                <label class="form-label">{{ __('reservas.lbl_phone') }}</label>
+                                <input type="tel" name="phone" class="form-control rounded-pill" placeholder="{{ __('reservas.ph_phone') }}">
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label">Email *</label>
-                                <input type="email" name="email" class="form-control rounded-pill" placeholder="o.teu@email.com">
+                                <label class="form-label">{{ __('reservas.lbl_email') }}</label>
+                                <input type="email" name="email" class="form-control rounded-pill" placeholder="{{ __('reservas.ph_email') }}">
                             </div>
 
                             {{-- Adultos stepper --}}
                             <div class="col-md-6">
-                                <label class="form-label">Adultos *</label>
+                                <label class="form-label">{{ __('reservas.lbl_adults') }}</label>
                                 <input type="hidden" name="adults" id="adults-val" value="2">
                                 <div class="fh-stepper">
                                     <button type="button" class="fh-stepper-btn" id="adults-minus" onclick="fhStep('adults',-1)" disabled>−</button>
-                                    <span class="fh-stepper-val" id="adults-display">2 Adultos</span>
+                                    <span class="fh-stepper-val" id="adults-display">2 {{ __('reservas.js_adult_p') }}</span>
                                     <button type="button" class="fh-stepper-btn" id="adults-plus"  onclick="fhStep('adults',1)">+</button>
                                 </div>
                             </div>
 
                             {{-- Crianças stepper --}}
                             <div class="col-md-6">
-                                <label class="form-label">Crianças</label>
+                                <label class="form-label">{{ __('reservas.lbl_children') }}</label>
                                 <input type="hidden" name="children" id="children-val" value="0">
                                 <div class="fh-stepper">
                                     <button type="button" class="fh-stepper-btn" id="children-minus" onclick="fhStep('children',-1)" disabled>−</button>
-                                    <span class="fh-stepper-val" id="children-display">0 Crianças</span>
+                                    <span class="fh-stepper-val" id="children-display">0 {{ __('reservas.js_child_p') }}</span>
                                     <button type="button" class="fh-stepper-btn" id="children-plus"  onclick="fhStep('children',1)">+</button>
                                 </div>
                             </div>
 
                             {{-- Idades das crianças --}}
                             <div class="col-12" id="children-ages" style="display:none;">
-                                <label class="form-label">Idades das Crianças</label>
-                                <input type="text" name="children_ages" class="form-control rounded-pill" placeholder="Ex: 5, 8, 12 anos">
+                                <label class="form-label">{{ __('reservas.lbl_ages') }}</label>
+                                <input type="text" name="children_ages" class="form-control rounded-pill" placeholder="{{ __('reservas.ph_ages') }}">
                             </div>
 
                             {{-- Experiência --}}
                             <div class="col-12">
-                                <label class="form-label">Experiência Pretendida *</label>
+                                <label class="form-label">{{ __('reservas.lbl_experience') }}</label>
                                 <select name="experience_slug" id="sel-exp">
-                                    <option value="">Selecionar...</option>
+                                    <option value="">{{ __('reservas.select_opt') }}</option>
                                     @foreach($experiences as $exp)
                                     <option value="{{ $exp->slug }}">
                                         {{ app()->getLocale() === 'pt' ? $exp->name_pt : $exp->name_en }}
@@ -251,24 +280,24 @@
                                     <div class="fh-ps-divider"></div>
                                     <div class="fh-ps-footer">
                                         <div>
-                                            <div class="fh-ps-total-label">Estimativa total</div>
+                                            <div class="fh-ps-total-label">{{ __('reservas.ps_total') }}</div>
                                             <div class="fh-ps-guests" id="fh-ps-guests"></div>
                                         </div>
                                         <div class="fh-ps-total-val" id="fh-ps-total"></div>
                                     </div>
-                                    <div class="fh-ps-note">Valores ilustrativos. Confirmados após análise do pedido. Sem pagamento online.</div>
+                                    <div class="fh-ps-note">{{ __('reservas.ps_note') }}</div>
                                 </div>
                             </div>
 
                             {{-- Mensagem --}}
                             <div class="col-12">
-                                <label class="form-label">Mensagem / Pedidos Especiais</label>
-                                <textarea name="message" class="form-control rounded-4" rows="3" placeholder="Algum pedido especial?"></textarea>
+                                <label class="form-label">{{ __('reservas.lbl_message') }}</label>
+                                <textarea name="message" class="form-control rounded-4" rows="3" placeholder="{{ __('reservas.ph_message') }}"></textarea>
                             </div>
 
                             <div class="col-12">
                                 <button id="reserva-submit" type="submit" class="btn btn-primary w-100 rounded-pill py-3 text-4 fw-600">
-                                    <i class="fa-regular fa-paper-plane me-2"></i>Enviar Pedido de Reserva
+                                    <i class="fa-regular fa-paper-plane me-2"></i>{{ __('reservas.btn_submit') }}
                                 </button>
                             </div>
                         </div>
@@ -278,19 +307,19 @@
                     {{-- Success card --}}
                     <div id="reserva-success-card" class="text-center py-3">
                         <div class="mb-3" style="font-size:3.5rem;color:var(--bs-themecolor);"><i class="fa-solid fa-circle-check"></i></div>
-                        <h4 class="heading-font-family text-8 fw-700 text-white mb-2">Pedido recebido!</h4>
+                        <h4 class="heading-font-family text-8 fw-700 text-white mb-2">{{ __('reservas.success_title') }}</h4>
                         <p class="text-4 mb-3" style="color:rgba(255,255,255,.6);">
-                            Obrigado, <strong id="sc-name" class="text-white"></strong>.<br>
-                            <span style="font-size:.9em;">Enviámos uma confirmação para o teu email.</span>
+                            {{ __('reservas.success_thanks') }} <strong id="sc-name" class="text-white"></strong>.<br>
+                            <span style="font-size:.9em;">{{ __('reservas.success_email_note') }}</span>
                         </p>
                         <div class="d-inline-block rounded-3 px-4 py-3 mb-4 text-start w-100" style="background:rgba(255,255,255,.04);border:1px solid rgba(201,159,91,.2);">
-                            <p class="text-3 mb-1" style="color:rgba(255,255,255,.5);"><i class="fa-solid fa-star me-2" style="color:var(--bs-themecolor);"></i>Experiência: <span id="sc-exp" class="text-white"></span></p>
-                            <p class="text-3 mb-1" style="color:rgba(255,255,255,.5);"><i class="fa-regular fa-calendar me-2" style="color:var(--bs-themecolor);"></i>Check-in: <span id="sc-in" class="text-white"></span></p>
-                            <p class="text-3 mb-0" style="color:rgba(255,255,255,.5);"><i class="fa-regular fa-calendar-check me-2" style="color:var(--bs-themecolor);"></i>Check-out: <span id="sc-out" class="text-white"></span></p>
+                            <p class="text-3 mb-1" style="color:rgba(255,255,255,.5);"><i class="fa-solid fa-star me-2" style="color:var(--bs-themecolor);"></i>{{ __('reservas.success_experience') }} <span id="sc-exp" class="text-white"></span></p>
+                            <p class="text-3 mb-1" style="color:rgba(255,255,255,.5);"><i class="fa-regular fa-calendar me-2" style="color:var(--bs-themecolor);"></i>{{ __('reservas.success_checkin') }} <span id="sc-in" class="text-white"></span></p>
+                            <p class="text-3 mb-0" style="color:rgba(255,255,255,.5);"><i class="fa-regular fa-calendar-check me-2" style="color:var(--bs-themecolor);"></i>{{ __('reservas.success_checkout') }} <span id="sc-out" class="text-white"></span></p>
                         </div>
-                        <p class="text-3 mb-4" style="color:rgba(255,255,255,.4);">Vamos analisar e entrar em contacto em breve para confirmar.</p>
-                        <a href="{{ route('home') }}" class="btn btn-primary rounded-pill px-4 me-2">Voltar ao Início</a>
-                        <a href="{{ route('o-que-fazer') }}" class="btn btn-outline-light rounded-pill px-4">O Que Fazer</a>
+                        <p class="text-3 mb-4" style="color:rgba(255,255,255,.4);">{{ __('reservas.success_info') }}</p>
+                        <a href="{{ route('home') }}" class="btn btn-primary rounded-pill px-4 me-2">{{ __('reservas.btn_home') }}</a>
+                        <a href="{{ route('o-que-fazer') }}" class="btn btn-outline-light rounded-pill px-4">{{ __('reservas.btn_todo') }}</a>
                     </div>
 
                 </div>
@@ -305,17 +334,20 @@
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js"></script>
 <script>
+/* ── i18n ───────────────────────────────────────────────────────── */
+var fhI18n = @json($fhI18n);
+
 /* ── State ──────────────────────────────────────────────────────── */
 var calState  = { exp: '{{ $experiences->first()->slug ?? 'imersiva' }}', year: new Date().getFullYear(), month: new Date().getMonth() };
 var fhCache   = {};
 var apiBase   = '{{ url('/api/availability') }}';
 var fhSel     = { in: null, out: null };
-var months_pt = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
-var months_sh = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+var months_pt = fhI18n.months.split(',');
+var months_sh = fhI18n.months_sh.split(',');
 
 var steppers = {
-    adults:   { val: 2, min: 1, max: 6, sing: 'Adulto',  plur: 'Adultos'  },
-    children: { val: 0, min: 0, max: 6, sing: 'Criança', plur: 'Crianças' }
+    adults:   { val: 2, min: 1, max: 6, sing: fhI18n.adult_s, plur: fhI18n.adult_p },
+    children: { val: 0, min: 0, max: 6, sing: fhI18n.child_s, plur: fhI18n.child_p }
 };
 
 /* ── API ────────────────────────────────────────────────────────── */
@@ -374,24 +406,24 @@ function updatePriceSummary() {
     var lines = '';
     if (baseN > 0) {
         lines += '<div class="fh-ps-line">'
-            + '<span>' + baseN + ' noite' + (baseN > 1 ? 's' : '') + ' × ' + prices.base + '€ × ' + adults + ' adult' + (adults > 1 ? 'os' : 'o') + '</span>'
+            + '<span>' + baseN + ' ' + (baseN > 1 ? fhI18n.night_p : fhI18n.night_s) + ' × ' + prices.base + '€ × ' + adults + ' ' + (adults > 1 ? fhI18n.adult_p : fhI18n.adult_s) + '</span>'
             + '<span>' + baseTotal + '€</span>'
             + '</div>';
     }
     if (wkndN > 0) {
         lines += '<div class="fh-ps-line">'
-            + '<span>' + wkndN + ' noite' + (wkndN > 1 ? 's' : '') + ' fim de semana × ' + prices.weekend + '€ × ' + adults + ' adult' + (adults > 1 ? 'os' : 'o') + '</span>'
+            + '<span>' + wkndN + ' ' + (wkndN > 1 ? fhI18n.night_p : fhI18n.night_s) + ' ' + fhI18n.weekend + ' × ' + prices.weekend + '€ × ' + adults + ' ' + (adults > 1 ? fhI18n.adult_p : fhI18n.adult_s) + '</span>'
             + '<span>' + wkndTotal + '€</span>'
             + '</div>';
     }
     if (children > 0) {
-        lines += '<div class="fh-ps-line"><span>' + children + (children === 1 ? ' criança' : ' crianças') + '</span><span style="color:rgba(201,159,91,.5);">grátis</span></div>';
+        lines += '<div class="fh-ps-line"><span>' + children + ' ' + (children === 1 ? fhI18n.child_s : fhI18n.child_p) + '</span><span style="color:rgba(201,159,91,.5);">' + fhI18n.free + '</span></div>';
     }
     document.getElementById('fh-ps-lines').innerHTML = lines;
     document.getElementById('fh-ps-total').textContent = total + '€';
     var nights = baseN + wkndN;
-    var gStr = nights + ' noite' + (nights > 1 ? 's' : '') + ' · ' + adults + ' adult' + (adults > 1 ? 'os' : 'o');
-    if (children > 0) gStr += ' · ' + children + (children === 1 ? ' criança' : ' crianças');
+    var gStr = nights + ' ' + (nights > 1 ? fhI18n.night_p : fhI18n.night_s) + ' · ' + adults + ' ' + (adults > 1 ? fhI18n.adult_p : fhI18n.adult_s);
+    if (children > 0) gStr += ' · ' + children + ' ' + (children === 1 ? fhI18n.child_s : fhI18n.child_p);
     document.getElementById('fh-ps-guests').textContent = gStr;
     wrap.style.display = 'block';
 }
@@ -499,19 +531,19 @@ function updateDateBar() {
         text.innerHTML = '<strong style="color:#c99f5b;">' + fmtDisp(fhSel.in) + '</strong>'
             + '<span style="color:rgba(201,159,91,.5);margin:0 .4rem;">→</span>'
             + '<strong style="color:#c99f5b;">' + fmtDisp(fhSel.out) + '</strong>';
-        nights.textContent = n + (n === 1 ? ' noite' : ' noites');
+        nights.textContent = n + ' ' + (n === 1 ? fhI18n.night_s : fhI18n.night_p);
         nights.style.display = '';
         clear.style.display = '';
         bar.classList.add('has-dates');
     } else if (fhSel.in) {
         text.innerHTML = '<strong style="color:#c99f5b;">' + fmtDisp(fhSel.in) + '</strong>'
             + '<span style="color:rgba(255,255,255,.3);margin:0 .4rem;">→</span>'
-            + '<span style="color:rgba(255,255,255,.3);">Seleciona o check-out</span>';
+            + '<span style="color:rgba(255,255,255,.3);">' + fhI18n.select_co + '</span>';
         nights.style.display = 'none';
         clear.style.display = '';
         bar.classList.add('has-dates');
     } else {
-        text.textContent = 'Seleciona as datas no calendário';
+        text.textContent = fhI18n.select_dates;
         nights.style.display = 'none';
         clear.style.display = 'none';
         bar.classList.remove('has-dates');
@@ -522,14 +554,14 @@ function updateDateBar() {
 function updateHint() {
     var h = document.getElementById('fh-cal-hint');
     if (!h) return;
-    if (!fhSel.in)       h.textContent = 'Clica numa data para selecionar o check-in';
-    else if (!fhSel.out) h.textContent = 'Agora seleciona o check-out';
-    else                 h.textContent = nightsCount() + ' noites selecionadas ✓';
+    if (!fhSel.in)       h.textContent = fhI18n.hint_ci;
+    else if (!fhSel.out) h.textContent = fhI18n.hint_co;
+    else                 h.textContent = nightsCount() + ' ' + (nightsCount() === 1 ? fhI18n.hint_done_s : fhI18n.hint_done_p);
 }
 
 /* ── Calendar navigation ────────────────────────────────────────── */
 function fhRenderWithFetch() {
-    document.getElementById('fh-cal-label').textContent = 'A carregar...';
+    document.getElementById('fh-cal-label').textContent = fhI18n.loading;
     document.getElementById('fh-cal-grid').innerHTML = '';
     fetchAvailability(calState.exp, renderCal);
 }
@@ -612,7 +644,7 @@ document.addEventListener('DOMContentLoaded', function () {
     form.addEventListener('submit', function(e) {
         e.preventDefault();
         btn.disabled = true;
-        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status"></span>A enviar...';
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status"></span>' + fhI18n.sending;
 
         fetch(form.action, {
             method: 'POST',
@@ -634,13 +666,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 btn.disabled = false;
                 btn.innerHTML = btnOrig;
             } else {
-                fhShowModal(['Ocorreu um erro inesperado. Por favor tenta novamente.']);
+                fhShowModal([fhI18n.err_generic]);
                 btn.disabled = false;
                 btn.innerHTML = btnOrig;
             }
         })
         .catch(function() {
-            fhShowModal(['Sem ligação ao servidor. Verifica a tua internet e tenta novamente.']);
+            fhShowModal([fhI18n.err_network]);
             btn.disabled = false;
             btn.innerHTML = btnOrig;
         });

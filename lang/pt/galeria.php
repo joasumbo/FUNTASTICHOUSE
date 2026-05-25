@@ -1,0 +1,24 @@
+<?php
+
+return [
+    'page_title'      => 'Galeria — Funtastic House',
+    'heading'         => 'Galeria',
+    'breadcrumb'      => 'Galeria',
+    'badge'           => 'Galeria',
+    'title'           => 'Descobre a casa <span class="text-primary">por dentro</span>',
+    'subtitle'        => 'Cada foto conta um pouco do que te espera. A experiência completa só se vive em pessoa.',
+    'filter_all'      => 'Todos',
+    'filter_imersiva' => 'Exp. Imersiva',
+    'filter_spa'      => 'Exp. Spa',
+    'filter_exterior' => 'Exterior',
+    'note'            => 'Fotografias profissionais serão adicionadas brevemente. Imagens atuais são ilustrativas.',
+    'alt_room1'       => 'Experiência Imersiva',
+    'alt_room2'       => 'Quarto Estrelas',
+    'alt_room3'       => 'Quarto Arco-Íris',
+    'alt_room4'       => 'Casa de Banho Fundo do Mar',
+    'alt_spa'         => 'Experiência Spa',
+    'alt_jacuzzi'     => 'Jacuzzi',
+    'alt_garden'      => 'Jardim',
+    'alt_exterior'    => 'Exterior',
+    'alt_lounge'      => 'Sala',
+];

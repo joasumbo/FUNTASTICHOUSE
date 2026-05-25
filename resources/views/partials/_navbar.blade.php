@@ -53,6 +53,11 @@
                         </a>
                     </li>
                 </ul>
+                <div class="lang-switcher d-flex d-lg-none justify-content-center py-2 border-top mt-2">
+                    <a href="{{ route('locale.switch', 'pt') }}" class="{{ app()->getLocale() === 'pt' ? 'active' : '' }}">PT</a>
+                    <span>|</span>
+                    <a href="{{ route('locale.switch', 'en') }}" class="{{ app()->getLocale() === 'en' ? 'active' : '' }}">EN</a>
+                </div>
             </div>
 
             <div class="d-flex align-items-center gap-3 ms-auto">

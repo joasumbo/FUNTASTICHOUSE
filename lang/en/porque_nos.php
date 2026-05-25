@@ -1,0 +1,25 @@
+<?php
+
+return [
+    'page_title'      => 'Why Us? — Funtastic House',
+    'heading'         => 'Why Us?',
+    'breadcrumb'      => 'Why Us?',
+    'badge'           => 'Why Us?',
+    'title'           => 'A house <span class="text-primary">unlike</span> any other',
+    'p1'              => 'Every detail was designed to surprise you. From the insect-shaped cabinet handles to the room that distributes hidden sweets — Funtastic House is a journey in itself.',
+    'p2'              => 'Close to Sintra, Ericeira and Mafra, you have nature, palaces and surf beaches at your fingertips, with the comfort and magic of a truly unique house.',
+    'feat_themes'     => 'Unique Themes',
+    'feat_themes_d'   => 'Each room tells a different story. From the enchanted garden kitchen to the iridescent shell basin.',
+    'feat_location'   => 'Prime Location',
+    'feat_location_d' => 'Minutes from Sintra, Ericeira and Mafra. UNESCO palaces, surf beaches and stunning nature.',
+    'feat_moments'    => 'Unforgettable Moments',
+    'feat_moments_d'  => 'Details crafted to the smallest detail to surprise at every corner — for families, couples or groups of friends.',
+    'feat_ages'       => 'For All Ages',
+    'feat_ages_d'     => 'Cheerful, fun and full of hidden surprises. An experience that appeals to young and old alike.',
+    'stat_houses'     => 'Themed Houses',
+    'stat_themes'     => 'Different Themes',
+    'stat_distance'   => 'from Sintra',
+    'stat_rating'     => 'Average Rating',
+    'cta_title'       => 'Ready for an <span class="text-primary">unforgettable experience?</span>',
+    'btn_reserve'     => 'Book Now',
+];

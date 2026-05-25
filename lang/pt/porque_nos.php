@@ -1,0 +1,25 @@
+<?php
+
+return [
+    'page_title'      => 'Porquê Nós? — Funtastic House',
+    'heading'         => 'Porquê Nós?',
+    'breadcrumb'      => 'Porquê Nós?',
+    'badge'           => 'Porquê Nós?',
+    'title'           => 'Uma casa <span class="text-primary">diferente</span> de todas as outras',
+    'p1'              => 'Cada detalhe foi pensado para te surpreender. Desde os puxadores em forma de inseto até ao quarto que distribui doces — a Funtastic House é uma viagem em si mesma.',
+    'p2'              => 'Perto de Sintra, Ericeira e Mafra, tens a natureza, os palácios e as praias de surf ao alcance da mão, com o conforto e a magia de uma casa verdadeiramente única.',
+    'feat_themes'     => 'Temáticas Únicas',
+    'feat_themes_d'   => 'Cada divisão conta uma história diferente. Do jardim encantado da cozinha ao lavatório em concha iridescente.',
+    'feat_location'   => 'Localização Privilegiada',
+    'feat_location_d' => 'A minutos de Sintra, Ericeira e Mafra. Palácios UNESCO, praias de surf e natureza deslumbrante.',
+    'feat_moments'    => 'Momentos Inesquecíveis',
+    'feat_moments_d'  => 'Detalhes pensados ao pormenor para surpreender a cada canto — para famílias, casais ou grupos de amigos.',
+    'feat_ages'       => 'Para Todas as Idades',
+    'feat_ages_d'     => 'Alegre, divertida e cheia de surpresas escondidas. Uma experiência que agrada a miúdos e graúdos.',
+    'stat_houses'     => 'Casas Temáticas',
+    'stat_themes'     => 'Temáticas Diferentes',
+    'stat_distance'   => 'de Sintra',
+    'stat_rating'     => 'Avaliação Média',
+    'cta_title'       => 'Pronto para uma experiência <span class="text-primary">inesquecível?</span>',
+    'btn_reserve'     => 'Reservar Agora',
+];
