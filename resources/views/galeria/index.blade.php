@@ -97,8 +97,8 @@
         <div class="row g-3 wow fadeInUp">
             @foreach($images->flatten() as $img)
             <div class="col-md-6 col-lg-4 gallery-item" data-cat="{{ $img->category }}">
-                <a href="{{ asset('storage/' . $img->filename) }}" class="glightbox d-block rounded-4 overflow-hidden" data-gallery="galeria">
-                    <img class="img-fluid w-100" src="{{ asset('storage/' . $img->filename) }}"
+                <a href="{{ asset($img->filename) }}" class="glightbox d-block rounded-4 overflow-hidden" data-gallery="galeria">
+                    <img class="img-fluid w-100" src="{{ asset($img->filename) }}"
                          alt="{{ app()->getLocale() === 'pt' ? $img->alt_pt : $img->alt_en }}"
                          style="height:280px;object-fit:cover;">
                 </a>

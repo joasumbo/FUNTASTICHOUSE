@@ -80,7 +80,6 @@
                         ['route' => 'admin.reservas',   'label' => 'Reservas'],
                         ['route' => 'admin.calendario', 'label' => 'Calendário'],
                         ['route' => 'admin.precario',   'label' => 'Preçário'],
-                        ['route' => 'admin.regras',     'label' => 'Regras'],
                     ];
                 @endphp
                 @foreach($mainNav as $item)

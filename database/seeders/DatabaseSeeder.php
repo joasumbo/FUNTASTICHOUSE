@@ -16,6 +16,7 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             ExperienceSeeder::class,
+            GalleryImageSeeder::class,
             PoiCategorySeeder::class,
             PoiSeeder::class,
             BlockedDateSeeder::class,

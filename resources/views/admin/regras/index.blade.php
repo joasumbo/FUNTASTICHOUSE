@@ -120,14 +120,7 @@
     {{-- ─── HEADER ─── --}}
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pt-2">
         <div>
-            <h1 class="text-[26px] font-bold text-gray-900 flex items-center gap-2">
-                <span class="w-8 h-8 rounded-xl flex items-center justify-center" style="background:#111827">
-                    <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="#c99f5b" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/>
-                    </svg>
-                </span>
-                Regras Automáticas
-            </h1>
+            <h1 class="text-[26px] font-bold text-gray-900">Regras Automáticas</h1>
             <p class="text-sm text-gray-500 mt-0.5">Defina condições que ajustam automaticamente disponibilidade e preços.</p>
         </div>
         <button @click="openCreate()" class="rg-btn-primary self-start sm:self-auto">

@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\PerfilController as AdminPerfilController;
 use App\Http\Controllers\Admin\CalendarioController as AdminCalendarioController;
 use App\Http\Controllers\Admin\GaleriaController as AdminGaleriaController;
+use App\Http\Controllers\Admin\PoiController as AdminPoiController;
 use App\Http\Controllers\Admin\PrecarioController as AdminPrecarioController;
 use App\Http\Controllers\Admin\RegraController as AdminRegraController;
 use App\Http\Controllers\Admin\ReservaController as AdminReservaController;
@@ -90,7 +91,15 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::patch('/galeria/{image}',           [AdminGaleriaController::class, 'update'])->name('galeria.update');
         Route::patch('/galeria/{image}/toggle',    [AdminGaleriaController::class, 'toggle'])->name('galeria.toggle');
         Route::delete('/galeria/{image}',          [AdminGaleriaController::class, 'destroy'])->name('galeria.destroy');
-        Route::get('/pois',        fn () => abort(404))->name('pois');
+        // Pontos de Interesse
+        Route::get('/pois',                              [AdminPoiController::class, 'index'])->name('pois');
+        Route::post('/pois',                             [AdminPoiController::class, 'store'])->name('pois.store');
+        Route::post('/pois/categories',                  [AdminPoiController::class, 'storeCategory'])->name('pois.categories.store');
+        Route::patch('/pois/categories/{category}',      [AdminPoiController::class, 'updateCategory'])->name('pois.categories.update');
+        Route::delete('/pois/categories/{category}',     [AdminPoiController::class, 'destroyCategory'])->name('pois.categories.destroy');
+        Route::patch('/pois/{poi}/toggle',               [AdminPoiController::class, 'toggle'])->name('pois.toggle');
+        Route::patch('/pois/{poi}',                      [AdminPoiController::class, 'update'])->name('pois.update');
+        Route::delete('/pois/{poi}',                     [AdminPoiController::class, 'destroy'])->name('pois.destroy');
         Route::get('/testemunhos', fn () => abort(404))->name('testemunhos');
         Route::get('/configuracoes',fn () => abort(404))->name('configuracoes');
     });
