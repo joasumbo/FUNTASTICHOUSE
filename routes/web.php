@@ -10,7 +10,6 @@ use App\Http\Controllers\GaleriaController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\OQueFazerController;
 use App\Http\Controllers\PorqueNosController;
-use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReservasController;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Route;
@@ -50,7 +49,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::post('/login', [AdminAuthController::class, 'login'])->name('login.post');
     Route::post('/logout',[AdminAuthController::class, 'logout'])->name('logout');
 
-    Route::middleware(['auth', 'admin'])->group(function () {
+    Route::middleware(['admin'])->group(function () {
         Route::get('/',          fn () => redirect()->route('admin.dashboard'));
         Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
 
@@ -72,19 +71,5 @@ Route::prefix('admin')->name('admin.')->group(function () {
     });
 });
 
-/*
-|--------------------------------------------------------------------------
-| Breeze Auth (legacy, kept for profile management)
-|--------------------------------------------------------------------------
-*/
-Route::get('/dashboard', fn () => view('dashboard'))
-    ->middleware(['auth', 'verified'])
-    ->name('dashboard');
-
-Route::middleware('auth')->group(function () {
-    Route::get('/profile',    [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile',  [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-});
-
-require __DIR__.'/auth.php';
+// Fallback: qualquer /login vai para o admin
+Route::get('/login', fn () => redirect()->route('admin.login'))->name('login');
