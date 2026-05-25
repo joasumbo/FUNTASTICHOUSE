@@ -17,70 +17,186 @@ $iconColors = [
 @push('styles')
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.min.css">
 <style>
-/* Página O Que Fazer */
-#fh-map {
-    height: 560px;
-    width: 100%;
-    border-radius: 1rem;
+/* Layout da página */
+.fh-oqf-wrap {
+    display: grid;
+    grid-template-columns: 420px 1fr;
+    gap: 0;
+    min-height: 600px;
 }
 
-.fh-map-sticky {
-    position: sticky;
-    top: 90px;
+/* Painel esquerdo — lista */
+.fh-list-panel {
+    border-right: 1px solid #f0ece5;
+    display: flex;
+    flex-direction: column;
 }
 
-.fh-poi-panel {
-    max-height: 560px;
-    overflow-y: auto;
-    padding-right: 4px;
-    scrollbar-width: thin;
-    scrollbar-color: rgba(201,159,91,.4) transparent;
+/* Filtros tipo tab */
+.fh-tabs {
+    display: flex;
+    overflow-x: auto;
+    scrollbar-width: none;
+    border-bottom: 1px solid #e9e4db;
+    flex-shrink: 0;
+    padding: 0 24px;
 }
-.fh-poi-panel::-webkit-scrollbar { width: 4px; }
-.fh-poi-panel::-webkit-scrollbar-thumb { background: rgba(201,159,91,.35); border-radius: 4px; }
+.fh-tabs::-webkit-scrollbar { display: none; }
 
-.fh-filter-bar { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
-.fh-filter-btn {
-    display: inline-flex; align-items: center; gap: 6px;
-    padding: 6px 14px; border-radius: 99px;
-    font-size: 12px; font-weight: 600; letter-spacing: .02em;
-    cursor: pointer; transition: all .18s;
-    border: 1.5px solid #e5e7eb; background: #fff; color: #4b5563;
-}
-.fh-filter-btn:hover { border-color: var(--bs-themecolor); color: var(--bs-themecolor); }
-.fh-filter-btn.active { background: var(--bs-themecolor); border-color: var(--bs-themecolor); color: #fff; }
-.fh-filter-btn.active i { color: #fff !important; }
-
-.fh-cat-label {
-    font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em;
-    padding: 12px 0 7px;
-    display: flex; align-items: center; gap: 7px;
-    border-bottom: 1px solid #f0ece5; margin-bottom: 8px;
-}
-
-.fh-poi-card {
-    background: #fff;
-    border: 1px solid #f0ece5;
-    border-radius: 10px;
-    padding: 12px 14px;
+.fh-tab {
+    padding: 14px 14px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    color: #9ca3af;
+    border: none;
+    background: transparent;
     cursor: pointer;
-    transition: transform .18s, box-shadow .18s;
-    margin-bottom: 8px;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    white-space: nowrap;
+    transition: color .18s, border-color .18s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
 }
-.fh-poi-card:hover { box-shadow: 0 4px 18px rgba(0,0,0,.09); transform: translateX(5px); }
-.fh-poi-card.highlighted { box-shadow: 0 0 0 2px var(--bs-themecolor); }
+.fh-tab:hover { color: #4b5563; }
+.fh-tab.active { color: #c99f5b; border-bottom-color: #c99f5b; }
+.fh-tab i { font-size: 11px; }
 
-/* Popup Leaflet */
-.leaflet-popup-content-wrapper { border-radius: 12px; box-shadow: 0 8px 28px rgba(0,0,0,.14); }
-.leaflet-popup-content { margin: 12px 16px; }
-.fh-popup-title { font-weight: 700; font-size: 14px; color: #111; margin-bottom: 3px; }
-.fh-popup-desc { font-size: 12px; color: #6b7280; line-height: 1.5; margin-bottom: 5px; }
+/* Lista de POIs (scroll da página, não do painel) */
+.fh-poi-list {
+    padding: 0 24px 48px;
+    overflow-y: auto;
+    flex: 1;
+}
+
+/* Cabeçalho de categoria */
+.fh-cat-head {
+    padding: 28px 0 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.fh-cat-head-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px;
+    font-weight: 600;
+    color: #111;
+    line-height: 1;
+}
+.fh-cat-head-icon {
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+.fh-cat-head-icon i { font-size: 14px; color: #fff; }
+
+/* Item de POI */
+.fh-poi-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 14px 10px;
+    margin: 0 -10px;
+    cursor: pointer;
+    border-radius: 10px;
+    transition: background .15s;
+    border-bottom: 1px solid #f5f2ee;
+}
+.fh-poi-item:last-child { border-bottom: none; }
+.fh-poi-item:hover { background: #fdf8f2; }
+.fh-poi-item.highlighted { background: #fdf3e3; }
+
+.fh-poi-bullet {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    margin-top: 6px;
+}
+.fh-poi-body { flex: 1; min-width: 0; }
+.fh-poi-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin-bottom: 3px;
+    line-height: 1.3;
+}
+.fh-poi-desc {
+    font-size: 12px;
+    color: #9ca3af;
+    line-height: 1.55;
+}
+.fh-poi-dist {
+    font-size: 11px;
+    font-weight: 600;
+    color: #b0a99c;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-top: 3px;
+}
+
+/* Painel direito — mapa */
+.fh-map-panel {
+    position: sticky;
+    top: 80px;
+    height: calc(100vh - 100px);
+    max-height: 720px;
+    display: flex;
+    flex-direction: column;
+}
+
+#fh-map {
+    flex: 1;
+    width: 100%;
+    border-radius: 0;
+}
+
+.fh-map-note {
+    padding: 10px 20px;
+    font-size: 12px;
+    color: #9ca3af;
+    font-style: italic;
+    background: #fff;
+    border-top: 1px solid #f0ece5;
+    flex-shrink: 0;
+}
+
+/* Popup do mapa */
+.leaflet-popup-content-wrapper {
+    border-radius: 14px !important;
+    box-shadow: 0 12px 36px rgba(0,0,0,.14) !important;
+    border: none !important;
+}
+.leaflet-popup-content { margin: 14px 18px !important; }
+.fh-popup-title { font-weight: 700; font-size: 14px; color: #111; margin-bottom: 4px; }
+.fh-popup-desc { font-size: 12px; color: #6b7280; line-height: 1.5; margin-bottom: 6px; }
 .fh-popup-dist { font-size: 11px; font-weight: 600; color: #c99f5b; }
+.leaflet-popup-tip-container { display: block; }
 
+/* Responsive */
 @media (max-width: 991px) {
-    #fh-map { height: 320px; }
-    .fh-map-sticky { position: relative; top: 0; }
-    .fh-poi-panel { max-height: none; overflow-y: visible; padding-right: 0; }
+    .fh-oqf-wrap {
+        grid-template-columns: 1fr;
+    }
+    .fh-list-panel { border-right: none; order: 2; }
+    .fh-map-panel {
+        order: 1;
+        position: relative;
+        top: 0;
+        height: 320px;
+        max-height: 320px;
+        border-bottom: 1px solid #f0ece5;
+    }
+    #fh-map { border-radius: 0; }
+    .fh-tabs { padding: 0 16px; }
+    .fh-poi-list { padding: 0 16px 32px; }
 }
 </style>
 @endpush
@@ -106,104 +222,96 @@ $iconColors = [
     </div>
 </section>
 
-<section class="section">
+{{-- Introdução --}}
+<section class="py-5">
     <div class="container">
-
-        {{-- Introdução --}}
-        <div class="mx-auto text-center mb-5">
+        <div class="mx-auto text-center">
             <p class="wow fadeInUp">
                 <span class="text-3 text-uppercase fw-600 rounded-pill border border-dark border-opacity-10 px-3 py-1">{{ __('o_que_fazer.badge') }}</span>
             </p>
             <h2 class="heading-font-family text-13 fw-600 lh-sm wow fadeInUp" data-wow-delay=".2s">
                 {!! __('o_que_fazer.title') !!}
             </h2>
-            <p class="text-body-secondary mx-auto" style="max-width:560px;">{{ __('o_que_fazer.subtitle') }}</p>
-        </div>
-
-        <div class="row g-4 align-items-start">
-
-            {{-- Painel esquerdo: filtros + lista de POIs --}}
-            <div class="col-lg-5 wow fadeInLeft">
-
-                @if($categories->isNotEmpty())
-                <div class="fh-filter-bar">
-                    <button class="fh-filter-btn active" data-cat="all">
-                        <i class="fa-solid fa-map-location-dot" style="font-size:11px;"></i>
-                        {{ __('o_que_fazer.filter_all') }}
-                    </button>
-                    @foreach($categories->filter(fn($c) => $c->pois->isNotEmpty()) as $cat)
-                    @php $color = $iconColors[$cat->icon] ?? '#374151'; @endphp
-                    <button class="fh-filter-btn" data-cat="{{ $cat->id }}" data-color="{{ $color }}">
-                        @if($cat->icon)
-                        <i class="fa-solid {{ $cat->icon }}" style="font-size:11px;color:{{ $color }};"></i>
-                        @endif
-                        {{ app()->getLocale() === 'pt' ? $cat->name_pt : $cat->name_en }}
-                        <span style="background:{{ $color }};color:#fff;border-radius:99px;font-size:10px;padding:1px 7px;font-weight:700;line-height:1.8;">{{ $cat->pois->count() }}</span>
-                    </button>
-                    @endforeach
-                </div>
-                @endif
-
-                <div class="fh-poi-panel">
-                    @forelse($categories as $cat)
-                    @if($cat->pois->isNotEmpty())
-                    @php $catColor = $iconColors[$cat->icon] ?? '#374151'; @endphp
-                    <div class="poi-category-group" data-cat-group="{{ $cat->id }}">
-                        <div class="fh-cat-label" style="color:{{ $catColor }};">
-                            @if($cat->icon)<i class="fa-solid {{ $cat->icon }}"></i>@endif
-                            {{ app()->getLocale() === 'pt' ? $cat->name_pt : $cat->name_en }}
-                        </div>
-                        @foreach($cat->pois as $poi)
-                        <div class="fh-poi-card" data-poi-id="{{ $poi->id }}"
-                             style="border-left: 3px solid {{ $catColor }};">
-                            <div class="d-flex justify-content-between align-items-start gap-2">
-                                <p class="fw-600 mb-0" style="font-size:14px; color:{{ $catColor }};">
-                                    {{ app()->getLocale() === 'pt' ? $poi->name_pt : $poi->name_en }}
-                                </p>
-                                @if($poi->distance_km)
-                                <span class="text-nowrap flex-shrink-0" style="font-size:11px;color:#9ca3af;">
-                                    {{ number_format($poi->distance_km, 1) }} km
-                                </span>
-                                @endif
-                            </div>
-                            @php
-                                $desc = app()->getLocale() === 'pt' ? $poi->description_pt : $poi->description_en;
-                            @endphp
-                            @if($desc)
-                            <p class="mb-0 mt-1" style="font-size:12px;color:#6b7280;line-height:1.5;">
-                                {{ Str::limit($desc, 90) }}
-                            </p>
-                            @endif
-                        </div>
-                        @endforeach
-                    </div>
-                    @endif
-                    @empty
-                    <p class="text-body-secondary fst-italic text-3">{{ __('o_que_fazer.pois_soon') }}</p>
-                    @endforelse
-
-                    {{-- Grupos vazios (ocultos, usados apenas para o filtro) --}}
-                    @foreach($categories->filter(fn($c) => $c->pois->isEmpty()) as $cat)
-                    <div class="poi-category-group" data-cat-group="{{ $cat->id }}" style="display:none;" data-empty="1"></div>
-                    @endforeach
-                </div>
-
-            </div>
-
-            {{-- Mapa (lado direito, sticky no desktop) --}}
-            <div class="col-lg-7 wow fadeInRight">
-                <div class="fh-map-sticky">
-                    <div id="fh-map" class="border shadow-sm"></div>
-                    <p class="text-3 text-body-secondary mt-2 fst-italic">
-                        <i class="fa-solid fa-circle-info text-primary me-1"></i>
-                        {{ __('o_que_fazer.map_note') }}
-                    </p>
-                </div>
-            </div>
-
+            <p class="text-body-secondary mx-auto mb-0" style="max-width:540px;">{{ __('o_que_fazer.subtitle') }}</p>
         </div>
     </div>
 </section>
+
+{{-- Layout principal: lista + mapa --}}
+<div class="fh-oqf-wrap border-top border-bottom" style="border-color:#f0ece5 !important;">
+
+    {{-- Painel esquerdo: filtros + lista --}}
+    <div class="fh-list-panel">
+
+        {{-- Tabs de filtro --}}
+        <div class="fh-tabs">
+            <button class="fh-tab active" data-cat="all">
+                <i class="fa-solid fa-map-location-dot"></i>
+                {{ __('o_que_fazer.filter_all') }}
+            </button>
+            @foreach($categories->filter(fn($c) => $c->pois->isNotEmpty()) as $cat)
+            @php $color = $iconColors[$cat->icon] ?? '#374151'; @endphp
+            <button class="fh-tab" data-cat="{{ $cat->id }}" data-color="{{ $color }}">
+                @if($cat->icon)<i class="fa-solid {{ $cat->icon }}" style="color:{{ $color }};"></i>@endif
+                {{ app()->getLocale() === 'pt' ? $cat->name_pt : $cat->name_en }}
+            </button>
+            @endforeach
+        </div>
+
+        {{-- Lista de POIs --}}
+        <div class="fh-poi-list">
+            @forelse($categories as $cat)
+            @if($cat->pois->isNotEmpty())
+            @php $catColor = $iconColors[$cat->icon] ?? '#374151'; @endphp
+            <div class="poi-category-group" data-cat-group="{{ $cat->id }}">
+                <div class="fh-cat-head">
+                    <div class="fh-cat-head-icon" style="background:{{ $catColor }};">
+                        @if($cat->icon)<i class="fa-solid {{ $cat->icon }}"></i>@endif
+                    </div>
+                    <span class="fh-cat-head-text">
+                        {{ app()->getLocale() === 'pt' ? $cat->name_pt : $cat->name_en }}
+                    </span>
+                </div>
+
+                @foreach($cat->pois as $poi)
+                @php $desc = app()->getLocale() === 'pt' ? $poi->description_pt : $poi->description_en; @endphp
+                <div class="fh-poi-item" data-poi-id="{{ $poi->id }}">
+                    <div class="fh-poi-bullet" style="background:{{ $catColor }};"></div>
+                    <div class="fh-poi-body">
+                        <div class="fh-poi-name">{{ app()->getLocale() === 'pt' ? $poi->name_pt : $poi->name_en }}</div>
+                        @if($desc)
+                        <div class="fh-poi-desc">{{ Str::limit($desc, 100) }}</div>
+                        @endif
+                    </div>
+                    @if($poi->distance_km)
+                    <div class="fh-poi-dist">{{ number_format($poi->distance_km, 1) }} km</div>
+                    @endif
+                </div>
+                @endforeach
+            </div>
+            @endif
+            @empty
+            <p class="text-body-secondary fst-italic text-3 mt-4">{{ __('o_que_fazer.pois_soon') }}</p>
+            @endforelse
+
+            {{-- Grupos vazios (ocultos, necessários para o filtro) --}}
+            @foreach($categories->filter(fn($c) => $c->pois->isEmpty()) as $cat)
+            <div class="poi-category-group" data-cat-group="{{ $cat->id }}" style="display:none;" data-empty="1"></div>
+            @endforeach
+        </div>
+
+    </div>
+
+    {{-- Painel direito: mapa --}}
+    <div class="fh-map-panel">
+        <div id="fh-map"></div>
+        <div class="fh-map-note">
+            <i class="fa-solid fa-circle-info text-primary me-1"></i>
+            {{ __('o_que_fazer.map_note') }}
+        </div>
+    </div>
+
+</div>
 
 @endsection
 
@@ -229,19 +337,41 @@ $iconColors = [
             className: '',
             iconSize: [24, 36],
             iconAnchor: [12, 36],
-            popupAnchor: [0, -38],
+            popupAnchor: [0, -40],
         });
     }
 
-    var map = L.map('fh-map', { zoomControl: true, scrollWheelZoom: false })
-               .setView([38.93, -9.38], 11);
+    function makePinActive(color) {
+        var svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 48" width="32" height="48">'
+            + '<path fill="' + color + '" stroke="#fff" stroke-width="2" d="M16 0C9.4 0 4 5.4 4 12c0 8 12 28 12 28s12-20 12-28c0-6.6-5.4-12-12-12z"/>'
+            + '<circle fill="#fff" cx="16" cy="12" r="5"/>'
+            + '</svg>';
+        return L.divIcon({
+            html: svg,
+            className: '',
+            iconSize: [32, 48],
+            iconAnchor: [16, 48],
+            popupAnchor: [0, -50],
+        });
+    }
+
+    var map = L.map('fh-map', {
+        zoomControl: true,
+        scrollWheelZoom: true,
+        tap: true,
+        dragging: true,
+    }).setView([38.93, -9.38], 11);
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-        maxZoom: 18,
+        maxZoom: 19,
     }).addTo(map);
 
+    /* Move os controlos de zoom para o canto inferior direito */
+    map.zoomControl.setPosition('bottomright');
+
     var markers = {};
+    var activeMarker = null;
 
     pois.forEach(function (p) {
         if (!p.lat || !p.lng) return;
@@ -251,21 +381,68 @@ $iconColors = [
         var popup = '<div class="fh-popup-title">' + p.name + '</div>';
         if (p.description) popup += '<div class="fh-popup-desc">' + p.description + '</div>';
         if (p.distance_km) popup += '<div class="fh-popup-dist">📍 ' + p.distance_km.toFixed(1) + ' km</div>';
-        marker.bindPopup(popup, { maxWidth: 240 });
+        marker.bindPopup(popup, { maxWidth: 240, closeButton: false });
+
+        /* Clicar no marker destaca o item na lista */
+        marker.on('click', function () {
+            if (activeMarker && activeMarker.id !== p.id) {
+                var prev = markers[activeMarker.id];
+                if (prev) prev.marker.setIcon(makePin(catColors[prev.catId] || '#374151'));
+            }
+            marker.setIcon(makePinActive(color));
+            activeMarker = { id: p.id };
+
+            var card = document.querySelector('.fh-poi-item[data-poi-id="' + p.id + '"]');
+            if (card) {
+                document.querySelectorAll('.fh-poi-item').forEach(function (c) { c.classList.remove('highlighted'); });
+                card.classList.add('highlighted');
+                card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+        });
+
+        map.on('popupclose', function () {
+            if (activeMarker && activeMarker.id === p.id) {
+                marker.setIcon(makePin(color));
+            }
+        });
+
         marker.addTo(map);
         markers[p.id] = { marker: marker, catId: p.category_id };
     });
 
+    /* Clicar num item da lista abre popup e anima o pin */
+    document.querySelectorAll('.fh-poi-item[data-poi-id]').forEach(function (item) {
+        item.addEventListener('click', function () {
+            var id = parseInt(this.dataset.poiId);
+            if (!markers[id]) return;
+
+            var color = catColors[markers[id].catId] || '#374151';
+
+            if (activeMarker && markers[activeMarker.id]) {
+                var prev = markers[activeMarker.id];
+                prev.marker.setIcon(makePin(catColors[prev.catId] || '#374151'));
+            }
+
+            markers[id].marker.setIcon(makePinActive(color));
+            activeMarker = { id: id };
+
+            map.flyTo(markers[id].marker.getLatLng(), 14, { animate: true, duration: 0.6 });
+            markers[id].marker.openPopup();
+
+            document.querySelectorAll('.fh-poi-item').forEach(function (c) { c.classList.remove('highlighted'); });
+            this.classList.add('highlighted');
+        });
+    });
+
     /* Filtros por categoria */
-    document.querySelectorAll('.fh-filter-btn').forEach(function (btn) {
+    document.querySelectorAll('.fh-tab').forEach(function (btn) {
         btn.addEventListener('click', function () {
             var cat = this.dataset.cat;
 
-            document.querySelectorAll('.fh-filter-btn').forEach(function (b) {
-                b.classList.remove('active');
-            });
+            document.querySelectorAll('.fh-tab').forEach(function (b) { b.classList.remove('active'); });
             this.classList.add('active');
 
+            /* Mostrar/ocultar markers */
             Object.values(markers).forEach(function (m) {
                 if (cat === 'all' || String(m.catId) === cat) {
                     m.marker.addTo(map);
@@ -274,25 +451,26 @@ $iconColors = [
                 }
             });
 
+            /* Mostrar/ocultar grupos na lista */
             document.querySelectorAll('.poi-category-group').forEach(function (g) {
                 if (!g.dataset.empty) {
                     g.style.display = (cat === 'all' || g.dataset.catGroup === cat) ? '' : 'none';
                 }
             });
-        });
-    });
 
-    /* Clicar num card abre popup no mapa */
-    document.querySelectorAll('.fh-poi-card[data-poi-id]').forEach(function (card) {
-        card.addEventListener('click', function () {
-            var id = parseInt(this.dataset.poiId);
-            if (markers[id]) {
-                map.setView(markers[id].marker.getLatLng(), 14, { animate: true });
-                markers[id].marker.openPopup();
-                document.querySelectorAll('.fh-poi-card').forEach(function (c) {
-                    c.classList.remove('highlighted');
+            /* Ajustar zoom ao filtro activo */
+            if (cat !== 'all') {
+                var visibleLatLngs = [];
+                Object.values(markers).forEach(function (m) {
+                    if (String(m.catId) === cat) {
+                        visibleLatLngs.push(m.marker.getLatLng());
+                    }
                 });
-                this.classList.add('highlighted');
+                if (visibleLatLngs.length > 0) {
+                    map.flyToBounds(L.latLngBounds(visibleLatLngs).pad(0.3), { duration: 0.6 });
+                }
+            } else {
+                map.flyTo([38.93, -9.38], 11, { duration: 0.6 });
             }
         });
     });
