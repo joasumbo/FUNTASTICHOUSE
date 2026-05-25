@@ -1,4 +1,4 @@
-/* ── Funtastic House — Global Overrides ── */
+/* Funtastic House — estilos personalizados */
 :root {
     --bs-themecolor: #c99f5b;
     --bs-themehovercolor: #b5873c;
@@ -6,16 +6,16 @@
 
 .heading-font-family { font-family: 'Cormorant Garamond', Georgia, serif !important; }
 
-/* Logo */
+/* Logótipo */
 .fh-logo { font-family:'Cormorant Garamond',serif; font-size:26px; font-weight:700; color:#fff; letter-spacing:0.04em; text-decoration:none; line-height:1; }
 .fh-logo span { color:var(--bs-themecolor); }
 
-/* Language switcher */
+/* Seletor de idioma */
 .lang-switcher a { font-size:12px; font-weight:600; letter-spacing:.06em; color:rgba(255,255,255,.6); text-decoration:none; padding:0 6px; transition:color .2s; }
 .lang-switcher a.active, .lang-switcher a:hover { color:var(--bs-themecolor); }
 .lang-switcher span { color:rgba(255,255,255,.3); }
 
-/* Calendar */
+/* Calendário de disponibilidade */
 .fh-cal-tabs { display:flex; gap:0; border:1px solid rgba(201,159,91,.3); border-radius:50px; overflow:hidden; margin-bottom:20px; }
 .fh-cal-tab { flex:1; padding:8px 16px; text-align:center; font-size:13px; font-weight:600; cursor:pointer; transition:all .2s; background:transparent; color:rgba(255,255,255,.5); border:none; letter-spacing:.04em; }
 .fh-cal-tab.active { background:var(--bs-themecolor); color:#000; }
@@ -37,22 +37,22 @@
 .fh-cal-legend-item { display:flex; align-items:center; gap:6px; font-size:11px; color:rgba(255,255,255,.4); }
 .fh-dot { width:8px; height:8px; border-radius:50%; }
 
-/* POI cards */
+/* Pontos de interesse */
 .poi-card { background:var(--bs-body-bg); border:1px solid var(--bs-border-color); border-radius:12px; padding:20px; border-left:3px solid var(--bs-themecolor); transition:all .2s; }
 .poi-card:hover { box-shadow:0 4px 20px rgba(0,0,0,.08); transform:translateX(4px); }
 
-/* Experience badges */
+/* Badges das experiências */
 .exp-badge-imersiva { background:var(--bs-themecolor); color:#000; }
 .exp-badge-spa { background:#2C5F6E; color:#fff; }
 
-/* Thematic room overlay */
+/* Overlay dos quartos temáticos */
 .tema-overlay { position:absolute; bottom:0; left:0; right:0; background:linear-gradient(to top, rgba(0,0,0,.85) 0%, transparent 100%); padding:20px 16px 14px; border-radius:0 0 16px 16px; }
 
-/* Children ages toggle */
+/* Idades das crianças */
 .children-ages { display:none; }
 .children-ages.show { display:block; }
 
-/* Dark reservation form */
+/* Formulário de reserva (fundo escuro) */
 .form-dark .form-control,
 .form-dark .form-select {
     background:rgba(255,255,255,.05) !important;
@@ -63,9 +63,7 @@
 .form-dark label { color:rgba(255,255,255,.7); font-size:13px; font-weight:500; }
 .form-dark select option { background:#0a0a0c; }
 
-/* ══════════════════════════════════════════════
-   MOBILE BOTTOM BAR (TASK-17)
-══════════════════════════════════════════════ */
+/* Barra inferior fixa — mobile */
 .fh-mobile-bar {
     position: fixed;
     bottom: 0;
@@ -112,21 +110,21 @@
     gap: 8px;
 }
 
-/* ══════════════════════════════════════════════
-   BREAKPOINT ≤ 991px — TABLET / MOBILE
-══════════════════════════════════════════════ */
+/* -------------------------------------------
+   Tablet e telemóvel (≤ 991px)
+------------------------------------------- */
 @media (max-width: 991.98px) {
 
-    /* Push page content above the bottom bar */
+    /* Espaço para a barra fixa no fundo */
     #main-wrapper { padding-bottom: 76px; }
 
-    /* Hide the redundant "Reservar" button in the top navbar */
+    /* O botão da navbar já está na barra inferior */
     .fh-nav-cta { display: none !important; }
 
-    /* Keep back-to-top above the bottom bar */
+    /* Botão "voltar ao topo" fica por cima da barra */
     #back-to-top { bottom: 88px !important; }
 
-    /* Mobile nav: dark frosted background when open */
+    /* Menu mobile com fundo escuro fosco */
     .navbar-collapse.show,
     .navbar-collapse.collapsing {
         background: rgba(10, 10, 12, 0.97);
@@ -138,7 +136,7 @@
         border: 1px solid rgba(201, 159, 91, 0.12);
     }
 
-    /* Larger tap targets in mobile nav */
+    /* Área de toque adequada nos links do menu */
     .navbar-collapse .nav-link {
         min-height: 44px;
         display: flex;
@@ -163,49 +161,47 @@
         margin-top: 4px;
     }
 
-    /* Toggler — bigger tap area */
+    /* Botão hamburger */
     .navbar-toggler {
         width: 44px;
         height: 44px;
         padding: 8px;
     }
 
-    /* Section vertical padding */
+    /* Espaçamento vertical das secções */
     section, .section { padding-top: 56px !important; padding-bottom: 56px !important; }
 
-    /* Page-header hero */
+    /* Cabeçalho de página */
     .page-header { min-height: 240px !important; }
 
-    /* Intro booking bar */
+    /* Barra de reserva */
     .intro-booking-form { border-radius: 16px; margin: 0 12px; }
 }
 
-/* ══════════════════════════════════════════════
-   BREAKPOINT ≤ 767px — MOBILE PHONES
-══════════════════════════════════════════════ */
+/* -------------------------------------------
+   Telemóvel (≤ 767px)
+------------------------------------------- */
 @media (max-width: 767.98px) {
 
-    /* Section padding */
     section, .section { padding-top: 44px !important; padding-bottom: 44px !important; }
 
-    /* Hero headings */
+    /* Títulos fluidos */
     h1, .h1 { font-size: clamp(2rem, 8vw, 3rem) !important; }
     h2, .h2 { font-size: clamp(1.6rem, 6vw, 2.4rem) !important; }
 
-    /* Page header */
     .page-header { min-height: 200px !important; }
     .page-header h1 { font-size: clamp(1.8rem, 7vw, 2.8rem) !important; }
 
-    /* Booking form: stack vertically */
+    /* Formulário de reserva em coluna */
     .intro-booking-form .row > [class*="col-"] { margin-bottom: 12px; }
     .intro-booking-form { padding: 20px 16px; }
     .intro-booking-form .btn { width: 100%; margin-top: 4px; }
 
-    /* Reservation stepper: compress */
+    /* Stepper de reserva */
     .fh-steps { gap: 8px; }
     .fh-step-label { font-size: 10px; }
 
-    /* Calendar — larger day cells for touch */
+    /* Calendário com células maiores para toque */
     .fh-cal { padding: 16px 10px; }
     .fh-cal-day {
         padding: 7px 2px;
@@ -218,30 +214,28 @@
     }
     .fh-cal-nav { width: 40px; height: 40px; font-size: 18px; }
 
-    /* Gallery: 2 columns on mobile */
+    /* Galeria a 2 colunas */
     .gallery-grid, [class*="masonry"] { column-count: 2 !important; gap: 8px !important; }
 
-    /* Testimonials: no side margin */
+    /* Testemunhos sem margem lateral */
     .testimonial-card, [class*="testimonial"] { margin-left: 0 !important; margin-right: 0 !important; }
 
-    /* POI map: full width */
+    /* Mapa a largura total */
     #map, .fh-map { border-radius: 12px !important; }
 
-    /* Experience section: stack */
     .exp-card { border-radius: 16px; }
 
-    /* Contact form */
-    .form-dark .form-control, .form-dark .form-select { font-size: 16px; } /* prevent iOS zoom */
+    /* font-size mínimo de 16px para evitar zoom automático no iOS */
+    .form-dark .form-control, .form-dark .form-select { font-size: 16px; }
 
-    /* Stats / counters */
     .counter-item { padding: 20px 12px; }
 
-    /* Footer: center everything */
+    /* Footer centrado */
     footer .row > [class*="col-"] { text-align: center; }
     footer .social-icons { justify-content: center; }
     footer .footer-links { justify-content: center; }
 
-    /* Disable parallax (jarallax) on mobile for performance */
+    /* Parallax desativado em mobile */
     .jarallax, [data-jarallax] {
         background-attachment: scroll !important;
         transform: none !important;
@@ -253,41 +247,38 @@
     }
 }
 
-/* ══════════════════════════════════════════════
-   BREAKPOINT ≤ 575px — SMALL PHONES
-══════════════════════════════════════════════ */
+/* -------------------------------------------
+   Telemóvel pequeno (≤ 575px)
+------------------------------------------- */
 @media (max-width: 575.98px) {
 
-    /* Fluid headline overrides */
+    /* Tamanhos de título para ecrãs pequenos */
     .text-19 { font-size: clamp(2rem, 10vw, 3.5rem) !important; }
     .text-13 { font-size: clamp(1.6rem, 8vw, 2.8rem) !important; }
     .text-11 { font-size: clamp(1.3rem, 6vw, 2rem) !important; }
 
-    /* Hide purely decorative circle-text element */
+    /* Elemento decorativo — desnecessário em ecrãs pequenos */
     .circle-text { display: none !important; }
 
-    /* Section padding — tighter on small screens */
     section, .section { padding-top: 36px !important; padding-bottom: 36px !important; }
 
-    /* Booking form */
     .intro-booking-form { margin: 0 8px; padding: 18px 14px; border-radius: 14px; }
 
-    /* Calendar: compact */
+    /* Calendário compacto */
     .fh-cal { padding: 12px 6px; }
     .fh-cal-dow { font-size: 9px; padding: 4px 1px; }
     .fh-cal-day { font-size: 12px; padding: 6px 1px; min-height: 32px; }
     .fh-cal-day .dp { font-size: 8px; }
     .fh-cal-month { font-size: 17px; }
 
-    /* Bottom bar on very small screens */
+    /* Barra inferior em ecrãs muito pequenos */
     .fh-mobile-bar { padding: 8px 12px calc(8px + env(safe-area-inset-bottom)); gap: 8px; }
     .fh-wa-btn { width: 44px; height: 44px; font-size: 20px; }
     .fh-mobile-bar .btn { height: 44px; font-size: 13px; }
 
-    /* Ensure touch targets meet 44px minimum */
+    /* Área de toque mínima de 44px */
     .btn, a.btn, button { min-height: 44px; }
     .nav-link { min-height: 44px !important; }
 
-    /* Hide side decorations */
     .side-img, .floating-badge { display: none !important; }
 }
