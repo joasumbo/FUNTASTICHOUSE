@@ -80,12 +80,12 @@
             {{-- Pill nav --}}
             <nav id="tour-pill-nav" class="hidden md:flex items-center gap-1 bg-white rounded-full px-2 py-1.5 ml-2" style="box-shadow:0 1px 3px rgba(0,0,0,0.06)">
                 @php
-                    $mainNav = [
-                        ['route' => 'admin.dashboard',  'label' => 'Dashboard'],
-                        ['route' => 'admin.reservas',   'label' => 'Reservas'],
-                        ['route' => 'admin.calendario', 'label' => 'Calendário'],
-                        ['route' => 'admin.precario',   'label' => 'Preçário'],
-                    ];
+                    $mainNav = collect([
+                        ['route' => 'admin.dashboard',  'label' => 'Dashboard',  'perm' => null],
+                        ['route' => 'admin.reservas',   'label' => 'Reservas',   'perm' => 'reservas'],
+                        ['route' => 'admin.calendario', 'label' => 'Calendário', 'perm' => 'calendario'],
+                        ['route' => 'admin.precario',   'label' => 'Preçário',   'perm' => 'precario'],
+                    ])->filter(fn ($i) => $i['perm'] === null || auth()->user()->hasPermission($i['perm']))->values();
                 @endphp
                 @foreach($mainNav as $item)
                     @php $active = request()->routeIs($item['route'] . '*'); @endphp
@@ -303,30 +303,33 @@
             <p class="px-3 mb-2 text-[11px] font-semibold text-gray-400 uppercase tracking-wider">Principal</p>
 
             @php
-                $drawerMain = [
-                    ['route' => 'admin.dashboard',  'label' => 'Dashboard',
+                $drawerMain = collect([
+                    ['route' => 'admin.dashboard',  'label' => 'Dashboard',  'perm' => null,
                      'd' => 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6'],
-                    ['route' => 'admin.reservas',   'label' => 'Reservas',
+                    ['route' => 'admin.reservas',   'label' => 'Reservas',   'perm' => 'reservas',
                      'd' => 'M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z'],
-                    ['route' => 'admin.calendario', 'label' => 'Calendário',
+                    ['route' => 'admin.calendario', 'label' => 'Calendário', 'perm' => 'calendario',
                      'd' => 'M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z'],
-                    ['route' => 'admin.precario',   'label' => 'Preçário',
+                    ['route' => 'admin.precario',   'label' => 'Preçário',   'perm' => 'precario',
                      'd' => 'M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z'],
-                    ['route' => 'admin.regras',     'label' => 'Regras',
+                    ['route' => 'admin.regras',     'label' => 'Regras',     'perm' => 'regras',
                      'd' => 'M13 10V3L4 14h7v7l9-11h-7z'],
-                ];
-                $drawerSec = [
-                    ['route' => 'admin.galeria',       'label' => 'Galeria',
+                ])->filter(fn ($i) => $i['perm'] === null || auth()->user()->hasPermission($i['perm']))->values();
+
+                $drawerSec = collect([
+                    ['route' => 'admin.galeria',       'label' => 'Galeria',             'perm' => 'galeria',
                      'd' => 'M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z'],
-                    ['route' => 'admin.pois',          'label' => 'Pontos de Interesse',
+                    ['route' => 'admin.pois',          'label' => 'Pontos de Interesse', 'perm' => 'pois',
                      'd' => 'M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z M15 11a3 3 0 11-6 0 3 3 0 016 0z'],
-                    ['route' => 'admin.testemunhos',   'label' => 'Testemunhos',
+                    ['route' => 'admin.testemunhos',   'label' => 'Testemunhos',         'perm' => 'testemunhos',
                      'd' => 'M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z'],
-                    ['route' => 'admin.paginas',       'label' => 'Páginas',
+                    ['route' => 'admin.paginas',       'label' => 'Páginas',             'perm' => 'paginas',
                      'd' => 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z'],
-                    ['route' => 'admin.configuracoes', 'label' => 'Configurações',
+                    ['route' => 'admin.configuracoes', 'label' => 'Configurações',       'perm' => 'configuracoes',
                      'd' => 'M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065zM15 12a3 3 0 11-6 0 3 3 0 016 0z'],
-                ];
+                    ['route' => 'admin.utilizadores',  'label' => 'Utilizadores',        'perm' => 'utilizadores',
+                     'd' => 'M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z'],
+                ])->filter(fn ($i) => auth()->user()->hasPermission($i['perm']))->values();
             @endphp
 
             @foreach($drawerMain as $i => $item)

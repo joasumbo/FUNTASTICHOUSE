@@ -25,6 +25,8 @@ class User extends Authenticatable
         'password',
         'is_admin',
         'photo',
+        'role',
+        'permissions',
     ];
 
     /**
@@ -48,6 +50,26 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password'          => 'hashed',
             'is_admin'          => 'boolean',
+            'permissions'       => 'array',
         ];
+    }
+
+    public function isSuperAdmin(): bool
+    {
+        return $this->role === 'superadmin';
+    }
+
+    public function hasPermission(string $section): bool
+    {
+        if ($this->role === 'superadmin') {
+            return true;
+        }
+
+        // utilizadores is superadmin-only
+        if ($section === 'utilizadores') {
+            return false;
+        }
+
+        return !empty(($this->permissions ?? [])[$section]);
     }
 }
