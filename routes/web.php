@@ -77,6 +77,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::get('/reservas',                        [AdminReservaController::class, 'index'])->name('reservas');
             Route::get('/reservas/{reservation}',          [AdminReservaController::class, 'show'])->name('reservas.show');
             Route::patch('/reservas/{reservation}/status', [AdminReservaController::class, 'updateStatus'])->name('reservas.status');
+            Route::get('/api/reservas/search',             [AdminReservaController::class, 'liveSearch'])->name('api.reservas.search');
         });
 
         // Calendário

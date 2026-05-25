@@ -24,11 +24,14 @@ class ReservaController extends Controller
         }
 
         if ($request->filled('search')) {
-            $search = $request->search;
+            $search = trim($request->search);
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
                   ->orWhere('email', 'like', "%{$search}%")
                   ->orWhere('phone', 'like', "%{$search}%");
+                if (is_numeric($search)) {
+                    $q->orWhere('id', (int) $search);
+                }
             });
         }
 
@@ -51,6 +54,54 @@ class ReservaController extends Controller
         ];
 
         return view('admin.reservas.index', compact('reservations', 'experiences', 'counts'));
+    }
+
+    public function liveSearch(Request $request)
+    {
+        $query = Reservation::with('experience')->latest();
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        if ($request->filled('q')) {
+            $s = trim($request->q);
+            $query->where(function ($q) use ($s) {
+                $q->where('name', 'like', "%{$s}%")
+                  ->orWhere('email', 'like', "%{$s}%")
+                  ->orWhere('phone', 'like', "%{$s}%");
+                if (is_numeric($s)) {
+                    $q->orWhere('id', (int) $s);
+                }
+            });
+        }
+
+        if ($request->filled('experience_id')) {
+            $query->where('experience_id', $request->experience_id);
+        }
+
+        if ($request->filled('date_from')) {
+            $query->whereDate('check_in', '>=', $request->date_from);
+        }
+
+        if ($request->filled('date_to')) {
+            $query->whereDate('check_in', '<=', $request->date_to);
+        }
+
+        return $query->take(150)->get()->map(fn ($r) => [
+            'id'         => $r->id,
+            'name'       => $r->name,
+            'email'      => $r->email,
+            'phone'      => $r->phone ?? '',
+            'experience' => $r->experience?->name_pt ?? '—',
+            'check_in'   => $r->check_in->format('d/m/Y'),
+            'check_out'  => $r->check_out->format('d/m/Y'),
+            'guests'     => $r->guests,
+            'status'     => $r->status,
+            'created_at' => $r->created_at->format('d/m/Y'),
+            'url'        => route('admin.reservas.show', $r),
+            'status_url' => route('admin.reservas.status', $r),
+        ]);
     }
 
     public function show(Reservation $reservation)

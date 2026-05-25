@@ -217,7 +217,7 @@
                     @endif
                     <div class="hidden sm:flex flex-col items-start leading-tight">
                         <span class="text-sm font-semibold text-gray-900">{{ auth()->user()->name }}</span>
-                        <span class="text-[11px] text-gray-400">Super Admin</span>
+                        <span class="text-[11px] text-gray-400">{{ auth()->user()->isSuperAdmin() ? 'Superadmin' : 'Staff' }}</span>
                     </div>
                     <svg class="hidden sm:block ml-1" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="#6b7280" stroke-width="2.2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
