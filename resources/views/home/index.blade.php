@@ -336,18 +336,18 @@
             locale: drpLocale[locale] || drpLocale.pt,
             isInvalidDate: inv
         }).on('apply.daterangepicker', function (ev, picker) {
-            var newMin = picker.startDate.clone().add(1, 'day');
+            var newMin = picker.startDate.clone();
             var drpOut = $(heroOut).data('daterangepicker');
             if (drpOut) { drpOut.minDate = newMin; }
             if (heroOut.value) {
                 var co = moment(heroOut.value, 'DD/MM/YYYY');
-                if (co.isSameOrBefore(picker.startDate, 'day')) { heroOut.value = ''; }
+                if (co.isBefore(picker.startDate, 'day')) { heroOut.value = ''; }
             }
         });
 
         $(heroOut).off('apply.daterangepicker').daterangepicker({
             singleDatePicker: true, autoApply: true,
-            minDate: moment().add(2, 'days'),
+            minDate: moment().add(1, 'day'),
             locale: drpLocale[locale] || drpLocale.pt,
             isInvalidDate: inv
         });

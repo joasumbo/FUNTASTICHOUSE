@@ -88,6 +88,15 @@
             <a href="{{ url('/') }}" class="hover:text-gray-600 transition">← Voltar ao site público</a>
         </p>
 
+        <div class="text-center mt-6">
+            <p class="text-[10px] text-gray-300 mb-1.5">Powered by</p>
+            <a href="https://workmind.pt" target="_blank" rel="noopener">
+                <img src="https://workmind.pt/layout2/assets/images/logo/logo.svg"
+                     alt="Workmind"
+                     class="h-5 mx-auto opacity-40 hover:opacity-70 transition grayscale">
+            </a>
+        </div>
+
     </div>
 
 </body>

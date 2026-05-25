@@ -24,7 +24,7 @@
                     </div>
 
                     <div class="col-sm-4 col-md-4 col-lg-2 ms-auto">
-                        <h5 class="heading-font-family fw-600 mb-3">{{ __('footer.nav_title') }}</h5>
+                        <h5 class="heading-font-family fw-600 mb-3" style="color:#fff">{{ __('footer.nav_title') }}</h5>
                         <ul class="nav flex-column fw-500 text-3">
                             <li class="nav-item"><a class="nav-link" href="{{ route('home') }}">{{ __('nav.home') }}</a></li>
                             <li class="nav-item"><a class="nav-link" href="{{ route('porque-nos') }}">{{ __('nav.porque_nos') }}</a></li>
@@ -36,7 +36,7 @@
                     </div>
 
                     <div class="col-sm-4 col-md-3 col-lg-2">
-                        <h5 class="heading-font-family fw-600 mb-3">{{ __('footer.experiences_title') }}</h5>
+                        <h5 class="heading-font-family fw-600 mb-3" style="color:#fff">{{ __('footer.experiences_title') }}</h5>
                         <ul class="nav flex-column fw-500 text-3">
                             <li class="nav-item"><a class="nav-link" href="{{ route('experiencia.show', 'imersiva') }}">{{ __('nav.exp_imersiva') }}</a></li>
                             <li class="nav-item"><a class="nav-link" href="{{ route('experiencia.show', 'spa') }}">{{ __('nav.exp_spa') }}</a></li>
@@ -46,7 +46,7 @@
                     </div>
 
                     <div class="col-12 col-lg-3">
-                        <h5 class="heading-font-family fw-600 mb-3">{{ __('footer.contact_title') }}</h5>
+                        <h5 class="heading-font-family fw-600 mb-3" style="color:#fff">{{ __('footer.contact_title') }}</h5>
                         @if($settings->get('phone'))
                             <a href="tel:{{ preg_replace('/\s+/', '', $settings->get('phone')) }}" class="d-flex align-items-center gap-3 mb-3 link-primary link-underline-opacity-0 link-underline-opacity-100-hover">
                                 <span class="text-5"><i class="fa-solid fa-phone-volume"></i></span>
