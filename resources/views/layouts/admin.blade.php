@@ -37,6 +37,11 @@
     </style>
 </head>
 <body class="min-h-screen">
+@php
+    $pendingCount  = \App\Models\Reservation::where('status','pending')->count();
+    $pendingRecent = \App\Models\Reservation::where('status','pending')
+        ->with('experience')->latest()->take(5)->get();
+@endphp
 
 <div
     x-data="{ drawer: false, userMenu: false, notif: false }"
@@ -81,9 +86,16 @@
                     @php $active = request()->routeIs($item['route'] . '*'); @endphp
                     <a
                         href="{{ route($item['route']) }}"
-                        class="px-5 py-2 rounded-full text-sm font-medium transition-all {{ $active ? 'text-white' : 'text-gray-600 hover:bg-gray-50' }}"
+                        class="flex items-center gap-1.5 px-5 py-2 rounded-full text-sm font-medium transition-all {{ $active ? 'text-white' : 'text-gray-600 hover:bg-gray-50' }}"
                         @if($active) style="background:#c99f5b; box-shadow:0 2px 6px rgba(201,159,91,0.3)" @endif
-                    >{{ $item['label'] }}</a>
+                    >
+                        {{ $item['label'] }}
+                        @if($item['route'] === 'admin.reservas' && $pendingCount > 0)
+                            <span class="text-[10px] font-bold px-1.5 py-0.5 rounded-full leading-none {{ $active ? 'bg-white/30 text-white' : 'bg-red-100 text-red-600' }}">
+                                {{ $pendingCount > 99 ? '99+' : $pendingCount }}
+                            </span>
+                        @endif
+                    </a>
                 @endforeach
             </nav>
 
@@ -100,29 +112,84 @@
                     <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="#1f2937" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
                     </svg>
+                    @if($pendingCount > 0)
+                    <span class="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] px-1 bg-red-500 rounded-full flex items-center justify-center text-[10px] text-white font-bold leading-none">
+                        {{ $pendingCount > 9 ? '9+' : $pendingCount }}
+                    </span>
+                    @endif
                 </button>
+
                 <div
                     x-show="notif"
                     @click.outside="notif = false"
                     x-cloak
                     x-transition:enter="transition ease-out duration-150"
-                    x-transition:enter-start="opacity-0 scale-95"
-                    x-transition:enter-end="opacity-100 scale-100"
-                    class="absolute right-0 mt-2 w-72 bg-white rounded-2xl p-5 z-40"
+                    x-transition:enter-start="opacity-0 scale-95 -translate-y-1"
+                    x-transition:enter-end="opacity-100 scale-100 translate-y-0"
+                    class="absolute right-0 mt-2 w-80 bg-white rounded-2xl overflow-hidden z-40"
                     style="box-shadow:0 10px 40px rgba(0,0,0,0.12), 0 0 0 1px rgba(0,0,0,0.04)"
                 >
-                    <div class="flex items-center justify-between mb-3">
+                    {{-- Header --}}
+                    <div class="flex items-center justify-between px-4 py-3.5 border-b border-gray-100">
                         <h3 class="font-semibold text-sm text-gray-900">Notificações</h3>
+                        @if($pendingCount > 0)
+                        <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-red-100 text-red-600">
+                            {{ $pendingCount }} pendente{{ $pendingCount > 1 ? 's' : '' }}
+                        </span>
+                        @endif
                     </div>
-                    <div class="flex flex-col items-center justify-center py-8 text-center">
-                        <div class="w-12 h-12 rounded-full bg-gray-50 flex items-center justify-center mb-3">
-                            <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="#9ca3af" stroke-width="1.8">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
-                            </svg>
+
+                    @if($pendingCount > 0)
+                        {{-- Pending reservations list --}}
+                        <div class="divide-y divide-gray-50 max-h-72 overflow-y-auto">
+                            @foreach($pendingRecent as $pr)
+                            <a href="{{ route('admin.reservas.show', $pr) }}"
+                               @click="notif = false"
+                               class="flex items-start gap-3 px-4 py-3 hover:bg-amber-50/40 transition-colors group">
+                                <div class="w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                    <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="#d97706" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                    </svg>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-sm font-semibold text-gray-900 truncate group-hover:text-amber-700 transition-colors">
+                                        {{ $pr->name }}
+                                    </p>
+                                    <p class="text-xs text-gray-500 truncate">
+                                        {{ $pr->experience?->name_pt ?? '—' }}
+                                        · {{ $pr->check_in->format('d M Y') }}
+                                    </p>
+                                    <p class="text-[10px] text-gray-400 mt-0.5">{{ $pr->created_at->diffForHumans() }}</p>
+                                </div>
+                                <svg class="flex-shrink-0 mt-1 text-gray-300 group-hover:text-amber-400 transition-colors" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+                                </svg>
+                            </a>
+                            @endforeach
                         </div>
-                        <p class="text-sm text-gray-500">Sem notificações</p>
-                        <p class="text-xs text-gray-400 mt-1">Aparece aqui quando houver novidades</p>
-                    </div>
+
+                        {{-- Footer: ver todas --}}
+                        <div class="px-4 py-3 border-t border-gray-100 bg-gray-50/50">
+                            <a href="{{ route('admin.reservas', ['status' => 'pending']) }}"
+                               @click="notif = false"
+                               class="text-xs font-semibold text-[#c99f5b] hover:underline flex items-center gap-1">
+                                Ver todas as reservas pendentes
+                                <svg width="11" height="11" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+                                </svg>
+                            </a>
+                        </div>
+                    @else
+                        <div class="flex flex-col items-center justify-center py-10 text-center px-4">
+                            <div class="w-12 h-12 rounded-full bg-gray-50 flex items-center justify-center mb-3">
+                                <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="#9ca3af" stroke-width="1.8">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                            </div>
+                            <p class="text-sm font-semibold text-gray-700">Tudo em dia</p>
+                            <p class="text-xs text-gray-400 mt-1">Sem reservas pendentes</p>
+                        </div>
+                    @endif
                 </div>
             </div>
 
@@ -263,7 +330,12 @@
                     <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                         <path stroke-linecap="round" stroke-linejoin="round" d="{{ $item['d'] }}"/>
                     </svg>
-                    {{ $item['label'] }}
+                    <span class="flex-1">{{ $item['label'] }}</span>
+                    @if($item['route'] === 'admin.reservas' && $pendingCount > 0)
+                        <span class="text-[10px] font-bold px-2 py-0.5 rounded-full leading-none {{ $active ? 'bg-white/30 text-white' : 'bg-red-100 text-red-600' }}">
+                            {{ $pendingCount > 99 ? '99+' : $pendingCount }}
+                        </span>
+                    @endif
                 </a>
             @endforeach
 
