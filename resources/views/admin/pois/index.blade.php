@@ -4,6 +4,10 @@
 
 @push('head')
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.min.css">
+<style>
+.poi-mini-map { height: 210px; border-radius: 0.75rem; border: 1px solid #e5e7eb; }
+</style>
 @endpush
 
 @section('content')
@@ -254,20 +258,41 @@
                                   class="w-full text-sm border border-gray-200 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-900/20 resize-none"></textarea>
                     </div>
                 </div>
+                {{-- Localização com mapa interativo --}}
+                <div>
+                    <label class="block text-xs font-medium text-gray-700 mb-1">Localização</label>
+                    <p class="text-xs text-gray-400 mb-2">Pesquise a morada ou clique no mapa para posicionar o pin. Pode arrastar o pin para ajustar a posição exacta.</p>
+                    <div class="flex gap-2 mb-2">
+                        <input type="text" x-model="addModal.searchQuery"
+                               @keydown.enter.prevent="geocodeAdd()"
+                               placeholder="Ex: Palácio da Pena, Sintra, Portugal"
+                               class="flex-1 text-sm border border-gray-200 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-900/20">
+                        <button type="button" @click="geocodeAdd()" :disabled="addModal.geocoding"
+                                class="shrink-0 text-sm bg-gray-900 text-white px-3 py-2 rounded-xl hover:bg-gray-700 transition disabled:opacity-50">
+                            <span x-show="!addModal.geocoding">Localizar</span>
+                            <span x-show="addModal.geocoding">...</span>
+                        </button>
+                    </div>
+                    <div id="add-poi-map" class="poi-mini-map mb-1"></div>
+                    <p class="text-xs text-gray-400">Clique no mapa para posicionar · Arraste o pin para ajustar · As coordenadas são preenchidas automaticamente</p>
+                </div>
                 <div class="grid grid-cols-3 gap-4">
                     <div>
                         <label class="block text-xs font-medium text-gray-700 mb-1">Latitude *</label>
-                        <input type="number" name="lat" step="0.0000001" placeholder="38.9000000" required
+                        <input type="number" name="lat" step="0.0000001" x-model="addModal.lat"
+                               @change="updateAddPin()" placeholder="38.9000000" required
                                class="w-full text-sm border border-gray-200 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-900/20">
                     </div>
                     <div>
                         <label class="block text-xs font-medium text-gray-700 mb-1">Longitude *</label>
-                        <input type="number" name="lng" step="0.0000001" placeholder="-9.3800000" required
+                        <input type="number" name="lng" step="0.0000001" x-model="addModal.lng"
+                               @change="updateAddPin()" placeholder="-9.3800000" required
                                class="w-full text-sm border border-gray-200 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-900/20">
                     </div>
                     <div>
                         <label class="block text-xs font-medium text-gray-700 mb-1">Distância (km)</label>
-                        <input type="number" name="distance_km" step="0.1" min="0" placeholder="5.0"
+                        <input type="number" name="distance_km" step="0.1" min="0" x-model="addModal.distance_km"
+                               placeholder="5.0"
                                class="w-full text-sm border border-gray-200 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-900/20">
                     </div>
                 </div>
@@ -331,15 +356,34 @@
                                   class="w-full text-sm border border-gray-200 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-900/20 resize-none"></textarea>
                     </div>
                 </div>
+                {{-- Localização com mapa interativo --}}
+                <div>
+                    <label class="block text-xs font-medium text-gray-700 mb-1">Localização</label>
+                    <div class="flex gap-2 mb-2">
+                        <input type="text" x-model="editModal.searchQuery"
+                               @keydown.enter.prevent="geocodeEdit()"
+                               placeholder="Ex: Quinta da Regaleira, Sintra"
+                               class="flex-1 text-sm border border-gray-200 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-900/20">
+                        <button type="button" @click="geocodeEdit()" :disabled="editModal.geocoding"
+                                class="shrink-0 text-sm bg-gray-900 text-white px-3 py-2 rounded-xl hover:bg-gray-700 transition disabled:opacity-50">
+                            <span x-show="!editModal.geocoding">Localizar</span>
+                            <span x-show="editModal.geocoding">...</span>
+                        </button>
+                    </div>
+                    <div id="edit-poi-map" class="poi-mini-map mb-1"></div>
+                    <p class="text-xs text-gray-400">Clique no mapa para reposicionar · Arraste o pin para ajustar</p>
+                </div>
                 <div class="grid grid-cols-3 gap-4">
                     <div>
                         <label class="block text-xs font-medium text-gray-700 mb-1">Latitude *</label>
-                        <input type="number" name="lat" step="0.0000001" x-model="editModal.lat" required
+                        <input type="number" name="lat" step="0.0000001" x-model="editModal.lat"
+                               @change="updateEditPin()" required
                                class="w-full text-sm border border-gray-200 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-900/20">
                     </div>
                     <div>
                         <label class="block text-xs font-medium text-gray-700 mb-1">Longitude *</label>
-                        <input type="number" name="lng" step="0.0000001" x-model="editModal.lng" required
+                        <input type="number" name="lng" step="0.0000001" x-model="editModal.lng"
+                               @change="updateEditPin()" required
                                class="w-full text-sm border border-gray-200 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gray-900/20">
                     </div>
                     <div>
@@ -499,29 +543,185 @@
 @endsection
 
 @push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.min.js"></script>
 <script>
+/* Instâncias de mapa fora do Alpine para evitar reatividade em objetos complexos */
+var _poiMaps = { add: null, addMarker: null, edit: null, editMarker: null };
+
 function poisApp() {
     return {
         activeTab: 'all',
-        addModal:       { open: false },
-        editModal:      { open: false, action: '', name_pt: '', name_en: '', description_pt: '', description_en: '', poi_category_id: '', lat: '', lng: '', distance_km: '', active: true },
+
+        addModal: {
+            open: false,
+            lat: '', lng: '', distance_km: '',
+            searchQuery: '', geocoding: false,
+        },
+        editModal: {
+            open: false, action: '',
+            name_pt: '', name_en: '', description_pt: '', description_en: '',
+            poi_category_id: '', lat: '', lng: '', distance_km: '', active: true,
+            searchQuery: '', geocoding: false,
+        },
         deleteModal:    { open: false, action: '', name: '' },
         catAddModal:    { open: false },
         catEditModal:   { open: false, action: '', name_pt: '', name_en: '', icon: '' },
         catDeleteModal: { open: false, action: '', name: '' },
 
+        init() {
+            this.$watch('addModal.open', (val) => {
+                if (val) setTimeout(() => this.initAddMap(), 150);
+            });
+            this.$watch('editModal.open', (val) => {
+                if (val) setTimeout(() => this.initEditMap(), 150);
+            });
+        },
+
+        /* ── Mapa do modal Adicionar ─────────────────── */
+        initAddMap() {
+            if (!document.getElementById('add-poi-map')) return;
+            if (_poiMaps.add) {
+                _poiMaps.add.invalidateSize();
+                return;
+            }
+            _poiMaps.add = L.map('add-poi-map', { scrollWheelZoom: false })
+                            .setView([38.93, -9.38], 11);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+            }).addTo(_poiMaps.add);
+            _poiMaps.add.on('click', (e) => {
+                this.placeAddMarker(e.latlng.lat, e.latlng.lng);
+            });
+        },
+
+        placeAddMarker(lat, lng) {
+            if (_poiMaps.addMarker) _poiMaps.add.removeLayer(_poiMaps.addMarker);
+            _poiMaps.addMarker = L.marker([lat, lng], { draggable: true }).addTo(_poiMaps.add);
+            this.addModal.lat = parseFloat(lat).toFixed(7);
+            this.addModal.lng = parseFloat(lng).toFixed(7);
+            _poiMaps.addMarker.on('dragend', (e) => {
+                var pos = e.target.getLatLng();
+                this.addModal.lat = pos.lat.toFixed(7);
+                this.addModal.lng = pos.lng.toFixed(7);
+            });
+        },
+
+        updateAddPin() {
+            if (!_poiMaps.add || !this.addModal.lat || !this.addModal.lng) return;
+            var lat = parseFloat(this.addModal.lat);
+            var lng = parseFloat(this.addModal.lng);
+            if (isNaN(lat) || isNaN(lng)) return;
+            _poiMaps.add.setView([lat, lng], 14);
+            this.placeAddMarker(lat, lng);
+        },
+
+        async geocodeAdd() {
+            if (!this.addModal.searchQuery.trim()) return;
+            this.addModal.geocoding = true;
+            try {
+                var url = 'https://nominatim.openstreetmap.org/search?format=json&limit=1&q='
+                    + encodeURIComponent(this.addModal.searchQuery)
+                    + '&email=hello@funtastichouse.pt';
+                var res  = await fetch(url, { headers: { 'Accept-Language': 'pt-PT,pt;q=0.9,en;q=0.5' } });
+                var data = await res.json();
+                if (data.length > 0) {
+                    var lat = parseFloat(data[0].lat);
+                    var lng = parseFloat(data[0].lon);
+                    _poiMaps.add.setView([lat, lng], 15);
+                    this.placeAddMarker(lat, lng);
+                } else {
+                    alert('Local não encontrado. Tente com uma morada mais específica.');
+                }
+            } catch (e) {
+                alert('Erro ao pesquisar. Verifique a ligação e tente de novo.');
+            } finally {
+                this.addModal.geocoding = false;
+            }
+        },
+
+        /* ── Mapa do modal Editar ────────────────────── */
+        initEditMap() {
+            if (!document.getElementById('edit-poi-map')) return;
+            var lat  = this.editModal.lat  ? parseFloat(this.editModal.lat)  : 38.93;
+            var lng  = this.editModal.lng  ? parseFloat(this.editModal.lng)  : -9.38;
+            var zoom = this.editModal.lat  ? 14 : 11;
+
+            if (_poiMaps.edit) {
+                _poiMaps.edit.invalidateSize();
+                _poiMaps.edit.setView([lat, lng], zoom);
+                if (this.editModal.lat && this.editModal.lng) this.placeEditMarker(lat, lng);
+                return;
+            }
+            _poiMaps.edit = L.map('edit-poi-map', { scrollWheelZoom: false })
+                             .setView([lat, lng], zoom);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+            }).addTo(_poiMaps.edit);
+            _poiMaps.edit.on('click', (e) => {
+                this.placeEditMarker(e.latlng.lat, e.latlng.lng);
+            });
+            if (this.editModal.lat && this.editModal.lng) this.placeEditMarker(lat, lng);
+        },
+
+        placeEditMarker(lat, lng) {
+            if (_poiMaps.editMarker) _poiMaps.edit.removeLayer(_poiMaps.editMarker);
+            _poiMaps.editMarker = L.marker([lat, lng], { draggable: true }).addTo(_poiMaps.edit);
+            this.editModal.lat = parseFloat(lat).toFixed(7);
+            this.editModal.lng = parseFloat(lng).toFixed(7);
+            _poiMaps.editMarker.on('dragend', (e) => {
+                var pos = e.target.getLatLng();
+                this.editModal.lat = pos.lat.toFixed(7);
+                this.editModal.lng = pos.lng.toFixed(7);
+            });
+        },
+
+        updateEditPin() {
+            if (!_poiMaps.edit || !this.editModal.lat || !this.editModal.lng) return;
+            var lat = parseFloat(this.editModal.lat);
+            var lng = parseFloat(this.editModal.lng);
+            if (isNaN(lat) || isNaN(lng)) return;
+            _poiMaps.edit.setView([lat, lng], 14);
+            this.placeEditMarker(lat, lng);
+        },
+
+        async geocodeEdit() {
+            if (!this.editModal.searchQuery.trim()) return;
+            this.editModal.geocoding = true;
+            try {
+                var url = 'https://nominatim.openstreetmap.org/search?format=json&limit=1&q='
+                    + encodeURIComponent(this.editModal.searchQuery)
+                    + '&email=hello@funtastichouse.pt';
+                var res  = await fetch(url, { headers: { 'Accept-Language': 'pt-PT,pt;q=0.9,en;q=0.5' } });
+                var data = await res.json();
+                if (data.length > 0) {
+                    var lat = parseFloat(data[0].lat);
+                    var lng = parseFloat(data[0].lon);
+                    _poiMaps.edit.setView([lat, lng], 15);
+                    this.placeEditMarker(lat, lng);
+                } else {
+                    alert('Local não encontrado. Tente com uma morada mais específica.');
+                }
+            } catch (e) {
+                alert('Erro ao pesquisar. Verifique a ligação e tente de novo.');
+            } finally {
+                this.editModal.geocoding = false;
+            }
+        },
+
+        /* ── Abrir modals ────────────────────────────── */
         openEdit(poi) {
-            this.editModal.action           = `/admin/pois/${poi.id}`;
-            this.editModal.name_pt          = poi.name_pt;
-            this.editModal.name_en          = poi.name_en;
-            this.editModal.description_pt   = poi.description_pt ?? '';
-            this.editModal.description_en   = poi.description_en ?? '';
-            this.editModal.poi_category_id  = String(poi.poi_category_id);
-            this.editModal.lat              = poi.lat;
-            this.editModal.lng              = poi.lng;
-            this.editModal.distance_km      = poi.distance_km ?? '';
-            this.editModal.active           = Boolean(poi.active);
-            this.editModal.open             = true;
+            this.editModal.action          = `/admin/pois/${poi.id}`;
+            this.editModal.name_pt         = poi.name_pt;
+            this.editModal.name_en         = poi.name_en;
+            this.editModal.description_pt  = poi.description_pt ?? '';
+            this.editModal.description_en  = poi.description_en ?? '';
+            this.editModal.poi_category_id = String(poi.poi_category_id);
+            this.editModal.lat             = poi.lat ?? '';
+            this.editModal.lng             = poi.lng ?? '';
+            this.editModal.distance_km     = poi.distance_km ?? '';
+            this.editModal.active          = Boolean(poi.active);
+            this.editModal.searchQuery     = '';
+            this.editModal.open            = true;
         },
 
         openDelete(poi) {
