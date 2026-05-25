@@ -6,7 +6,7 @@
 @section('content')
 
 <section class="page-header page-header-text-light py-0 mb-0">
-    <div class="hero-wrap" style="height:200px;">
+    <div class="hero-wrap" style="height:280px;">
         <div class="hero-mask opacity-8 bg-black"></div>
         <div class="hero-bg" style="background-image:url('{{ asset('images/slider/slide-1.jpg') }}');"></div>
         <div class="hero-content d-flex align-items-end pb-5 h-100">
@@ -30,7 +30,7 @@
         <div class="row justify-content-center">
             <div class="col-lg-8">
                 <div class="fh-page-content">
-                    {!! nl2br(e(app()->getLocale() === 'pt' ? $page->content_pt : $page->content_en)) !!}
+                    {!! \Illuminate\Support\Str::markdown(app()->getLocale() === 'pt' ? ($page->content_pt ?? '') : ($page->content_en ?? '')) !!}
                 </div>
             </div>
         </div>
@@ -39,15 +39,12 @@
 
 @push('styles')
 <style>
-.fh-page-content {
-    font-size: 1rem;
-    line-height: 1.8;
-    color: var(--bs-body-color);
-}
-.fh-page-content strong {
-    font-weight: 700;
-    color: #1a1a1a;
-}
+.fh-page-content { font-size:1rem; line-height:1.85; color:var(--bs-body-color); }
+.fh-page-content h1,.fh-page-content h2,.fh-page-content h3 { font-family:var(--bs-font-sans-serif); font-weight:700; margin-top:2rem; margin-bottom:.75rem; color:#1a1a1a; }
+.fh-page-content strong { font-weight:700; color:#1a1a1a; }
+.fh-page-content p { margin-bottom:1rem; }
+.fh-page-content ul,.fh-page-content ol { padding-left:1.5rem; margin-bottom:1rem; }
+.fh-page-content li { margin-bottom:.35rem; }
 </style>
 @endpush
 

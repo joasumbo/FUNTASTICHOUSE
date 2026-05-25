@@ -329,13 +329,23 @@
         var inv = function (d) {
             return d.isBefore(moment(), 'day') || blk.indexOf(d.format('YYYY-MM-DD')) !== -1;
         };
-        $(heroIn).daterangepicker({
+
+        $(heroIn).off('apply.daterangepicker').daterangepicker({
             singleDatePicker: true, autoApply: true,
             minDate: moment().add(1, 'day'),
             locale: drpLocale[locale] || drpLocale.pt,
             isInvalidDate: inv
+        }).on('apply.daterangepicker', function (ev, picker) {
+            var newMin = picker.startDate.clone().add(1, 'day');
+            var drpOut = $(heroOut).data('daterangepicker');
+            if (drpOut) { drpOut.minDate = newMin; }
+            if (heroOut.value) {
+                var co = moment(heroOut.value, 'DD/MM/YYYY');
+                if (co.isSameOrBefore(picker.startDate, 'day')) { heroOut.value = ''; }
+            }
         });
-        $(heroOut).daterangepicker({
+
+        $(heroOut).off('apply.daterangepicker').daterangepicker({
             singleDatePicker: true, autoApply: true,
             minDate: moment().add(2, 'days'),
             locale: drpLocale[locale] || drpLocale.pt,
