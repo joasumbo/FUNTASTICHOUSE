@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\PerfilController as AdminPerfilController;
 use App\Http\Controllers\Admin\CalendarioController as AdminCalendarioController;
 use App\Http\Controllers\Admin\GaleriaController as AdminGaleriaController;
 use App\Http\Controllers\Admin\PoiController as AdminPoiController;
+use App\Http\Controllers\Admin\TestemunhoController as AdminTestemunhoController;
 use App\Http\Controllers\Admin\PrecarioController as AdminPrecarioController;
 use App\Http\Controllers\Admin\RegraController as AdminRegraController;
 use App\Http\Controllers\Admin\ReservaController as AdminReservaController;
@@ -100,7 +101,13 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::patch('/pois/{poi}/toggle',               [AdminPoiController::class, 'toggle'])->name('pois.toggle');
         Route::patch('/pois/{poi}',                      [AdminPoiController::class, 'update'])->name('pois.update');
         Route::delete('/pois/{poi}',                     [AdminPoiController::class, 'destroy'])->name('pois.destroy');
-        Route::get('/testemunhos', fn () => abort(404))->name('testemunhos');
+        // Testemunhos
+        Route::get('/testemunhos',                         [AdminTestemunhoController::class, 'index'])->name('testemunhos');
+        Route::post('/testemunhos',                        [AdminTestemunhoController::class, 'store'])->name('testemunhos.store');
+        Route::post('/testemunhos/reorder',                [AdminTestemunhoController::class, 'reorder'])->name('testemunhos.reorder');
+        Route::patch('/testemunhos/{testimonial}/toggle',  [AdminTestemunhoController::class, 'toggle'])->name('testemunhos.toggle');
+        Route::patch('/testemunhos/{testimonial}',         [AdminTestemunhoController::class, 'update'])->name('testemunhos.update');
+        Route::delete('/testemunhos/{testimonial}',        [AdminTestemunhoController::class, 'destroy'])->name('testemunhos.destroy');
         Route::get('/configuracoes',fn () => abort(404))->name('configuracoes');
     });
 });
