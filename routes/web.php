@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\PerfilController as AdminPerfilController;
 use App\Http\Controllers\Admin\CalendarioController as AdminCalendarioController;
 use App\Http\Controllers\Admin\PrecarioController as AdminPrecarioController;
+use App\Http\Controllers\Admin\RegraController as AdminRegraController;
 use App\Http\Controllers\Admin\ReservaController as AdminReservaController;
 use App\Http\Controllers\ContactosController;
 use App\Http\Controllers\ExperienciaController;
@@ -75,6 +76,13 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('/precario/rules',                      [AdminPrecarioController::class, 'storeRule'])->name('precario.rules.store');
         Route::patch('/precario/rules/{rule}',              [AdminPrecarioController::class, 'updateRule'])->name('precario.rules.update');
         Route::delete('/precario/rules/{rule}',             [AdminPrecarioController::class, 'destroyRule'])->name('precario.rules.destroy');
+        // Regras
+        Route::get('/regras',                  [AdminRegraController::class, 'index'])->name('regras');
+        Route::post('/regras',                 [AdminRegraController::class, 'store'])->name('regras.store');
+        Route::patch('/regras/{rule}',         [AdminRegraController::class, 'update'])->name('regras.update');
+        Route::delete('/regras/{rule}',        [AdminRegraController::class, 'destroy'])->name('regras.destroy');
+        Route::patch('/regras/{rule}/toggle',  [AdminRegraController::class, 'toggle'])->name('regras.toggle');
+
         Route::get('/galeria',     fn () => abort(404))->name('galeria');
         Route::get('/pois',        fn () => abort(404))->name('pois');
         Route::get('/testemunhos', fn () => abort(404))->name('testemunhos');
