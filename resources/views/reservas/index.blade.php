@@ -405,19 +405,25 @@ function renderCal(data) {
     var first = new Date(y, m, 1).getDay();
     first = first === 0 ? 6 : first - 1;
     var days = new Date(y, m + 1, 0).getDate();
+
+    var now = new Date(); now.setHours(0,0,0,0);
+    var todayDs = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0') + '-' + String(now.getDate()).padStart(2,'0');
+
     var html = '';
     for (var i = 0; i < first; i++) html += '<div class="fh-cal-day empty"></div>';
     for (var d = 1; d <= days; d++) {
         var ds   = y + '-' + String(m+1).padStart(2,'0') + '-' + String(d).padStart(2,'0');
         var dow  = new Date(y, m, d).getDay();
         var wknd = (dow === 0 || dow === 6);
-        var isOcc = occ.indexOf(ds) !== -1;
+        var isPast = ds < todayDs;
+        var isOcc  = isPast || occ.indexOf(ds) !== -1;
         var cls  = 'fh-cal-day';
-        if (isOcc) cls += ' occ';
+        if (isOcc)  cls += ' occ';
+        if (isPast) cls += ' past';
         if (wknd && !isOcc) cls += ' wknd';
-        if (fhSel.in  === ds) cls += ' sel-in' + (fhSel.out ? ' has-range' : ' awaiting-out');
-        if (fhSel.out === ds) cls += ' sel-out';
-        if (fhSel.in && fhSel.out && ds > fhSel.in && ds < fhSel.out) cls += ' in-range';
+        if (!isPast && fhSel.in  === ds) cls += ' sel-in' + (fhSel.out ? ' has-range' : ' awaiting-out');
+        if (!isPast && fhSel.out === ds) cls += ' sel-out';
+        if (!isPast && fhSel.in && fhSel.out && ds > fhSel.in && ds < fhSel.out) cls += ' in-range';
         var price     = wknd ? p.weekend : p.base;
         var priceHtml = isOcc ? '' : '<span class="dp">' + price + '€</span>';
         var click     = isOcc ? '' : ' onclick="fhPickDate(\'' + ds + '\')"';
