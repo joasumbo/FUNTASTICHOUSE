@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\AuthController as AdminAuthController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\PerfilController as AdminPerfilController;
 use App\Http\Controllers\Admin\CalendarioController as AdminCalendarioController;
+use App\Http\Controllers\Admin\PrecarioController as AdminPrecarioController;
 use App\Http\Controllers\Admin\ReservaController as AdminReservaController;
 use App\Http\Controllers\ContactosController;
 use App\Http\Controllers\ExperienciaController;
@@ -68,7 +69,12 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/api/calendar',               [AdminCalendarioController::class, 'data'])->name('api.calendar');
         Route::post('/api/calendar/block',        [AdminCalendarioController::class, 'block'])->name('api.calendar.block');
         Route::delete('/api/calendar/unblock',    [AdminCalendarioController::class, 'unblock'])->name('api.calendar.unblock');
-        Route::get('/precario',    fn () => abort(404))->name('precario');
+        // Preçário
+        Route::get('/precario',                             [AdminPrecarioController::class, 'index'])->name('precario');
+        Route::patch('/precario/{experience}/prices',       [AdminPrecarioController::class, 'updatePrices'])->name('precario.prices');
+        Route::post('/precario/rules',                      [AdminPrecarioController::class, 'storeRule'])->name('precario.rules.store');
+        Route::patch('/precario/rules/{rule}',              [AdminPrecarioController::class, 'updateRule'])->name('precario.rules.update');
+        Route::delete('/precario/rules/{rule}',             [AdminPrecarioController::class, 'destroyRule'])->name('precario.rules.destroy');
         Route::get('/galeria',     fn () => abort(404))->name('galeria');
         Route::get('/pois',        fn () => abort(404))->name('pois');
         Route::get('/testemunhos', fn () => abort(404))->name('testemunhos');
