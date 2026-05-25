@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\AuthController as AdminAuthController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\PerfilController as AdminPerfilController;
+use App\Http\Controllers\Admin\CalendarioController as AdminCalendarioController;
 use App\Http\Controllers\Admin\ReservaController as AdminReservaController;
 use App\Http\Controllers\ContactosController;
 use App\Http\Controllers\ExperienciaController;
@@ -62,7 +63,11 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/reservas',                        [AdminReservaController::class, 'index'])->name('reservas');
         Route::get('/reservas/{reservation}',          [AdminReservaController::class, 'show'])->name('reservas.show');
         Route::patch('/reservas/{reservation}/status', [AdminReservaController::class, 'updateStatus'])->name('reservas.status');
-        Route::get('/calendario',  fn () => abort(404))->name('calendario');
+        // Calendário
+        Route::get('/calendario',                 [AdminCalendarioController::class, 'index'])->name('calendario');
+        Route::get('/api/calendar',               [AdminCalendarioController::class, 'data'])->name('api.calendar');
+        Route::post('/api/calendar/block',        [AdminCalendarioController::class, 'block'])->name('api.calendar.block');
+        Route::delete('/api/calendar/unblock',    [AdminCalendarioController::class, 'unblock'])->name('api.calendar.unblock');
         Route::get('/precario',    fn () => abort(404))->name('precario');
         Route::get('/galeria',     fn () => abort(404))->name('galeria');
         Route::get('/pois',        fn () => abort(404))->name('pois');
