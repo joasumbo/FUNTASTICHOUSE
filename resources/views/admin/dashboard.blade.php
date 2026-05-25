@@ -326,12 +326,7 @@
         {{-- Section header --}}
         <div class="flex items-center justify-between">
             <div>
-                <h2 class="text-[20px] font-bold text-gray-900 flex items-center gap-2">
-                    <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="#c99f5b" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
-                    </svg>
-                    Estatísticas do Site
-                </h2>
+                <h2 class="text-[20px] font-bold text-gray-900">Estatísticas do Site</h2>
                 <p class="text-sm text-gray-500 mt-0.5">Visitantes e páginas — últimos 30 dias</p>
             </div>
         </div>

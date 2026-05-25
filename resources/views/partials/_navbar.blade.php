@@ -66,7 +66,7 @@
                     <span>|</span>
                     <a href="{{ route('locale.switch', 'en') }}" class="{{ app()->getLocale() === 'en' ? 'active' : '' }}">EN</a>
                 </div>
-                <a href="{{ route('reservas') }}" class="btn btn-new btn-primary text-capitalize rounded-pill text-nowrap">
+                <a href="{{ route('reservas') }}" class="btn btn-new btn-primary text-capitalize rounded-pill text-nowrap fh-nav-cta">
                     <span class="btn-text"><span>{{ __('nav.reservar') }}</span></span>
                     <span class="btn-icon"><i class="fa-solid fa-arrow-right"></i></span>
                 </a>

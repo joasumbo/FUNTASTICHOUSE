@@ -62,3 +62,232 @@
 .form-dark .form-control::placeholder { color:rgba(255,255,255,.3) !important; }
 .form-dark label { color:rgba(255,255,255,.7); font-size:13px; font-weight:500; }
 .form-dark select option { background:#0a0a0c; }
+
+/* ══════════════════════════════════════════════
+   MOBILE BOTTOM BAR (TASK-17)
+══════════════════════════════════════════════ */
+.fh-mobile-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1040;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
+    background: rgba(10, 10, 12, 0.96);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-top: 1px solid rgba(201, 159, 91, 0.18);
+    box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.35);
+}
+
+.fh-wa-btn {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: #25d366;
+    color: #fff;
+    font-size: 22px;
+    text-decoration: none;
+    transition: opacity .2s;
+}
+.fh-wa-btn:hover { opacity: .85; color: #fff; }
+
+.fh-mobile-bar .btn {
+    flex: 1;
+    height: 48px;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: .04em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+/* ══════════════════════════════════════════════
+   BREAKPOINT ≤ 991px — TABLET / MOBILE
+══════════════════════════════════════════════ */
+@media (max-width: 991.98px) {
+
+    /* Push page content above the bottom bar */
+    #main-wrapper { padding-bottom: 76px; }
+
+    /* Hide the redundant "Reservar" button in the top navbar */
+    .fh-nav-cta { display: none !important; }
+
+    /* Keep back-to-top above the bottom bar */
+    #back-to-top { bottom: 88px !important; }
+
+    /* Mobile nav: dark frosted background when open */
+    .navbar-collapse.show,
+    .navbar-collapse.collapsing {
+        background: rgba(10, 10, 12, 0.97);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border-radius: 0 0 20px 20px;
+        padding: 12px 8px 16px;
+        margin-top: 8px;
+        border: 1px solid rgba(201, 159, 91, 0.12);
+    }
+
+    /* Larger tap targets in mobile nav */
+    .navbar-collapse .nav-link {
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+        padding: 10px 16px !important;
+        border-radius: 10px;
+    }
+    .navbar-collapse .nav-link:hover,
+    .navbar-collapse .nav-link.active {
+        background: rgba(201, 159, 91, 0.1);
+    }
+    .navbar-collapse .dropdown-item {
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+        border-radius: 8px;
+    }
+    .navbar-collapse .dropdown-menu {
+        background: rgba(20, 20, 24, 0.95);
+        border: 1px solid rgba(201, 159, 91, 0.12);
+        border-radius: 12px;
+        margin-top: 4px;
+    }
+
+    /* Toggler — bigger tap area */
+    .navbar-toggler {
+        width: 44px;
+        height: 44px;
+        padding: 8px;
+    }
+
+    /* Section vertical padding */
+    section, .section { padding-top: 56px !important; padding-bottom: 56px !important; }
+
+    /* Page-header hero */
+    .page-header { min-height: 240px !important; }
+
+    /* Intro booking bar */
+    .intro-booking-form { border-radius: 16px; margin: 0 12px; }
+}
+
+/* ══════════════════════════════════════════════
+   BREAKPOINT ≤ 767px — MOBILE PHONES
+══════════════════════════════════════════════ */
+@media (max-width: 767.98px) {
+
+    /* Section padding */
+    section, .section { padding-top: 44px !important; padding-bottom: 44px !important; }
+
+    /* Hero headings */
+    h1, .h1 { font-size: clamp(2rem, 8vw, 3rem) !important; }
+    h2, .h2 { font-size: clamp(1.6rem, 6vw, 2.4rem) !important; }
+
+    /* Page header */
+    .page-header { min-height: 200px !important; }
+    .page-header h1 { font-size: clamp(1.8rem, 7vw, 2.8rem) !important; }
+
+    /* Booking form: stack vertically */
+    .intro-booking-form .row > [class*="col-"] { margin-bottom: 12px; }
+    .intro-booking-form { padding: 20px 16px; }
+    .intro-booking-form .btn { width: 100%; margin-top: 4px; }
+
+    /* Reservation stepper: compress */
+    .fh-steps { gap: 8px; }
+    .fh-step-label { font-size: 10px; }
+
+    /* Calendar — larger day cells for touch */
+    .fh-cal { padding: 16px 10px; }
+    .fh-cal-day {
+        padding: 7px 2px;
+        font-size: 13px;
+        min-height: 36px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+    .fh-cal-nav { width: 40px; height: 40px; font-size: 18px; }
+
+    /* Gallery: 2 columns on mobile */
+    .gallery-grid, [class*="masonry"] { column-count: 2 !important; gap: 8px !important; }
+
+    /* Testimonials: no side margin */
+    .testimonial-card, [class*="testimonial"] { margin-left: 0 !important; margin-right: 0 !important; }
+
+    /* POI map: full width */
+    #map, .fh-map { border-radius: 12px !important; }
+
+    /* Experience section: stack */
+    .exp-card { border-radius: 16px; }
+
+    /* Contact form */
+    .form-dark .form-control, .form-dark .form-select { font-size: 16px; } /* prevent iOS zoom */
+
+    /* Stats / counters */
+    .counter-item { padding: 20px 12px; }
+
+    /* Footer: center everything */
+    footer .row > [class*="col-"] { text-align: center; }
+    footer .social-icons { justify-content: center; }
+    footer .footer-links { justify-content: center; }
+
+    /* Disable parallax (jarallax) on mobile for performance */
+    .jarallax, [data-jarallax] {
+        background-attachment: scroll !important;
+        transform: none !important;
+    }
+    .jarallax > .jarallax-img {
+        position: relative !important;
+        transform: none !important;
+        top: 0 !important;
+    }
+}
+
+/* ══════════════════════════════════════════════
+   BREAKPOINT ≤ 575px — SMALL PHONES
+══════════════════════════════════════════════ */
+@media (max-width: 575.98px) {
+
+    /* Fluid headline overrides */
+    .text-19 { font-size: clamp(2rem, 10vw, 3.5rem) !important; }
+    .text-13 { font-size: clamp(1.6rem, 8vw, 2.8rem) !important; }
+    .text-11 { font-size: clamp(1.3rem, 6vw, 2rem) !important; }
+
+    /* Hide purely decorative circle-text element */
+    .circle-text { display: none !important; }
+
+    /* Section padding — tighter on small screens */
+    section, .section { padding-top: 36px !important; padding-bottom: 36px !important; }
+
+    /* Booking form */
+    .intro-booking-form { margin: 0 8px; padding: 18px 14px; border-radius: 14px; }
+
+    /* Calendar: compact */
+    .fh-cal { padding: 12px 6px; }
+    .fh-cal-dow { font-size: 9px; padding: 4px 1px; }
+    .fh-cal-day { font-size: 12px; padding: 6px 1px; min-height: 32px; }
+    .fh-cal-day .dp { font-size: 8px; }
+    .fh-cal-month { font-size: 17px; }
+
+    /* Bottom bar on very small screens */
+    .fh-mobile-bar { padding: 8px 12px calc(8px + env(safe-area-inset-bottom)); gap: 8px; }
+    .fh-wa-btn { width: 44px; height: 44px; font-size: 20px; }
+    .fh-mobile-bar .btn { height: 44px; font-size: 13px; }
+
+    /* Ensure touch targets meet 44px minimum */
+    .btn, a.btn, button { min-height: 44px; }
+    .nav-link { min-height: 44px !important; }
+
+    /* Hide side decorations */
+    .side-img, .floating-badge { display: none !important; }
+}
