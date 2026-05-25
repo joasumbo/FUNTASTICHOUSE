@@ -115,7 +115,15 @@
 
 @section('content')
 @php
-    $predefinedCats = ['imersiva', 'spa', 'exterior', 'jardim', 'piscina', 'interior'];
+    $predefinedCats = [
+        'quarto-estrelas'  => 'Quarto Estrelas',
+        'quarto-arco-iris' => 'Quarto Arco-Íris',
+        'cozinha-sala'     => 'Cozinha & Sala',
+        'casa-de-banho'    => 'Casa de Banho',
+        'jardim-exterior'  => 'Jardim & Exterior',
+        'jacuzzi-exterior' => 'Jacuzzi & Pátio',
+        'quartos-spa'      => 'Quartos Spa',
+    ];
 @endphp
 
 <div x-data="galeriaApp()" x-init="init()" class="space-y-5">
@@ -330,10 +338,10 @@
                     <div>
                         <label class="block text-xs font-semibold text-gray-600 mb-1.5">Categoria</label>
                         <input type="text" name="category" list="catList" class="gl-input"
-                               placeholder="imersiva, spa, exterior..." required>
+                               placeholder="quarto-estrelas, jardim-exterior..." required>
                         <datalist id="catList">
-                            @foreach($predefinedCats as $c)
-                            <option value="{{ $c }}">
+                            @foreach($predefinedCats as $slug => $label)
+                            <option value="{{ $slug }}">{{ $label }}</option>
                             @endforeach
                         </datalist>
                     </div>
@@ -391,8 +399,8 @@
                         <input type="text" name="category" list="catListEdit" class="gl-input"
                                x-model="editModal.category" required>
                         <datalist id="catListEdit">
-                            @foreach($predefinedCats as $c)
-                            <option value="{{ $c }}">
+                            @foreach($predefinedCats as $slug => $label)
+                            <option value="{{ $slug }}">{{ $label }}</option>
                             @endforeach
                         </datalist>
                     </div>

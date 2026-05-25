@@ -3,6 +3,18 @@
 @section('title', __('galeria.page_title'))
 @section('meta_description', __('galeria.seo_desc'))
 
+@php
+$catLabels = [
+    'quarto-estrelas'  => __('galeria.filter_quarto_estrelas'),
+    'quarto-arco-iris' => __('galeria.filter_quarto_arco_iris'),
+    'cozinha-sala'     => __('galeria.filter_cozinha_sala'),
+    'casa-de-banho'    => __('galeria.filter_casa_de_banho'),
+    'jardim-exterior'  => __('galeria.filter_jardim_exterior'),
+    'jacuzzi-exterior' => __('galeria.filter_jacuzzi_exterior'),
+    'quartos-spa'      => __('galeria.filter_quartos_spa'),
+];
+@endphp
+
 @section('content')
 
 {{-- Page Header --}}
@@ -36,54 +48,54 @@
         {{-- Galeria estática --}}
         <div class="d-flex justify-content-center gap-2 mb-5 flex-wrap wow fadeInUp">
             <button class="btn btn-sm btn-primary rounded-pill px-4 gallery-filter active" data-filter="all">{{ __('galeria.filter_all') }}</button>
-            <button class="btn btn-sm btn-outline-secondary rounded-pill px-4 gallery-filter" data-filter="imersiva">{{ __('galeria.filter_imersiva') }}</button>
-            <button class="btn btn-sm btn-outline-secondary rounded-pill px-4 gallery-filter" data-filter="spa">{{ __('galeria.filter_spa') }}</button>
-            <button class="btn btn-sm btn-outline-secondary rounded-pill px-4 gallery-filter" data-filter="exterior">{{ __('galeria.filter_exterior') }}</button>
+            @foreach($catLabels as $slug => $label)
+            <button class="btn btn-sm btn-outline-secondary rounded-pill px-4 gallery-filter" data-filter="{{ $slug }}">{{ $label }}</button>
+            @endforeach
         </div>
         <div class="row g-3 wow fadeInUp">
-            <div class="col-md-6 col-lg-4 gallery-item" data-cat="imersiva">
+            <div class="col-md-6 col-lg-4 gallery-item" data-cat="quarto-estrelas">
                 <a href="{{ asset('images/rooms/room-1.jpg') }}" class="glightbox d-block rounded-4 overflow-hidden" data-gallery="galeria">
                     <img class="img-fluid w-100" src="{{ asset('images/rooms/room-1.jpg') }}" alt="{{ __('galeria.alt_room1') }}" style="height:280px;object-fit:cover;">
                 </a>
             </div>
-            <div class="col-md-6 col-lg-4 gallery-item" data-cat="imersiva">
+            <div class="col-md-6 col-lg-4 gallery-item" data-cat="quarto-estrelas">
                 <a href="{{ asset('images/rooms/room-2.jpg') }}" class="glightbox d-block rounded-4 overflow-hidden" data-gallery="galeria">
                     <img class="img-fluid w-100" src="{{ asset('images/rooms/room-2.jpg') }}" alt="{{ __('galeria.alt_room2') }}" style="height:280px;object-fit:cover;">
                 </a>
             </div>
-            <div class="col-md-6 col-lg-4 gallery-item" data-cat="imersiva">
+            <div class="col-md-6 col-lg-4 gallery-item" data-cat="quarto-arco-iris">
                 <a href="{{ asset('images/rooms/room-3.jpg') }}" class="glightbox d-block rounded-4 overflow-hidden" data-gallery="galeria">
                     <img class="img-fluid w-100" src="{{ asset('images/rooms/room-3.jpg') }}" alt="{{ __('galeria.alt_room3') }}" style="height:280px;object-fit:cover;">
                 </a>
             </div>
-            <div class="col-md-6 col-lg-4 gallery-item" data-cat="imersiva">
+            <div class="col-md-6 col-lg-4 gallery-item" data-cat="casa-de-banho">
                 <a href="{{ asset('images/rooms/room-4.jpg') }}" class="glightbox d-block rounded-4 overflow-hidden" data-gallery="galeria">
                     <img class="img-fluid w-100" src="{{ asset('images/rooms/room-4.jpg') }}" alt="{{ __('galeria.alt_room4') }}" style="height:280px;object-fit:cover;">
                 </a>
             </div>
-            <div class="col-md-6 col-lg-4 gallery-item" data-cat="spa">
+            <div class="col-md-6 col-lg-4 gallery-item" data-cat="cozinha-sala">
+                <a href="{{ asset('images/about.jpg') }}" class="glightbox d-block rounded-4 overflow-hidden" data-gallery="galeria">
+                    <img class="img-fluid w-100" src="{{ asset('images/about.jpg') }}" alt="{{ __('galeria.alt_lounge') }}" style="height:280px;object-fit:cover;">
+                </a>
+            </div>
+            <div class="col-md-6 col-lg-4 gallery-item" data-cat="quartos-spa">
                 <a href="{{ asset('images/spa/spa.jpg') }}" class="glightbox d-block rounded-4 overflow-hidden" data-gallery="galeria">
                     <img class="img-fluid w-100" src="{{ asset('images/spa/spa.jpg') }}" alt="{{ __('galeria.alt_spa') }}" style="height:280px;object-fit:cover;">
                 </a>
             </div>
-            <div class="col-md-6 col-lg-4 gallery-item" data-cat="spa">
+            <div class="col-md-6 col-lg-4 gallery-item" data-cat="jacuzzi-exterior">
                 <a href="{{ asset('images/spa/spa-about.jpg') }}" class="glightbox d-block rounded-4 overflow-hidden" data-gallery="galeria">
                     <img class="img-fluid w-100" src="{{ asset('images/spa/spa-about.jpg') }}" alt="{{ __('galeria.alt_jacuzzi') }}" style="height:280px;object-fit:cover;">
                 </a>
             </div>
-            <div class="col-md-6 col-lg-4 gallery-item" data-cat="exterior">
+            <div class="col-md-6 col-lg-4 gallery-item" data-cat="jardim-exterior">
                 <a href="{{ asset('images/rooms/room-5.jpg') }}" class="glightbox d-block rounded-4 overflow-hidden" data-gallery="galeria">
                     <img class="img-fluid w-100" src="{{ asset('images/rooms/room-5.jpg') }}" alt="{{ __('galeria.alt_garden') }}" style="height:280px;object-fit:cover;">
                 </a>
             </div>
-            <div class="col-md-6 col-lg-4 gallery-item" data-cat="exterior">
+            <div class="col-md-6 col-lg-4 gallery-item" data-cat="jardim-exterior">
                 <a href="{{ asset('images/experience.jpg') }}" class="glightbox d-block rounded-4 overflow-hidden" data-gallery="galeria">
                     <img class="img-fluid w-100" src="{{ asset('images/experience.jpg') }}" alt="{{ __('galeria.alt_exterior') }}" style="height:280px;object-fit:cover;">
-                </a>
-            </div>
-            <div class="col-md-6 col-lg-4 gallery-item" data-cat="imersiva">
-                <a href="{{ asset('images/about.jpg') }}" class="glightbox d-block rounded-4 overflow-hidden" data-gallery="galeria">
-                    <img class="img-fluid w-100" src="{{ asset('images/about.jpg') }}" alt="{{ __('galeria.alt_lounge') }}" style="height:280px;object-fit:cover;">
                 </a>
             </div>
         </div>
@@ -92,7 +104,9 @@
         <div class="d-flex justify-content-center gap-2 mb-5 flex-wrap wow fadeInUp">
             <button class="btn btn-sm btn-primary rounded-pill px-4 gallery-filter active" data-filter="all">{{ __('galeria.filter_all') }}</button>
             @foreach($images->keys() as $cat)
-            <button class="btn btn-sm btn-outline-secondary rounded-pill px-4 gallery-filter" data-filter="{{ $cat }}">{{ ucfirst($cat) }}</button>
+            <button class="btn btn-sm btn-outline-secondary rounded-pill px-4 gallery-filter" data-filter="{{ $cat }}">
+                {{ $catLabels[$cat] ?? ucwords(str_replace('-', ' ', $cat)) }}
+            </button>
             @endforeach
         </div>
         <div class="row g-3 wow fadeInUp">

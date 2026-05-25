@@ -26,27 +26,27 @@ class ReservasController extends Controller
         $validated = $request->validate([
             'name'            => 'required|string|max:255',
             'email'           => 'required|email|max:255',
+            'phone_prefix'    => 'nullable|string|max:10',
             'phone'           => 'required|string|max:50',
             'check_in'        => 'required|date_format:d/m/Y',
             'check_out'       => 'required|date_format:d/m/Y',
             'adults'          => 'required|integer|min:1|max:20',
             'children'        => 'nullable|integer|min:0|max:10',
             'children_ages'   => 'nullable|string|max:100',
-            'experience_slug' => 'required|exists:experiences,slug',
+            'experience_slug' => 'nullable|exists:experiences,slug',
             'message'         => 'nullable|string|max:2000',
         ], [
-            'name.required'            => 'O nome completo é obrigatório.',
-            'email.required'           => 'O email é obrigatório.',
-            'email.email'              => 'Introduz um endereço de email válido.',
-            'phone.required'           => 'O número de telefone é obrigatório.',
-            'check_in.required'        => 'A data de check-in é obrigatória.',
-            'check_in.date_format'     => 'A data de check-in deve estar no formato DD/MM/AAAA.',
-            'check_out.required'       => 'A data de check-out é obrigatória.',
-            'check_out.date_format'    => 'A data de check-out deve estar no formato DD/MM/AAAA.',
-            'adults.required'          => 'O número de adultos é obrigatório.',
-            'adults.min'               => 'Deve haver pelo menos 1 adulto.',
-            'experience_slug.required' => 'Por favor seleciona uma experiência.',
-            'experience_slug.exists'   => 'A experiência selecionada não é válida.',
+            'name.required'         => 'O nome completo é obrigatório.',
+            'email.required'        => 'O email é obrigatório.',
+            'email.email'           => 'Introduz um endereço de email válido.',
+            'phone.required'        => 'O número de telefone é obrigatório.',
+            'check_in.required'     => 'A data de check-in é obrigatória.',
+            'check_in.date_format'  => 'A data de check-in deve estar no formato DD/MM/AAAA.',
+            'check_out.required'    => 'A data de check-out é obrigatória.',
+            'check_out.date_format' => 'A data de check-out deve estar no formato DD/MM/AAAA.',
+            'adults.required'       => 'O número de adultos é obrigatório.',
+            'adults.min'            => 'Deve haver pelo menos 1 adulto.',
+            'experience_slug.exists'=> 'A experiência selecionada não é válida.',
         ]);
 
         $checkIn  = Carbon::createFromFormat('d/m/Y', $validated['check_in'])->startOfDay();
@@ -58,8 +58,11 @@ class ReservasController extends Controller
             ]);
         }
 
-        $experience = Experience::where('slug', $validated['experience_slug'])->firstOrFail();
+        $experience = $validated['experience_slug']
+            ? Experience::where('slug', $validated['experience_slug'])->firstOrFail()
+            : null;
 
+        $phone  = trim(($validated['phone_prefix'] ?? '+351') . ' ' . $validated['phone']);
         $guests = (int) $validated['adults'] + (int) ($validated['children'] ?? 0);
 
         $notes = trim(
@@ -68,10 +71,10 @@ class ReservasController extends Controller
         );
 
         $reservation = Reservation::create([
-            'experience_id' => $experience->id,
+            'experience_id' => $experience?->id,
             'name'          => $validated['name'],
             'email'         => $validated['email'],
-            'phone'         => $validated['phone'],
+            'phone'         => $phone,
             'check_in'      => $checkIn->format('Y-m-d'),
             'check_out'     => $checkOut->format('Y-m-d'),
             'guests'        => $guests,
@@ -92,7 +95,7 @@ class ReservasController extends Controller
             return response()->json([
                 'success'    => true,
                 'name'       => $reservation->name,
-                'experience' => $experience->name_pt,
+                'experience' => $experience?->name_pt ?? (app()->getLocale() === 'pt' ? 'Sem preferência' : 'No preference'),
                 'check_in'   => $validated['check_in'],
                 'check_out'  => $validated['check_out'],
             ]);

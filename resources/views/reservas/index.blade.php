@@ -117,6 +117,13 @@ $prefill = [
 
 /* ── Success card ───────────────────────────────────────────────── */
 #reserva-success-card{display:none;animation:fhScaleIn .4s cubic-bezier(.34,1.56,.64,1) both;}
+
+/* ── Prefixo de telefone ────────────────────────────────────────── */
+.fh-phone-group{gap:0;}
+.fh-prefix-select{max-width:100px;border-radius:50rem 0 0 50rem!important;background:rgba(255,255,255,.06)!important;border:1px solid rgba(255,255,255,.15)!important;border-right:0!important;color:rgba(255,255,255,.85)!important;font-size:.82rem!important;padding:.5rem .75rem!important;cursor:pointer;flex-shrink:0;}
+.fh-prefix-select:focus{border-color:rgba(201,159,91,.6)!important;box-shadow:none!important;outline:none;}
+.fh-prefix-select option{background:#1c1c1c;color:#fff;}
+.fh-phone-input{border-radius:0 50rem 50rem 0!important;border-left:1px solid rgba(255,255,255,.08)!important;}
 </style>
 @endpush
 
@@ -231,7 +238,23 @@ $prefill = [
                             {{-- Telefone / Email --}}
                             <div class="col-md-6">
                                 <label class="form-label">{{ __('reservas.lbl_phone') }}</label>
-                                <input type="tel" name="phone" class="form-control rounded-pill" placeholder="{{ __('reservas.ph_phone') }}">
+                                <div class="input-group fh-phone-group">
+                                    <select name="phone_prefix" class="form-select fh-prefix-select">
+                                        <option value="+351" selected>PT +351</option>
+                                        <option value="+34">ES +34</option>
+                                        <option value="+33">FR +33</option>
+                                        <option value="+44">UK +44</option>
+                                        <option value="+49">DE +49</option>
+                                        <option value="+39">IT +39</option>
+                                        <option value="+31">NL +31</option>
+                                        <option value="+32">BE +32</option>
+                                        <option value="+1">US +1</option>
+                                        <option value="+55">BR +55</option>
+                                        <option value="+244">AO +244</option>
+                                        <option value="+258">MZ +258</option>
+                                    </select>
+                                    <input type="tel" name="phone" class="form-control fh-phone-input" placeholder="{{ __('reservas.ph_phone') }}">
+                                </div>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">{{ __('reservas.lbl_email') }}</label>
