@@ -59,11 +59,10 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('/perfil',             [AdminPerfilController::class, 'update'])->name('perfil.update');
         Route::post('/perfil/password',    [AdminPerfilController::class, 'updatePassword'])->name('perfil.password');
 
-        // Reserva detail
-        Route::get('/reservas/{reservation}', [AdminReservaController::class, 'show'])->name('reservas.show');
-
-        // Stub routes for future tasks (nav links won't 500)
-        Route::get('/reservas',    fn () => abort(404))->name('reservas');
+        // Reservas
+        Route::get('/reservas',                        [AdminReservaController::class, 'index'])->name('reservas');
+        Route::get('/reservas/{reservation}',          [AdminReservaController::class, 'show'])->name('reservas.show');
+        Route::patch('/reservas/{reservation}/status', [AdminReservaController::class, 'updateStatus'])->name('reservas.status');
         Route::get('/calendario',  fn () => abort(404))->name('calendario');
         Route::get('/precario',    fn () => abort(404))->name('precario');
         Route::get('/galeria',     fn () => abort(404))->name('galeria');
