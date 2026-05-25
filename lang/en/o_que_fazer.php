@@ -10,4 +10,5 @@ return [
     'map_note'     => 'Map being updated with points of interest recommended by the house.',
     'coming_soon'  => 'Coming soon.',
     'pois_soon'    => 'Points of interest coming soon.',
+    'seo_desc'     => 'Discover what to do near Funtastic House — Pena Palace, Quinta da Regaleira, Ericeira beaches and much more.',
 ];

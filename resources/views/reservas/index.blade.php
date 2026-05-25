@@ -1,6 +1,7 @@
 @extends('layouts.site')
 
 @section('title', __('reservas.page_title'))
+@section('meta_description', __('reservas.seo_desc'))
 
 @php
 $fhI18n = [

@@ -22,4 +22,5 @@ return [
     'stat_rating'     => 'Average Rating',
     'cta_title'       => 'Ready for an <span class="text-primary">unforgettable experience?</span>',
     'btn_reserve'     => 'Book Now',
+    'seo_desc'        => 'Discover what makes Funtastic House unique — an immersive accommodation experience, crafted in detail, minutes from Sintra, Ericeira and Mafra.',
 ];

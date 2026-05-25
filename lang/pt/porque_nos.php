@@ -22,4 +22,5 @@ return [
     'stat_rating'     => 'Avaliação Média',
     'cta_title'       => 'Pronto para uma experiência <span class="text-primary">inesquecível?</span>',
     'btn_reserve'     => 'Reservar Agora',
+    'seo_desc'        => 'Descobre o que torna a Funtastic House única — uma experiência de alojamento imersiva, pensada ao pormenor, a poucos minutos de Sintra, Ericeira e Mafra.',
 ];

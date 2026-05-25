@@ -1,6 +1,7 @@
 @extends('layouts.site')
 
 @section('title', __('home.page_title'))
+@section('meta_description', __('home.seo_desc'))
 
 @section('content')
 

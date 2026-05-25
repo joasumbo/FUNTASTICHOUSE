@@ -1,6 +1,7 @@
 @extends('layouts.site')
 
 @section('title', (app()->getLocale() === 'pt' ? $experience->name_pt : $experience->name_en) . ' — Funtastic House')
+@section('meta_description', app()->getLocale() === 'pt' ? $experience->short_description_pt : $experience->short_description_en)
 
 @section('content')
 

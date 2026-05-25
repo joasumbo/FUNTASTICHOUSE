@@ -10,4 +10,5 @@ return [
     'map_note'     => 'Mapa a atualizar com os pontos de interesse recomendados pela casa.',
     'coming_soon'  => 'Em breve.',
     'pois_soon'    => 'Pontos de interesse em breve.',
+    'seo_desc'     => 'Descobre o que fazer perto da Funtastic House — Palácio da Pena, Quinta da Regaleira, praias da Ericeira e muito mais.',
 ];

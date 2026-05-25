@@ -1,6 +1,7 @@
 @extends('layouts.site')
 
 @section('title', __('galeria.page_title'))
+@section('meta_description', __('galeria.seo_desc'))
 
 @section('content')
 

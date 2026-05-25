@@ -49,4 +49,5 @@ return [
     'test_badge'        => 'What They Say',
     'test_title'        => 'Our <span class="text-primary">guests</span>',
     'test_empty'        => 'Testimonials coming soon.',
+    'seo_desc'          => 'Unique themed accommodation near Sintra — rooms with starry ceiling, private pool, jacuzzi and immersive décor. Close to Sintra, Ericeira and Mafra.',
 ];

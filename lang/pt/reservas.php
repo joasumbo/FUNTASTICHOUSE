@@ -64,4 +64,5 @@ return [
     'js_err_network'     => 'Sem ligação ao servidor. Verifica a tua internet e tenta novamente.',
     'js_select_co'       => 'Seleciona o check-out',
     'js_select_dates'    => 'Seleciona as datas no calendário',
+    'seo_desc'           => 'Reserva a tua estadia na Funtastic House — verifica disponibilidade, escolhe a experiência e envia o teu pedido. Confirmação rápida, sem pagamento online.',
 ];

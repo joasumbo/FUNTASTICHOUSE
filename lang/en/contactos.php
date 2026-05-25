@@ -16,4 +16,5 @@ return [
     'ph_email'           => 'Email *',
     'ph_message'         => 'Message *',
     'btn_send'           => 'Send Message',
+    'seo_desc'           => 'Contact Funtastic House — phone, email and location. Close to Sintra, Ericeira and Mafra.',
 ];

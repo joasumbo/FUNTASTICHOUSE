@@ -64,4 +64,5 @@ return [
     'js_err_network'     => 'No server connection. Check your internet and try again.',
     'js_select_co'       => 'Select check-out',
     'js_select_dates'    => 'Select dates on the calendar',
+    'seo_desc'           => 'Book your stay at Funtastic House — check availability, choose your experience and submit your request. Quick confirmation, no online payment.',
 ];

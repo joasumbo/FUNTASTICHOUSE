@@ -49,4 +49,5 @@ return [
     'test_badge'        => 'O Que Dizem',
     'test_title'        => 'Os nossos <span class="text-primary">hóspedes</span>',
     'test_empty'        => 'Testemunhos em breve.',
+    'seo_desc'          => 'Alojamento temático único perto de Sintra — quartos com teto estrelado, piscina, jacuzzi privado e decoração imersiva. Perto de Sintra, Ericeira e Mafra.',
 ];

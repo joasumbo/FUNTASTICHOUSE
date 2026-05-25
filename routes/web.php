@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\ConfiguracaoController as AdminConfiguracaoContro
 use App\Http\Controllers\Admin\PrecarioController as AdminPrecarioController;
 use App\Http\Controllers\Admin\RegraController as AdminRegraController;
 use App\Http\Controllers\Admin\ReservaController as AdminReservaController;
+use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\ContactosController;
 use App\Http\Controllers\ExperienciaController;
 use App\Http\Controllers\GaleriaController;
@@ -27,6 +28,7 @@ use Illuminate\Support\Facades\Session;
 | Public site routes
 |--------------------------------------------------------------------------
 */
+Route::get('/sitemap.xml',        [SitemapController::class,    'index'])->name('sitemap');
 Route::get('/',                   [HomeController::class,       'index'])->name('home');
 Route::get('/porque-nos',         [PorqueNosController::class,  'index'])->name('porque-nos');
 Route::get('/galeria',            [GaleriaController::class,    'index'])->name('galeria');

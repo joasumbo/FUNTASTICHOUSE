@@ -21,4 +21,5 @@ return [
     'alt_garden'      => 'Garden',
     'alt_exterior'    => 'Exterior',
     'alt_lounge'      => 'Lounge',
+    'seo_desc'        => 'Explore the Funtastic House photo gallery — themed rooms, private pool, jacuzzi and creatively decorated spaces.',
 ];
