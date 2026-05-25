@@ -10,6 +10,10 @@ class SettingSeeder extends Seeder
     public function run(): void
     {
         $settings = [
+            'site_name'       => 'Funtastic House',
+            'logo'            => '',
+            'favicon'         => '',
+            'admin_favicon'   => '',
             'email'           => 'hello@funtastichouse.pt',
             'phone'           => '+351 900 000 000',
             'whatsapp'        => '351900000000',
@@ -22,6 +26,7 @@ class SettingSeeder extends Seeder
             'meta_title_en'   => 'Funtastic House — Themed Accommodation near Sintra',
             'meta_desc_pt'    => 'Alojamento local temático único perto de Sintra, Ericeira e Mafra. Duas experiências exclusivas: Imersiva e Spa.',
             'meta_desc_en'    => 'Unique themed local accommodation near Sintra, Ericeira and Mafra. Two exclusive experiences: Immersive and Spa.',
+            'og_image'        => '',
         ];
 
         foreach ($settings as $key => $value) {

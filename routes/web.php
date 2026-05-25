@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\CalendarioController as AdminCalendarioController
 use App\Http\Controllers\Admin\GaleriaController as AdminGaleriaController;
 use App\Http\Controllers\Admin\PoiController as AdminPoiController;
 use App\Http\Controllers\Admin\TestemunhoController as AdminTestemunhoController;
+use App\Http\Controllers\Admin\ConfiguracaoController as AdminConfiguracaoController;
 use App\Http\Controllers\Admin\PrecarioController as AdminPrecarioController;
 use App\Http\Controllers\Admin\RegraController as AdminRegraController;
 use App\Http\Controllers\Admin\ReservaController as AdminReservaController;
@@ -108,7 +109,12 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::patch('/testemunhos/{testimonial}/toggle',  [AdminTestemunhoController::class, 'toggle'])->name('testemunhos.toggle');
         Route::patch('/testemunhos/{testimonial}',         [AdminTestemunhoController::class, 'update'])->name('testemunhos.update');
         Route::delete('/testemunhos/{testimonial}',        [AdminTestemunhoController::class, 'destroy'])->name('testemunhos.destroy');
-        Route::get('/configuracoes',fn () => abort(404))->name('configuracoes');
+        // Configurações
+        Route::get('/configuracoes',                   [AdminConfiguracaoController::class, 'index'])->name('configuracoes');
+        Route::post('/configuracoes/geral',             [AdminConfiguracaoController::class, 'updateGeral'])->name('configuracoes.geral');
+        Route::post('/configuracoes/contactos',         [AdminConfiguracaoController::class, 'updateContactos'])->name('configuracoes.contactos');
+        Route::post('/configuracoes/social',            [AdminConfiguracaoController::class, 'updateSocial'])->name('configuracoes.social');
+        Route::post('/configuracoes/seo',               [AdminConfiguracaoController::class, 'updateSeo'])->name('configuracoes.seo');
     });
 });
 

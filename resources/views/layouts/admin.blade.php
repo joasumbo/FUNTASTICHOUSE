@@ -9,6 +9,10 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    @php $adminFavicon = \App\Models\Setting::get('admin_favicon'); @endphp
+    @if($adminFavicon)
+    <link rel="icon" href="{{ asset($adminFavicon) }}">
+    @endif
     @stack('head')
     <style>
         *, *::before, *::after { font-family: 'Inter', sans-serif; box-sizing: border-box; }
