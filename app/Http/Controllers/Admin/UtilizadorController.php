@@ -11,6 +11,7 @@ use Illuminate\Validation\Rules\Password;
 class UtilizadorController extends Controller
 {
     public const SECTIONS = [
+        'dashboard'     => 'Dashboard',
         'reservas'      => 'Reservas',
         'calendario'    => 'Calendário',
         'precario'      => 'Preçário',

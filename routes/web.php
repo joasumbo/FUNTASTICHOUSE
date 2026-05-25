@@ -65,7 +65,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
     Route::middleware(['admin'])->group(function () {
         Route::get('/', fn () => redirect()->route('admin.dashboard'));
-        Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
+        Route::middleware('permission:dashboard')->group(function () {
+            Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
+        });
 
         // Perfil (always accessible)
         Route::get('/perfil',           [AdminPerfilController::class, 'index'])->name('perfil');
@@ -78,6 +80,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::get('/reservas/{reservation}',          [AdminReservaController::class, 'show'])->name('reservas.show');
             Route::patch('/reservas/{reservation}/status', [AdminReservaController::class, 'updateStatus'])->name('reservas.status');
             Route::get('/api/reservas/search',             [AdminReservaController::class, 'liveSearch'])->name('api.reservas.search');
+            Route::get('/api/reservas/nova',               [AdminReservaController::class, 'novaCount'])->name('api.reservas.nova');
         });
 
         // Calendário

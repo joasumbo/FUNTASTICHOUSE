@@ -88,6 +88,8 @@ class ReservaController extends Controller
             $query->whereDate('check_in', '<=', $request->date_to);
         }
 
+        $threshold = now()->subMinutes(30);
+
         return $query->take(150)->get()->map(fn ($r) => [
             'id'         => $r->id,
             'name'       => $r->name,
@@ -99,14 +101,29 @@ class ReservaController extends Controller
             'guests'     => $r->guests,
             'status'     => $r->status,
             'created_at' => $r->created_at->format('d/m/Y'),
+            'is_nova'    => is_null($r->viewed_at) && $r->created_at->gt($threshold),
             'url'        => route('admin.reservas.show', $r),
             'status_url' => route('admin.reservas.status', $r),
         ]);
     }
 
+    public function novaCount()
+    {
+        $count = Reservation::where('created_at', '>=', now()->subMinutes(30))
+            ->whereNull('viewed_at')
+            ->count();
+
+        return response()->json(['count' => $count]);
+    }
+
     public function show(Reservation $reservation)
     {
         $reservation->load('experience');
+
+        if (is_null($reservation->viewed_at)) {
+            $reservation->update(['viewed_at' => now()]);
+        }
+
         return view('admin.reservas.show', compact('reservation'));
     }
 
@@ -116,7 +133,11 @@ class ReservaController extends Controller
             'status' => ['required', 'in:confirmed,cancelled,pending'],
         ]);
 
-        $reservation->update(['status' => $request->status]);
+        $reservation->update([
+            'status'    => $request->status,
+            'viewed_at' => $reservation->viewed_at ?? now(),
+        ]);
+
         $reservation->load('experience');
 
         Mail::to($reservation->email)->send(new ReservationStatusChanged($reservation));

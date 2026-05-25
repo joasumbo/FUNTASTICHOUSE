@@ -318,6 +318,186 @@
 
     </div>{{-- end grid --}}
 
+    {{-- ═══════════════════════════════════════════════════════════════════
+         ESTATÍSTICAS DO SITE
+    ════════════════════════════════════════════════════════════════════ --}}
+    <div class="pt-4 space-y-5">
+
+        {{-- Section header --}}
+        <div class="flex items-center justify-between">
+            <div>
+                <h2 class="text-[20px] font-bold text-gray-900 flex items-center gap-2">
+                    <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="#c99f5b" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                    </svg>
+                    Estatísticas do Site
+                </h2>
+                <p class="text-sm text-gray-500 mt-0.5">Visitantes e páginas — últimos 30 dias</p>
+            </div>
+        </div>
+
+        {{-- 4 KPI analytics cards --}}
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            @foreach([
+                ['label' => 'Hoje',              'value' => $analytics['today'],        'icon' => 'M12 3v1m0 16v1m8.66-9h-1M4.34 12H3m15.07-6.07l-.707.707M6.343 17.657l-.707.707M17.657 17.657l-.707-.707M6.343 6.343l-.707-.707',    'color' => '#7C82F9'],
+                ['label' => 'Esta Semana',       'value' => $analytics['week'],         'icon' => 'M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z',                                              'color' => '#c99f5b'],
+                ['label' => 'Este Mês',          'value' => $analytics['month'],        'icon' => 'M15 12a3 3 0 11-6 0 3 3 0 016 0z M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z', 'color' => '#10B981'],
+                ['label' => 'Visitantes Únicos', 'value' => $analytics['unique_month'], 'icon' => 'M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z',                                                                    'color' => '#F59E0B'],
+            ] as $kpi)
+            <div class="bg-white rounded-3xl p-5 hover:shadow-md transition" style="box-shadow:0 1px 3px rgba(0,0,0,0.06)">
+                <div class="flex items-start justify-between mb-3">
+                    <p class="text-xs text-gray-500 font-medium leading-snug">{{ $kpi['label'] }}</p>
+                    <div class="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0" style="background:{{ $kpi['color'] }}18">
+                        <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="{{ $kpi['color'] }}" stroke-width="1.8">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="{{ $kpi['icon'] }}"/>
+                        </svg>
+                    </div>
+                </div>
+                <p class="text-[26px] font-bold text-gray-900 leading-none">{{ number_format($kpi['value']) }}</p>
+                <p class="text-[11px] text-gray-400 mt-1.5">visualizações</p>
+            </div>
+            @endforeach
+        </div>
+
+        {{-- Line chart + Sources --}}
+        <div class="grid grid-cols-12 gap-5">
+
+            {{-- 30-day line chart --}}
+            <div class="col-span-12 lg:col-span-8 bg-white rounded-3xl p-6" style="box-shadow:0 1px 3px rgba(0,0,0,0.06)">
+                <div class="flex items-center justify-between mb-1">
+                    <h3 class="text-base font-semibold text-gray-900">Tendência (30 dias)</h3>
+                    <div class="flex items-center gap-4 text-xs text-gray-500">
+                        <span class="flex items-center gap-1.5">
+                            <span class="w-2.5 h-2.5 rounded-full" style="background:#c99f5b"></span>Visualizações
+                        </span>
+                        <span class="flex items-center gap-1.5">
+                            <span class="w-2.5 h-2.5 rounded-full" style="background:#7C82F9"></span>Visitantes únicos
+                        </span>
+                    </div>
+                </div>
+                <div style="height:220px">
+                    <canvas id="chartDailyViews"></canvas>
+                </div>
+            </div>
+
+            {{-- Traffic sources --}}
+            <div class="col-span-12 lg:col-span-4 bg-white rounded-3xl p-6" style="box-shadow:0 1px 3px rgba(0,0,0,0.06)">
+                <h3 class="text-base font-semibold text-gray-900 mb-4">Origem do Tráfego</h3>
+                @if($sources->isEmpty())
+                    <div class="flex flex-col items-center justify-center py-8 text-center">
+                        <p class="text-sm text-gray-400">Ainda sem dados</p>
+                    </div>
+                @else
+                    <div style="max-width:180px;margin:0 auto 16px">
+                        <canvas id="chartSources"></canvas>
+                    </div>
+                    @php $totalSrc = $sources->sum('views') ?: 1; @endphp
+                    <div class="space-y-2">
+                        @php $srcColors = ['#c99f5b','#7C82F9','#10B981','#F59E0B','#EF4444','#8B5CF6','#06B6D4']; @endphp
+                        @foreach($sources as $idx => $src)
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <span class="w-2 h-2 rounded-full flex-shrink-0" style="background:{{ $srcColors[$idx % 7] }}"></span>
+                                <span class="text-xs text-gray-600 truncate max-w-[110px]">{{ $src->source }}</span>
+                            </div>
+                            <span class="text-xs font-semibold text-gray-900">{{ number_format($src->views) }}</span>
+                        </div>
+                        @endforeach
+                    </div>
+                @endif
+            </div>
+
+        </div>
+
+        {{-- Top pages + Devices --}}
+        <div class="grid grid-cols-12 gap-5">
+
+            {{-- Top pages --}}
+            <div class="col-span-12 lg:col-span-8 bg-white rounded-3xl p-6" style="box-shadow:0 1px 3px rgba(0,0,0,0.06)">
+                <h3 class="text-base font-semibold text-gray-900 mb-4">Páginas Mais Vistas</h3>
+                @if($topPages->isEmpty())
+                    <div class="flex flex-col items-center justify-center py-8 text-center">
+                        <p class="text-sm text-gray-400">Ainda sem dados de navegação</p>
+                        <p class="text-xs text-gray-300 mt-1">As visitas ao site serão registadas automaticamente</p>
+                    </div>
+                @else
+                    @php $maxViews = $topPages->max('views') ?: 1; @endphp
+                    <div class="space-y-3">
+                        @foreach($topPages as $page)
+                        <div>
+                            <div class="flex items-center justify-between mb-1">
+                                <span class="text-sm text-gray-700 font-medium">{{ $page->page_name }}</span>
+                                <div class="flex items-center gap-3 text-xs text-gray-500">
+                                    <span class="font-semibold text-gray-900">{{ number_format($page->views) }}</span>
+                                    <span class="text-gray-300">|</span>
+                                    <span>{{ number_format($page->uniq) }} únicos</span>
+                                </div>
+                            </div>
+                            <div class="h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                                <div class="h-full rounded-full transition-all duration-700"
+                                     style="width:{{ round(($page->views / $maxViews) * 100) }}%;background:#c99f5b"></div>
+                            </div>
+                        </div>
+                        @endforeach
+                    </div>
+                @endif
+            </div>
+
+            {{-- Devices --}}
+            <div class="col-span-12 lg:col-span-4 bg-white rounded-3xl p-6" style="box-shadow:0 1px 3px rgba(0,0,0,0.06)">
+                <h3 class="text-base font-semibold text-gray-900 mb-4">Dispositivos</h3>
+                @if($devices->isEmpty())
+                    <div class="flex flex-col items-center justify-center py-8 text-center">
+                        <p class="text-sm text-gray-400">Ainda sem dados</p>
+                    </div>
+                @else
+                    @php
+                        $devTotal  = $devices->sum('views') ?: 1;
+                        $devLabels = ['desktop' => 'Computador', 'mobile' => 'Telemóvel', 'tablet' => 'Tablet'];
+                        $devIcons  = [
+                            'desktop' => 'M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z',
+                            'mobile'  => 'M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z',
+                            'tablet'  => 'M12 18h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z',
+                        ];
+                        $devColors = ['desktop' => '#c99f5b', 'mobile' => '#7C82F9', 'tablet' => '#10B981'];
+                    @endphp
+                    <div style="max-width:180px;margin:0 auto 20px">
+                        <canvas id="chartDevices"></canvas>
+                    </div>
+                    <div class="space-y-3">
+                        @foreach($devices as $dev)
+                        @php
+                            $pct  = round(($dev->views / $devTotal) * 100);
+                            $col  = $devColors[$dev->device] ?? '#9ca3af';
+                            $lbl  = $devLabels[$dev->device] ?? ucfirst($dev->device);
+                            $icon = $devIcons[$dev->device] ?? 'M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2v-4M9 21H5a2 2 0 01-2-2v-4m0 0h18';
+                        @endphp
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0"
+                                 style="background:{{ $col }}18">
+                                <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="{{ $col }}" stroke-width="1.8">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="{{ $icon }}"/>
+                                </svg>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <div class="flex items-center justify-between mb-1">
+                                    <span class="text-xs font-medium text-gray-700">{{ $lbl }}</span>
+                                    <span class="text-xs font-semibold text-gray-900">{{ $pct }}%</span>
+                                </div>
+                                <div class="h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                                    <div class="h-full rounded-full" style="width:{{ $pct }}%;background:{{ $col }}"></div>
+                                </div>
+                            </div>
+                        </div>
+                        @endforeach
+                    </div>
+                @endif
+            </div>
+
+        </div>
+
+    </div>{{-- end analytics --}}
+
 </div>{{-- end space-y-5 --}}
 @endsection
 
@@ -376,6 +556,103 @@
             animation:     { animateRotate: true }
         }
     });
+
+    // ── Site analytics charts ──
+    const dailyData = @json($dailyViews);
+
+    new Chart(document.getElementById('chartDailyViews'), {
+        type: 'line',
+        data: {
+            labels:   dailyData.map(d => d.date),
+            datasets: [
+                {
+                    label:           'Visualizações',
+                    data:            dailyData.map(d => d.views),
+                    borderColor:     '#c99f5b',
+                    backgroundColor: 'rgba(201,159,91,0.08)',
+                    borderWidth:     2,
+                    pointRadius:     0,
+                    pointHoverRadius:4,
+                    fill:            true,
+                    tension:         0.4,
+                },
+                {
+                    label:           'Visitantes únicos',
+                    data:            dailyData.map(d => d.unique),
+                    borderColor:     '#7C82F9',
+                    backgroundColor: 'rgba(124,130,249,0.06)',
+                    borderWidth:     1.5,
+                    pointRadius:     0,
+                    pointHoverRadius:4,
+                    fill:            true,
+                    tension:         0.4,
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            interaction: { mode: 'index', intersect: false },
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    callbacks: {
+                        title: ctx => ctx[0].label,
+                        label: ctx => ` ${ctx.dataset.label}: ${ctx.parsed.y}`
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    grid: { display: false },
+                    border: { display: false },
+                    ticks: {
+                        color: '#9ca3af',
+                        font: { size: 11 },
+                        maxTicksLimit: 8,
+                    }
+                },
+                y: {
+                    grid: { color: '#f3f4f6' },
+                    border: { display: false },
+                    ticks: { color: '#9ca3af', font: { size: 11 }, stepSize: 1 },
+                    beginAtZero: true,
+                }
+            }
+        }
+    });
+
+    @if($sources->isNotEmpty())
+    const srcColors = ['#c99f5b','#7C82F9','#10B981','#F59E0B','#EF4444','#8B5CF6','#06B6D4'];
+    const srcData   = @json($sources->values());
+    new Chart(document.getElementById('chartSources'), {
+        type: 'doughnut',
+        data: {
+            labels:   srcData.map(s => s.source),
+            datasets: [{ data: srcData.map(s => s.views), backgroundColor: srcColors, borderWidth: 0 }]
+        },
+        options: {
+            cutout: '60%',
+            plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ` ${ctx.label}: ${ctx.parsed}` } } },
+        }
+    });
+    @endif
+
+    @if($devices->isNotEmpty())
+    const devColors = { desktop: '#c99f5b', mobile: '#7C82F9', tablet: '#10B981' };
+    const devData   = @json($devices->values());
+    new Chart(document.getElementById('chartDevices'), {
+        type: 'doughnut',
+        data: {
+            labels:   devData.map(d => d.device),
+            datasets: [{ data: devData.map(d => d.views), backgroundColor: devData.map(d => devColors[d.device] || '#9ca3af'), borderWidth: 0 }]
+        },
+        options: {
+            cutout: '60%',
+            plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ` ${ctx.parsed}` } } },
+        }
+    });
+    @endif
 })();
 </script>
 <style>

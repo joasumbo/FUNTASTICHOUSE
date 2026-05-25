@@ -17,7 +17,7 @@
 
     {{-- Back + title --}}
     <div class="flex items-center gap-3">
-        <a href="{{ route('admin.dashboard') }}"
+        <a href="{{ route('admin.reservas') }}"
            class="w-9 h-9 rounded-full bg-white flex items-center justify-center hover:shadow-sm transition"
            style="box-shadow:0 1px 3px rgba(0,0,0,0.06)">
             <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="#374151" stroke-width="2.2">
@@ -157,14 +157,65 @@
 
             {{-- Status actions --}}
             <div class="bg-white rounded-3xl p-6" style="box-shadow:0 1px 3px rgba(0,0,0,0.06)">
-                <h3 class="text-sm font-semibold text-gray-900 mb-1">Estado actual</h3>
-                <p class="text-xs text-gray-400 mb-4">A gestão completa de estados estará disponível em breve (TASK-08).</p>
-
-                <div class="flex items-center gap-2 flex-wrap">
+                <h3 class="text-sm font-semibold text-gray-900 mb-1">Estado da Reserva</h3>
+                <div class="flex items-center gap-2 mb-5">
                     <span class="inline-flex items-center gap-1.5 text-sm font-semibold px-4 py-2 rounded-full {{ $st['cls'] }}">
                         <span class="w-1.5 h-1.5 rounded-full {{ $reservation->status === 'confirmed' ? 'bg-green-500' : ($reservation->status === 'cancelled' ? 'bg-red-500' : 'bg-amber-500') }}"></span>
                         {{ $st['label'] }}
                     </span>
+                </div>
+
+                @if(session('success'))
+                <div class="mb-4 px-4 py-3 rounded-2xl bg-green-50 border border-green-100">
+                    <p class="text-sm text-green-700 font-medium">{{ session('success') }}</p>
+                </div>
+                @endif
+
+                <div class="space-y-2" x-data="{ modal: false, act: '', lbl: '' }">
+                    @foreach([
+                        ['value' => 'confirmed', 'label' => 'Confirmar Reserva',  'cls' => 'bg-green-500 hover:bg-green-600 text-white'],
+                        ['value' => 'pending',   'label' => 'Marcar Pendente',    'cls' => 'bg-amber-500 hover:bg-amber-600 text-white'],
+                        ['value' => 'cancelled', 'label' => 'Cancelar Reserva',   'cls' => 'bg-red-500 hover:bg-red-600 text-white'],
+                    ] as $action)
+                    @if($reservation->status !== $action['value'])
+                    <button type="button"
+                            @click="modal=true; act='{{ $action['value'] }}'; lbl='{{ $action['label'] }}'"
+                            class="w-full py-2.5 px-4 rounded-2xl text-sm font-semibold transition {{ $action['cls'] }}">
+                        {{ $action['label'] }}
+                    </button>
+                    @endif
+                    @endforeach
+
+                    {{-- Confirmation modal --}}
+                    <div x-show="modal" x-cloak
+                         class="fixed inset-0 z-50 flex items-center justify-center px-4"
+                         @keydown.escape.window="modal=false">
+                        <div class="absolute inset-0 bg-black/30 backdrop-blur-sm" @click="modal=false"></div>
+                        <div class="relative bg-white rounded-3xl shadow-xl p-6 w-full max-w-sm z-10">
+                            <h3 class="text-base font-bold text-gray-900 mb-2">Confirmas a acção?</h3>
+                            <p class="text-sm text-gray-500 mb-5">
+                                Vais <span class="font-semibold text-gray-700" x-text="lbl.toLowerCase()"></span> a reserva
+                                <strong>#{{ $reservation->id }}</strong>.
+                                O hóspede receberá um email de notificação.
+                            </p>
+                            <div class="flex gap-3">
+                                <button @click="modal=false"
+                                        class="flex-1 px-4 py-2.5 rounded-2xl text-sm font-semibold text-gray-600 bg-gray-100 hover:bg-gray-200 transition">
+                                    Cancelar
+                                </button>
+                                <form method="POST" action="{{ route('admin.reservas.status', $reservation) }}" class="flex-1">
+                                    @csrf
+                                    @method('PATCH')
+                                    <input type="hidden" name="status" :value="act">
+                                    <button type="submit"
+                                            class="w-full px-4 py-2.5 rounded-2xl text-sm font-semibold text-white transition hover:opacity-90"
+                                            style="background:#c99f5b">
+                                        Confirmar
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 

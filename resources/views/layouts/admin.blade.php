@@ -81,11 +81,11 @@
             <nav id="tour-pill-nav" class="hidden md:flex items-center gap-1 bg-white rounded-full px-2 py-1.5 ml-2" style="box-shadow:0 1px 3px rgba(0,0,0,0.06)">
                 @php
                     $mainNav = collect([
-                        ['route' => 'admin.dashboard',  'label' => 'Dashboard',  'perm' => null],
+                        ['route' => 'admin.dashboard',  'label' => 'Dashboard',  'perm' => 'dashboard'],
                         ['route' => 'admin.reservas',   'label' => 'Reservas',   'perm' => 'reservas'],
                         ['route' => 'admin.calendario', 'label' => 'Calendário', 'perm' => 'calendario'],
                         ['route' => 'admin.precario',   'label' => 'Preçário',   'perm' => 'precario'],
-                    ])->filter(fn ($i) => $i['perm'] === null || auth()->user()->hasPermission($i['perm']))->values();
+                    ])->filter(fn ($i) => auth()->user()->hasPermission($i['perm']))->values();
                 @endphp
                 @foreach($mainNav as $item)
                     @php $active = request()->routeIs($item['route'] . '*'); @endphp
@@ -304,7 +304,7 @@
 
             @php
                 $drawerMain = collect([
-                    ['route' => 'admin.dashboard',  'label' => 'Dashboard',  'perm' => null,
+                    ['route' => 'admin.dashboard',  'label' => 'Dashboard',  'perm' => 'dashboard',
                      'd' => 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6'],
                     ['route' => 'admin.reservas',   'label' => 'Reservas',   'perm' => 'reservas',
                      'd' => 'M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z'],
@@ -314,7 +314,7 @@
                      'd' => 'M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z'],
                     ['route' => 'admin.regras',     'label' => 'Regras',     'perm' => 'regras',
                      'd' => 'M13 10V3L4 14h7v7l9-11h-7z'],
-                ])->filter(fn ($i) => $i['perm'] === null || auth()->user()->hasPermission($i['perm']))->values();
+                ])->filter(fn ($i) => auth()->user()->hasPermission($i['perm']))->values();
 
                 $drawerSec = collect([
                     ['route' => 'admin.galeria',       'label' => 'Galeria',             'perm' => 'galeria',
@@ -400,5 +400,57 @@
 </div>
 
 @stack('scripts')
+
+@if(auth()->user()->hasPermission('reservas'))
+<script>
+(function () {
+    var _ctx = null;
+    var _prev = null;
+
+    // Unlock AudioContext on first user interaction
+    document.addEventListener('click', function () {
+        if (!_ctx) {
+            try { _ctx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) {}
+        } else if (_ctx.state === 'suspended') {
+            _ctx.resume();
+        }
+    }, false);
+
+    function _chime() {
+        if (!_ctx || _ctx.state !== 'running') return;
+        try {
+            // C5 → E5 → G5 ascending arpeggio
+            [[523.25, 0], [659.25, 0.18], [783.99, 0.36]].forEach(function (n) {
+                var o = _ctx.createOscillator(), g = _ctx.createGain();
+                o.connect(g); g.connect(_ctx.destination);
+                o.type = 'sine';
+                o.frequency.value = n[0];
+                g.gain.setValueAtTime(0, _ctx.currentTime + n[1]);
+                g.gain.linearRampToValueAtTime(0.22, _ctx.currentTime + n[1] + 0.05);
+                g.gain.exponentialRampToValueAtTime(0.001, _ctx.currentTime + n[1] + 0.75);
+                o.start(_ctx.currentTime + n[1]);
+                o.stop(_ctx.currentTime + n[1] + 0.85);
+            });
+        } catch (e) {}
+    }
+
+    function _poll() {
+        fetch('{{ route("admin.api.reservas.nova") }}', {
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        })
+        .then(function (r) { return r.ok ? r.json() : null; })
+        .then(function (data) {
+            if (!data) return;
+            if (_prev !== null && data.count > _prev) _chime();
+            _prev = data.count;
+        })
+        .catch(function () {});
+    }
+
+    _poll();
+    setInterval(_poll, 30000);
+})();
+</script>
+@endif
 </body>
 </html>

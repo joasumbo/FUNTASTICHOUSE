@@ -214,7 +214,14 @@
                 <tbody x-show="rows !== null" x-cloak class="divide-y divide-gray-50">
                     <template x-for="r in (rows || [])" :key="r.id">
                         <tr class="hover:bg-gray-50/50 transition">
-                            <td class="px-6 py-4 text-sm font-bold text-gray-900" x-text="'#'+r.id"></td>
+                            <td class="px-6 py-4">
+                                <div class="flex items-center gap-1.5">
+                                    <span class="text-sm font-bold text-gray-900" x-text="'#'+r.id"></span>
+                                    <template x-if="r.is_nova">
+                                        <span class="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-emerald-500 text-white tracking-wide">Nova</span>
+                                    </template>
+                                </div>
+                            </td>
                             <td class="px-4 py-4">
                                 <p class="text-sm font-semibold text-gray-900" x-text="r.name"></p>
                                 <p class="text-xs text-gray-400" x-text="r.email"></p>
@@ -282,9 +289,19 @@
                 @if($reservations->isNotEmpty())
                 <tbody x-show="rows === null" class="divide-y divide-gray-50">
                     @foreach($reservations as $r)
-                    @php $st = $statusMap[$r->status] ?? ['label' => ucfirst($r->status), 'cls' => 'bg-gray-100 text-gray-600']; @endphp
+                    @php
+                        $st     = $statusMap[$r->status] ?? ['label' => ucfirst($r->status), 'cls' => 'bg-gray-100 text-gray-600'];
+                        $isNova = $r->created_at->gt(now()->subMinutes(30)) && is_null($r->viewed_at);
+                    @endphp
                     <tr class="hover:bg-gray-50/50 transition" x-data="{ confirmModal: false, newStatus: '', newLabel: '' }">
-                        <td class="px-6 py-4 text-sm font-bold text-gray-900">#{{ $r->id }}</td>
+                        <td class="px-6 py-4">
+                            <div class="flex items-center gap-1.5">
+                                <span class="text-sm font-bold text-gray-900">#{{ $r->id }}</span>
+                                @if($isNova)
+                                <span class="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-emerald-500 text-white tracking-wide animate-pulse">Nova</span>
+                                @endif
+                            </div>
+                        </td>
                         <td class="px-4 py-4">
                             <p class="text-sm font-semibold text-gray-900">{{ $r->name }}</p>
                             <p class="text-xs text-gray-400">{{ $r->email }}</p>
